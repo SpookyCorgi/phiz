@@ -2,7 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
-import modelFile from './assets/face.fbx?url'
+
 import {
   ApplicationContext,
   FacemojiAPI,
@@ -40,7 +40,7 @@ function init () {
   renderer.outputEncoding = THREE.sRGBEncoding
 
   const fbxLoader = new FBXLoader()
-  fbxLoader.load(modelFile,
+  fbxLoader.load('/face.fbx',
     (object) => {
       grpScale = object
       console.log(object)
@@ -64,7 +64,7 @@ function init () {
 
   //light
   const dirLight = new THREE.DirectionalLight(0xffffff)
-  dirLight.position.set(0, 100, 50)
+  dirLight.position.set(0, 200, 100)
   dirLight.castShadow = true
   scene.add(dirLight)
 
