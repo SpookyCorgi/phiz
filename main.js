@@ -124,6 +124,12 @@ function getWebcam () {
   }
 }
 
+function setFaceRectangleVisible (show) {
+  if (document.getElementById("rectangle") !== null) {
+    document.getElementById("rectangle").style.display = show ? 'block' : 'none'
+  }
+}
+
 function tracking () {
   const context = new ApplicationContext(window.location.href)
   const fs = new ResourceFileSystem(context)
@@ -214,6 +220,27 @@ function tracking () {
         rotation: quaternion
       }
       recordedData.push(obj)
+    }
+
+    // Update face reactangle overlay
+    let faceRectangleElement = document.getElementById("rectangle")
+    if (faceRectangleElement !== null) {
+      // Convert face rectangle from tracker coordinates to HTML coordinates
+      const rect = lastResult.faceRectangle
+        .flipY(lastResult.inputImageSize.y)
+        .normalizeBy(lastResult.inputImageSize)
+        .scale(video.clientWidth, video.clientHeight)
+        .scaleAroundCenter(0.8, 0.8) // mocap4face uses a wider rect for better detection, a smaller one is more pleasing to the eye though
+      faceRectangleElement.style.position = 'relative'
+      faceRectangleElement.style.left = rect.x.toString() + 'px'
+      faceRectangleElement.style.top = rect.y.toString() + 'px'
+      faceRectangleElement.style.width = rect.width.toString() + 'px'
+      faceRectangleElement.style.height = rect.height.toString() + 'px'
+
+      // At this point the tracker always detected some face but it might be a low confidence one.
+      // hasFace() checks whether the tracker is confident enough about the detection.
+      // You can also read the confidence value itself by checking lastResult.confidence
+      setFaceRectangleVisible(lastResult.hasFace())
     }
   }
   /**
