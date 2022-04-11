@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/gif" href="favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rubik&display=swap"
+    rel="stylesheet">
+  <title>Inside Sheepy's Brain</title>
+</head>
+
+<body>
+  <div id="container">
+    <h1 id="title">Web Face Capture</h1>
+    <div id="graphics">
+      <video autoplay="true" id="videoElement"></video>
+      <canvas id="bg"></canvas>
+    </div>
+    <div id="input">
+      <button id="record">Record</button>
+      <button id="download">Download</button>
+    </div>
+  </div>
+  <script type="module" src="/GLTFExporter.js"></script>
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>
