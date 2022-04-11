@@ -40,7 +40,7 @@ function init () {
   renderer.outputEncoding = THREE.sRGBEncoding
 
   const fbxLoader = new FBXLoader()
-  fbxLoader.load('/face.fbx',
+  fbxLoader.load('face.fbx',
     (object) => {
       grpScale = object
       console.log(object)
