@@ -9,12 +9,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Rubik&display=swap"
     rel="stylesheet">
-  <title>Inside Sheepy's Brain</title>
+  <title>Web Face Capture</title>
 </head>
 
 <body>
   <div id="container">
     <h1 id="title">Web Face Capture</h1>
+    <h3 id="description">A web tool for you to record your face and turn it into a 3D animation file.</h3>
     <div id="graphics">
       <video autoplay="true" id="videoElement"></video>
       <canvas id="bg"></canvas>
@@ -23,8 +24,11 @@
       <button id="record">Record</button>
       <button id="download">Download</button>
     </div>
+    <div id="links">
+      <a href="https://github.com/ScarySheep/web-face-capture" target="_blank">Github Project Page</a>
+      <a href="https://jameslee.ninja" target="_blank">About me</a>
+    </div>
   </div>
-  <script type="module" src="/GLTFExporter.js"></script>
   <script type="module" src="/main.js"></script>
 </body>
 

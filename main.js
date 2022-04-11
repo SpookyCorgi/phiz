@@ -1,5 +1,4 @@
 import './style.css'
-
 import * as THREE from 'three'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
@@ -12,10 +11,8 @@ import {
 } from '@facemoji/mocap4face'
 import { Quaternion } from 'three';
 
-
 let canvas, clock
 let head, grpScale, eyeLeft, eyeRight, morphTargetDictionary, morphTargetInfluences
-let loaded = false
 let recording = false
 let recordedData = []
 let video = document.querySelector("#videoElement");
@@ -56,7 +53,6 @@ function init () {
       morphTargetDictionary = head.morphTargetDictionary
       morphTargetInfluences = head.morphTargetInfluences
       scene.add(object)
-      loaded = true
     },
     (xhr) => {
       //console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
@@ -82,6 +78,39 @@ function init () {
     camera.updateProjectionMatrix()
     renderer.setSize(canvas.clientWidth, canvas.clientWidth / 4 * 3)
   });
+
+  //init buttons  
+  document.getElementById("download").addEventListener("click", () => {
+    let clip = createAnimation()
+    const gltfExporter = new GLTFExporter()
+    let options = { animations: [clip] }
+    gltfExporter.parse(
+      grpScale,
+      function (result) {
+        if (result instanceof ArrayBuffer) {
+          saveArrayBuffer(result, 'scene.glb');
+        } else {
+          const output = JSON.stringify(result, null, 2);
+          saveString(output, 'scene.gltf');
+        }
+      },
+      options
+    );
+  });
+
+  document.getElementById("record").addEventListener("click", () => {
+    if (!recording) {
+      recordedData = []
+      document.getElementById("record").innerText = "Stop"
+      recording = true
+      document.getElementById("download").classList.add("hidden")
+    } else {
+      document.getElementById("record").innerText = "Record"
+      recording = false
+      document.getElementById("download").classList.remove("hidden")
+    }
+  })
+  document.getElementById("download").classList.add("hidden")
 }
 
 function getWebcam () {
@@ -99,8 +128,8 @@ function getWebcam () {
 function tracking () {
   const context = new ApplicationContext(window.location.href)
   const fs = new ResourceFileSystem(context)
-  // Initialize the API and activate API key
-  // Note that without an API key the SDK works only for a short period of time
+  //pleaseeeeeeeee don't steal it for your own use
+  //this tool is free, facemohi's api is free too, go check them out they are awesome
   FacemojiAPI.initialize('dfe3er64ijyqmqtqg2nt6btjuus754busbnboca7ef553iw32qyf27i', context).then((activated) => {
     if (activated) {
       console.info('API successfully activated')
@@ -279,37 +308,6 @@ function createAnimation () {
   }
   return null
 }
-
-document.getElementById("record").addEventListener("click", () => {
-  if (!recording) {
-    recordedData = []
-    document.getElementById("record").innerText = "Stop"
-    recording = true
-  } else {
-    document.getElementById("record").innerText = "Record"
-    recording = false
-  }
-})
-
-document.getElementById("download").addEventListener("click", () => {
-  let clip = createAnimation()
-  //mixer.clipAction(clip).play()
-  //console.log(head)
-  const gltfExporter = new GLTFExporter()
-  let options = { animations: [clip] }
-  gltfExporter.parse(
-    grpScale,
-    function (result) {
-      if (result instanceof ArrayBuffer) {
-        saveArrayBuffer(result, 'scene.glb');
-      } else {
-        const output = JSON.stringify(result, null, 2);
-        saveString(output, 'scene.gltf');
-      }
-    },
-    options
-  );
-});
 
 //saving 3d files
 const link = document.createElement('a')
