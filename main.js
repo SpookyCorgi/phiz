@@ -43,7 +43,6 @@ function init () {
   fbxLoader.load('face.fbx',
     (object) => {
       grpScale = object
-      console.log(object)
       head = object.getObjectByName('head')
       eyeLeft = object.getObjectByName('eyeLeft')
       eyeRight = object.getObjectByName('eyeRight')
@@ -83,7 +82,7 @@ function init () {
   document.getElementById("download").addEventListener("click", () => {
     let clip = createAnimation()
     const gltfExporter = new GLTFExporter()
-    let options = { animations: [clip] }
+    let options = { binary: true, animations: [clip] }
     gltfExporter.parse(
       grpScale,
       function (result) {
@@ -141,7 +140,7 @@ function tracking () {
   // Initialize
   const asyncTracker = FaceTracker.createVideoTracker(fs)
     .then((tracker) => {
-      console.log('Started tracking')
+      //('Started tracking')
       requestAnimationFrame(track)
       return tracker
     })
@@ -303,7 +302,6 @@ function createAnimation () {
     tracks.push(eyeLeftRotationTrack)
     tracks.push(eyeRightRotationTrack)
     const clip = new THREE.AnimationClip('animation', -1, tracks);
-    console.log(clip)
     return clip
   }
   return null
