@@ -1,25 +1,28 @@
+//import css
 import './style.css'
+//import three js components
 import * as THREE from 'three'
+import { Quaternion } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
-
+//import face recognition api
 import {
   ApplicationContext,
   FacemojiAPI,
   FaceTracker,
   ResourceFileSystem,
 } from '@facemoji/mocap4face'
-import { Quaternion } from 'three';
 
 let canvas, clock
 let head, grpScale, eyeLeft, eyeRight, morphTargetDictionary, morphTargetInfluences
 let recording = false
 let recordedData = []
 let video = document.querySelector("#videoElement");
-let fps = 30;
+const fps = 30;
 
 //three js init
 function init () {
+  //basic three js stuff
   clock = new THREE.Clock()
 
   canvas = document.querySelector('#bg')
@@ -39,6 +42,7 @@ function init () {
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.outputEncoding = THREE.sRGBEncoding
 
+  //load fbx model
   const fbxLoader = new FBXLoader()
   fbxLoader.load('face.fbx',
     (object) => {
@@ -72,6 +76,7 @@ function init () {
     renderer.render(scene, camera)
   });
 
+  //resize
   window.addEventListener('resize', () => {
     camera.aspect = canvas.clientWidth / canvas.clientHeight
     camera.updateProjectionMatrix()
@@ -133,9 +138,10 @@ function setFaceRectangleVisible (show) {
 function tracking () {
   const context = new ApplicationContext(window.location.href)
   const fs = new ResourceFileSystem(context)
-  //pleaseeeeeeeee don't steal it for your own use
-  //this tool is free, facemohi's api is free too, go check them out they are awesome
-  FacemojiAPI.initialize('dfe3er64ijyqmqtqg2nt6btjuus754busbnboca7ef553iw32qyf27i', context).then((activated) => {
+  //pleaseeeeeeeee don't use it for your own use
+  //this tool is free, alter's sdk is free too, go check them out they are awesome
+  //I linked them in the github project page
+  FacemojiAPI.initialize('api key here', context).then((activated) => {
     if (activated) {
       console.info('API successfully activated')
     } else {
@@ -158,19 +164,23 @@ function tracking () {
   function track () {
     requestAnimationFrame(track);
     var tracker = asyncTracker.currentValue;
+
     // Track only when everything is fully loaded and video is running
     if (!tracker || video === null) {
       return;
     }
+
     // Face tracking
     var lastResult = tracker.track(video);
     if (lastResult == null) {
       return; // No face found or video frame could not be processed
     }
+
     // Update 3D model
     let blendshapes = {}
     let rightBrowValue = 0
     let leftBrowValue = 0
+
     //rotation
     const rotationBlendshapes = faceRotationToBlendshapes(lastResult.rotationQuaternion)
     grpScale.setRotationFromEuler(new THREE.Euler(
@@ -200,12 +210,14 @@ function tracking () {
         }
       }
     }
+
     //eyebrow inner
     morphTargetInfluences[morphTargetDictionary['browInnerUp']] = (rightBrowValue + leftBrowValue) / 2
     if (recording) {
       blendshapes['browInnerUp'] = (rightBrowValue + leftBrowValue) / 2
     }
 
+    //store data if it's recording
     if (recording) {
       let time = clock.getElapsedTime()
       let rotation = new THREE.Euler(
