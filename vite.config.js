@@ -1,6 +1,6 @@
 module.exports = {
     build: {
-        chunkSizeWarningLimit: 1000
+        chunkSizeWarningLimit: 3000
     },
     base: "/web-face-capture/"
 }
