@@ -14,7 +14,10 @@ A free, open-source web tool for you to record your face and turn it into a 3D a
 **Are you using iPhone or iPad?** If so, try using a different browser (Safari should work most of the time). And then also check your download folder. If it's still not working, **please open an issue on this page.** 
 
 ### I can't import the glb file into Maya/Unreal/Unity. Help.
-Even though as awesome as the file format is, glb/gltf file is still not widely supported by professional tools. The best workflow currently is to convert the file to fbx file format in blender. **Please don't import glb and export fbx directly while using Blender. Shape keys animation require extra step to export into fbx file format.** I will create a tutorial in the future but right please read [this awesome tutorial](https://continuebreak.com/articles/how-blender-shape-key-ue4-morph-target-animations/)
+Even though as awesome as the file format is, glb/gltf file is still not widely supported by professional tools. The best workflow currently is to convert the file to fbx file format in Blender. **Please don't import glb and export fbx directly while using Blender. Shape keys animation require extra steps to export into fbx file format.** I will create a tutorial in the future but right please read [this awesome tutorial](https://continuebreak.com/articles/how-blender-shape-key-ue4-morph-target-animations/)
+
+### How do I quickly view my animation to check if it works or not?
+Import it into Blender or any [gltf viewer](https://gltf-viewer.donmccurdy.com/)
 
 ### I wish this function also exist so my life is ultimately better.
 Open a new issue :) I'd gladly implement more things.
