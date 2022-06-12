@@ -440,13 +440,13 @@ function setUpMediaPipe () {
     });
     camera.start()
 
-    let aspect = camera.h.width / camera.h.height
+    const aspect = camera.h.height / camera.h.width;
     if (window.innerWidth > window.innerHeight) {
-        height = window.innerHeight
-        width = window.innerHeight * aspect
+        height = window.innerHeight;
+        width = height / aspect;
     } else {
-        width = window.innerWidth
-        height = window.innerWidth / aspect
+        width = window.innerWidth;
+        height = width * aspect;
     }
     canvasElement.width = width
     canvasElement.height = height
@@ -454,15 +454,14 @@ function setUpMediaPipe () {
 
 
 function resizeCanvas () {
-    let aspect = camera.h.width / camera.h.height
+    const aspect = camera.h.height / camera.h.width;
     if (window.innerWidth > window.innerHeight) {
-        height = window.innerHeight
-        width = window.innerHeight * aspect
+        height = window.innerHeight;
+        width = height / aspect;
     } else {
-        width = window.innerWidth
-        height = window.innerWidth / aspect
+        width = window.innerWidth;
+        height = width * aspect;
     }
-
     canvasElement.width = width
     canvasElement.height = height
     threeCamera.aspect = width / height
