@@ -450,6 +450,8 @@ function setUpMediaPipe () {
     }
     canvasElement.width = width
     canvasElement.height = height
+    threeCanvasElement.width = width
+    threeCanvasElement.width = height
 }
 
 
@@ -464,6 +466,8 @@ function resizeCanvas () {
     }
     canvasElement.width = width
     canvasElement.height = height
+    threeCanvasElement.width = width
+    threeCanvasElement.width = height
     threeCamera.aspect = width / height
     threeCamera.updateProjectionMatrix()
     renderer.setSize(width, height)
