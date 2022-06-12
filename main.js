@@ -293,6 +293,7 @@ function init () {
             const mask1Material = new THREE.MeshStandardMaterial({ alphaMap: texture })
             mask1Material.transparent = true;
             const maskMesh1 = new THREE.Mesh(mask1, mask1Material)
+            //important so the alphamap wont mess up the objects below
             maskMesh1.renderOrder = 2
             mask1Material.depthTest = false
             scene.add(maskMesh1)
@@ -324,19 +325,6 @@ function init () {
     invertBaseTransformMatrix.setPosition(p0.x, p0.y, p0.z)
     invertBaseTransformMatrix.invert()
 }
-
-
-// function setVideoUvs () {
-//     let ptr = 0;
-//     for (let j = 0; j < 468 * 2; j += 2) {
-//         this.uvs[j] = this.flipped
-//             ? this.positions[ptr] / this.w + 0.5
-//             : 1 - (this.positions[ptr] / this.w + 0.5);
-//         this.uvs[j + 1] = this.positions[ptr + 1] / this.h + 0.5;
-//         ptr += 3;
-//     }
-//     this.getAttribute("uv").needsUpdate = true;
-// }
 
 function transformLandmarks (landmark) {
     let obj = {}
