@@ -1,5 +1,5 @@
 # Update
-This project is currently not available as [mocap4face by alter](https://github.com/facemoji/mocap4face)'s sudden termination of their service.
+This project will be unavailable soon due to [mocap4face by alter](https://github.com/facemoji/mocap4face)'s sudden termination of their service.
 
 Working on finding an alternative solution at the moment. Any help is appreciated.
 
