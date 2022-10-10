@@ -1,3 +1,8 @@
+# Update
+This project is currently not available as [mocap4face by alter](https://github.com/facemoji/mocap4face)'s sudden termination of their service.
+
+Working on finding an alternative solution at the moment. Any help is appreciated.
+
 ![Banner](https://jameslee.ninja/web-face-capture/icon.png)
 # Web Face Capture
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?business=HS5SG7G97J7AY&no_recurring=0&item_name=Thank+you+for+your+support+OwO.+May+the+3D+god+bless+you+infinite+inspirations%21&currency_code=USD)
