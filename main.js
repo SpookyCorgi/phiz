@@ -23,10 +23,10 @@ let width = 0;
 let height = 0;
 
 //three js components
-let dev = false
+let dev = true
 //constants
 const FOV = 15
-const landmarkScaleConstant = 26
+const landmarkScaleConstant = 24
 const positionScale = 0.5
 const samplePoint = [10, 454, 234]
 //basic scene component
@@ -42,6 +42,7 @@ let focalLength = 0
 let invertBaseTransformMatrix = new THREE.Matrix4();
 //landmarks
 let spheres = []
+let line
 let baseNode, topNode, bottomNode
 //video as a three js texture
 let videoTexture
@@ -91,27 +92,28 @@ function init () {
     threeCamera.position.set(0, 0, focalLength)
 
     //add lights
-    const directionalLight0 = new THREE.DirectionalLight(0xaeff00, 1)
+    const directionalLight0 = new THREE.DirectionalLight(0xffffff, 1)
     directionalLight0.position.set(1, 0.15, -1)
-    const directionalLight1 = new THREE.DirectionalLight(0xff0000, 1)
-    directionalLight1.position.set(0.3, -1, -0.05)
-    const directionalLight2 = new THREE.DirectionalLight(0x00ffee, 1)
-    directionalLight2.position.set(0.05, 1, 1)
-    const directionalLight3 = new THREE.DirectionalLight(0xff00ea, 1)
-    directionalLight3.position.set(-0.8, 1, 1)
-    scene.add(directionalLight0, directionalLight1, directionalLight2, directionalLight3)
-    //const helper = new THREE.DirectionalLightHelper(directionalLight3, 5);
-    //scene.add(helper);
 
     //add landmark spheres
+    let points = []
     for (let i = 0; i < 478; i++) {
-        const geometry = new THREE.SphereGeometry(0.0, 12, 6);
+        const geometry = new THREE.SphereGeometry(0.1, 12, 6);
         let color = new THREE.Color("rgb(0, 0, 0)")
         const material = new THREE.MeshBasicMaterial({ color: color })
         const sphere = new THREE.Mesh(geometry, material)
         scene.add(sphere)
         spheres.push(sphere)
+        points.push(new THREE.Vector3(0, 0, 0))
     }
+
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    lineGeometry.setIndex(indices)
+    let lineMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 })
+    lineMaterial.wireframe = true
+    line = new THREE.Mesh(lineGeometry, lineMaterial);
+    scene.add(line);
+
     //use the nose sphere as base node for all 3d model
     baseNode = spheres[4]
     topNode = spheres[10]
@@ -121,192 +123,31 @@ function init () {
     videoTexture = new THREE.VideoTexture(videoElement);
 
     // instantiate a loader
-    const manager = new THREE.LoadingManager();
-    manager.onStart = function (url, itemsLoaded, itemsTotal) {
-        console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-    };
-    manager.onLoad = function () {
-        console.log('Loading complete!');
-    };
-    manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-        console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-    };
-    manager.onError = function (url) {
-        console.log('There was an error loading ' + url);
-    };
+    // const manager = new THREE.LoadingManager();
+    // manager.onStart = function (url, itemsLoaded, itemsTotal) {
+    //     console.log('Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+    // };
+    // manager.onLoad = function () {
+    //     console.log('Loading complete!');
+    // };
+    // manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+    //     console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+    // };
+    // manager.onError = function (url) {
+    //     console.log('There was an error loading ' + url);
+    // };
 
-    const objLoader = new OBJLoader(manager);
-    objLoader.load('assets/models/elf2/elf2.obj', function (object) {
-        let elf2 = object.clone()
-        //set up position
-        elf2.rotateY(Math.PI)
-        elf2.scale.set(0.8, 0.8, 0.8)
-        elf2.position.set(0, -1 - 0.5, 2 - 2)
-        //projected material
-        const elf2Material = new ProjectedMaterial({
-            // use the scene camera itself
-            camera: threeCamera,
-            texture: videoTexture,
-            color: '#dc72ff',
-            opacity: 1.0
-        })
-        //assign material to the mesh
-        elf2.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material = elf2Material;
-                projectedObject = child
-                //project
-                project(projectedObject)
-            }
-        });
-        //add object to base node
-        baseNode.add(elf2)
+    // const objLoader = new OBJLoader(manager);
+    // objLoader.load('', function (object) {
 
+    // })
 
-        let elf3 = object.clone()
-        //set up position
-        elf3.rotateY(Math.PI)
-        elf3.scale.set(0.8, 0.8, 0.8)
-        elf3.position.set(0, -1 - 0.5, 4 - 2)
-        //material
-        const elf3Material = new THREE.MeshStandardMaterial()
-        elf3Material.transparent = true
-        elf3Material.opacity = 0.47
-        //assign material to the mesh
-        elf3.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material = elf3Material;
-            }
-        });
-        baseNode.add(elf3)
-    });
-
-    objLoader.load('assets/models/ring/ring.obj', function (object) {
-        let ring0 = object.clone()
-        ring0.scale.set(0.008, 0.008, 0.008)
-        ring0.rotation.set(0, -0.15, Math.PI / 2)
-        ring0.position.set(-4.3, -2.4 - 0.5, -5 - 2)
-        //material
-        const ring0Material = new THREE.MeshPhongMaterial()
-        ring0Material.emissive.set(new THREE.Color(0xffef07))
-        //assign material to the mesh
-        ring0.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material = ring0Material;
-            }
-        });
-        baseNode.add(ring0)
-
-        let ring1 = object.clone()
-        ring1.scale.set(0.008, 0.008, 0.008)
-        ring1.rotation.set(0, 0.15, Math.PI / 2)
-        ring1.position.set(4.3, -2.4 - 0.5, -5 - 2)
-        //assign material to the mesh
-        ring1.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material = ring0Material;
-            }
-        });
-        baseNode.add(ring1)
-
-        let ring2 = object.clone()
-        ring2.scale.set(0.005, 0.005, 0.005)
-        ring2.rotation.set(0, Math.PI / 4, Math.PI / 2)
-        ring2.position.set(7, 2 - 0.5, -8 - 2)
-        //assign material to the mesh
-        ring2.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material = ring0Material;
-            }
-        });
-        baseNode.add(ring2)
-
-        let ring3 = object.clone()
-        ring3.scale.set(0.005, 0.005, 0.005)
-        ring3.rotation.set(0, Math.PI / 4 + 0.5, Math.PI / 2)
-        ring3.position.set(6.7, 2 - 0.5, -9 - 2)
-        //assign material to the mesh
-        ring3.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material = ring0Material;
-            }
-        });
-        baseNode.add(ring3)
-
-        let ring4 = object.clone()
-        ring4.scale.set(0.005, 0.005, 0.005)
-        ring4.rotation.set(0, -Math.PI / 4, Math.PI / 2)
-        ring4.position.set(-7, 2 - 0.5, -8 - 2)
-        //assign material to the mesh
-        ring4.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material = ring0Material;
-            }
-        });
-        baseNode.add(ring4)
-    })
-
-    objLoader.load('assets/models/headgear/headgear.obj', function (object) {
-        let headgear = object.clone()
-        headgear.rotateY(Math.PI)
-        headgear.scale.set(2.9, 2.9, 2.9)
-        headgear.position.set(0, -76.5 - 0.5, -8.3 - 2)
-        const headgearMaterial = new THREE.MeshStandardMaterial()
-        headgear.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material = headgearMaterial
-            }
-        })
-        baseNode.add(headgear)
-    })
-
-    objLoader.load('assets/models/pearlz!!/pearlz!!.obj', function (object) {
-        let pearlz = object.clone()
-        pearlz.rotateX(-Math.PI / 2 + 0.2)
-        pearlz.scale.set(0.003, 0.003, 0.003)
-        pearlz.position.set(0, -3.7 - 0.5, -5 - 2)
-        const pearlzMaterial = new THREE.MeshStandardMaterial()
-        pearlz.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material = pearlzMaterial
-            }
-        })
-        baseNode.add(pearlz)
-    })
-
-    const textureLoader = new THREE.TextureLoader(manager);
-
-    textureLoader.load(
-        'assets/textures/MoustacheAlpha.png',
-        function (texture) {
-            mask1 = new THREE.BufferGeometry();
-            let maskPos = new Float32Array(468 * 3)
-            let maskUV = new Float32Array(468 * 2)
-            mask1.setAttribute("position", new THREE.BufferAttribute(maskPos, 3))
-            mask1.setAttribute("uv", new THREE.BufferAttribute(maskUV, 2))
-            for (let j = 0; j < 468; j++) {
-                maskUV[j * 2] = texCoords[j][0]
-                maskUV[j * 2 + 1] = 1 - texCoords[j][1]
-            }
-            mask1.getAttribute("uv").needsUpdate = true
-            mask1.setIndex(indices)
-            const mask1Material = new THREE.MeshStandardMaterial({ alphaMap: texture })
-            mask1Material.transparent = true;
-            const maskMesh1 = new THREE.Mesh(mask1, mask1Material)
-            //important so the alphamap wont mess up the objects below
-            maskMesh1.renderOrder = 2
-            mask1Material.depthTest = false
-            scene.add(maskMesh1)
-
-            mask2 = mask1.clone()
-            const mask2Material = new THREE.MeshBasicMaterial({ alphaMap: texture })
-            mask2Material.transparent = true;
-            const maskMesh2 = new THREE.Mesh(mask2, mask2Material)
-            maskMesh2.renderOrder = 3
-            mask1Material.depthTest = false
-            scene.add(maskMesh2)
-        }
-    )
+    // const textureLoader = new THREE.TextureLoader(manager);
+    // textureLoader.load(
+    //     '',
+    //     function (texture) {
+    //     }
+    // )
 
 
     //calculate homogeneous transform matrix from the obj model
@@ -392,22 +233,10 @@ function onResults (results) {
                 mask1Vertices.push(l.y * scale)
                 mask1Vertices.push(l.z + deltaZ)
                 spheres[i].position.set(tempMark.x, tempMark.y, tempMark.z)
+                line.geometry.attributes.position.setXYZ(i, spheres[i].position.x, spheres[i].position.y, spheres[i].position.z)
             })
 
-            mask1.setAttribute('position', new THREE.BufferAttribute(new Float32Array(mask1Vertices), 3));
-            mask1.computeVertexNormals()
-            for (let i = 0; i < 468; i++) {
-                let x = mask1Vertices[3 * i]
-                let y = mask1Vertices[3 * i + 1]
-                let z = mask1Vertices[3 * i + 2]
-                let deltaY = (y - baseNode.position.y) / (topNode.position.y - bottomNode.position.y)
-                mask2Vertices.push(x + (x - baseNode.position.x) * Math.sin(deltaY))
-                mask2Vertices.push(y)
-                mask2Vertices.push(z)
-            }
-
-            mask2.setAttribute('position', new THREE.BufferAttribute(new Float32Array(mask2Vertices), 3));
-            mask2.computeVertexNormals()
+            line.geometry.attributes.position.needsUpdate = true;
 
             let m = getMatrix(newLandmarks)
             let q = new THREE.Quaternion()
@@ -416,7 +245,7 @@ function onResults (results) {
         }
     }
     //project video texture
-    project(projectedObject)
+    //project(projectedObject)
 
     if (dev) {
         controls.update()
