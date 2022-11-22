@@ -10,8 +10,9 @@ body {
     background-color: #000000;
     width: 100%;
     height: 100%;
+    display: flex;
+    overflow: hidden;
 }
-
 
 .hidden {
     display: none;
@@ -19,15 +20,20 @@ body {
 
 .canvas-container {
     display: flex;
-    width: 100%;
-    height: 100%;
     justify-content: center;
     align-items: center;
+    width: 100%;
+}
+
+.model-container {
+    width: 100%;
 }
 
 .output_canvas,
 .three_canvas {
-    position: fixed;
-    max-width: 100%;
-    max-height: 100%;
+    position: absolute;
+}
+
+.three_canvas {
+    z-index: 10;
 }
