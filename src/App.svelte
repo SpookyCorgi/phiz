@@ -1,5 +1,6 @@
 <script>
   import svelteLogo from "./assets/svelte.svg";
+  import Loading from "./lib/Loading.svelte";
   import Camera from "./lib/Camera.svelte";
 </script>
 
@@ -15,6 +16,7 @@
   <div class="camera">
     <Camera />
   </div>
+  <Loading />
 </main>
 
 <style>
