@@ -17,6 +17,7 @@ function mediapipe_workaround () {
       if (path.basename(id) === "face_mesh.js") {
         let code = fs.readFileSync(id, "utf-8")
         code += "exports.FaceMesh = FaceMesh;"
+        code += "exports.matrixDataToMatrix = matrixDataToMatrix;"
         return { code }
       } else {
         return null
