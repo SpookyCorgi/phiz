@@ -139,6 +139,26 @@
         });
         faceMesh = new THREE.Mesh(buffergeometry, bufferMaterial);
         scene.add(faceMesh);
+
+        window.addEventListener("resize", function resizeCanvas() {
+            if (
+                main.clientWidth /
+                    (main.clientHeight - fpsCounter.clientHeight) >
+                4 / 3
+            ) {
+                height = Math.min(
+                    main.clientHeight - fpsCounter.clientHeight - margin * 2,
+                    480
+                );
+                width = (height / 3) * 4;
+            } else {
+                width = Math.min(main.clientWidth - margin * 2, 640);
+                height = (width / 4) * 3;
+            }
+            threeCamera.aspect = width / height;
+            threeCamera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        });
     }
 
     function videoFrame() {
@@ -272,25 +292,6 @@
         load = true;
         renderer.render(scene, threeCamera);
     }
-
-    window.addEventListener("resize", function resizeCanvas() {
-        if (
-            main.clientWidth / (main.clientHeight - fpsCounter.clientHeight) >
-            4 / 3
-        ) {
-            height = Math.min(
-                main.clientHeight - fpsCounter.clientHeight - margin * 2,
-                480
-            );
-            width = (height / 3) * 4;
-        } else {
-            width = Math.min(main.clientWidth - margin * 2, 640);
-            height = (width / 4) * 3;
-        }
-        threeCamera.aspect = width / height;
-        threeCamera.updateProjectionMatrix();
-        renderer.setSize(width, height);
-    });
 
     onMount(() => {
         if (
