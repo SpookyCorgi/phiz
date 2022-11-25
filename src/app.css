@@ -9,6 +9,7 @@ body {
     height: 100%;
     margin: 0;
     overflow: hidden;
+    background-color: black;
 }
 
 #app {
@@ -27,5 +28,5 @@ a {
     font-family: 'Rubik', sans-serif;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
-    color: black
+    color: white
 }
