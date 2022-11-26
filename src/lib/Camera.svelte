@@ -6,7 +6,7 @@
     import { FACES as indices, UVS as texCoords } from "./geometry.js";
 
     //html elements
-    let canvas, videoElement, container, main, fpsCounter;
+    let canvas, videoElement, container, main, fpsCounter, videoSelect;
     let margin = 10;
 
     let scene, renderer, clock, threeCamera;
@@ -36,56 +36,92 @@
         far: 1000,
     };
 
-    async function sendVideo() {
-        //send will return after associate onresult is returned
-        await faceMesh3D.send({ image: videoElement });
-        //console.log("3D Send: ", clock.getElapsedTime());
-        await faceMeshRefined.send({ image: videoElement });
-        //console.log("Refine Send: ", clock.getElapsedTime());
-
-        return;
+    function flattenMatrix(m) {
+        let mArr = [];
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
+                mArr.push(m[j][i]);
+            }
+        }
+        return mArr;
     }
 
-    async function setupMediaPipe() {
-        let faceMesh3D = new FaceMesh({
-            locateFile: (file) => {
-                return `./face_mesh/${file}`;
-            },
-        });
-        faceMesh3D.setOptions({
-            maxNumFaces: 1,
-            refineLandmarks: false,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5,
-            enableFaceGeometry: true,
-            selfieMode: false,
-        });
+    function getDevices() {
+        // AFAICT in Safari this only gets default devices until gUM is called :/
+        return navigator.mediaDevices.enumerateDevices();
+    }
 
-        let faceMeshRefined = new FaceMesh({
-            locateFile: (file) => {
-                return `./face_mesh/${file}`;
-            },
-        });
-        faceMeshRefined.setOptions({
-            maxNumFaces: 1,
-            refineLandmarks: true,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5,
-            enableFaceGeometry: false,
-            selfieMode: false,
-        });
+    function gotDevices(deviceInfos) {
+        window.deviceInfos = deviceInfos; // make available to console
+        //console.log("Available input and output devices:", deviceInfos);
+        for (const deviceInfo of deviceInfos) {
+            const option = document.createElement("option");
+            option.value = deviceInfo.deviceId;
+            if (deviceInfo.kind === "videoinput") {
+                option.text =
+                    deviceInfo.label || `Camera ${videoSelect.length + 1}`;
+                videoSelect.appendChild(option);
+            }
+        }
+    }
+
+    function getStream() {
+        if (window.stream) {
+            window.stream.getTracks().forEach((track) => {
+                track.stop();
+            });
+        }
+        const videoSource = videoSelect.value;
 
         const constraints = {
-            audio: false,
-            video: { width: 640, height: 480 },
+            video: {
+                deviceId: videoSource ? { exact: videoSource } : undefined,
+                width: 640,
+                height: 480,
+                maxWidth: 640,
+                maxHeight: 640,
+            },
         };
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        videoElement.srcObject = stream;
 
-        return [faceMesh3D, faceMeshRefined];
+        return navigator.mediaDevices.getUserMedia(constraints);
     }
 
-    function init() {
+    function gotStream(stream) {
+        window.stream = stream; // make stream available to console
+        videoSelect.selectedIndex = [...videoSelect.options].findIndex(
+            (option) => option.text === stream.getVideoTracks()[0].label
+        );
+
+        videoElement.srcObject = stream;
+
+        return (
+            stream.getVideoTracks()[0].getSettings().width /
+            stream.getVideoTracks()[0].getSettings().height
+        );
+    }
+
+    function setupCamera() {
+        return new Promise((resolve, reject) => {
+            //change source when select changes
+            videoSelect.addEventListener("change", () => {
+                getStream().then((stream) => {
+                    //change dimensions if source dimention changes
+                    let aspect = gotStream(stream);
+                    setupDimention(aspect);
+                });
+            });
+            //set constraints and get stream
+            getStream().then((stream) => {
+                //get device list
+                getDevices().then(gotDevices);
+                //set video amd get settings
+                let aspect = gotStream(stream);
+                resolve(aspect);
+            });
+        });
+    }
+
+    function setupThree() {
         //set up scene
         scene = new THREE.Scene();
         clock = new THREE.Clock();
@@ -139,26 +175,6 @@
         });
         faceMesh = new THREE.Mesh(buffergeometry, bufferMaterial);
         scene.add(faceMesh);
-
-        window.addEventListener("resize", function resizeCanvas() {
-            if (
-                main.clientWidth /
-                    (main.clientHeight - fpsCounter.clientHeight) >
-                4 / 3
-            ) {
-                height = Math.min(
-                    main.clientHeight - fpsCounter.clientHeight - margin * 2,
-                    480
-                );
-                width = (height / 3) * 4;
-            } else {
-                width = Math.min(main.clientWidth - margin * 2, 640);
-                height = (width / 4) * 3;
-            }
-            threeCamera.aspect = width / height;
-            threeCamera.updateProjectionMatrix();
-            renderer.setSize(width, height);
-        });
     }
 
     function videoFrame() {
@@ -176,14 +192,46 @@
         }
     }
 
-    function flattenMatrix(m) {
-        let mArr = [];
-        for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < 4; j++) {
-                mArr.push(m[j][i]);
-            }
-        }
-        return mArr;
+    async function sendVideo() {
+        //send will return after associate onresult is returned
+        await faceMesh3D.send({ image: videoElement });
+        //console.log("3D Send: ", clock.getElapsedTime());
+        await faceMeshRefined.send({ image: videoElement });
+        //console.log("Refine Send: ", clock.getElapsedTime());
+
+        return;
+    }
+
+    async function setupMediaPipe() {
+        let faceMesh3D = new FaceMesh({
+            locateFile: (file) => {
+                return `./face_mesh/${file}`;
+            },
+        });
+        faceMesh3D.setOptions({
+            maxNumFaces: 1,
+            refineLandmarks: false,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5,
+            enableFaceGeometry: true,
+            selfieMode: false,
+        });
+
+        let faceMeshRefined = new FaceMesh({
+            locateFile: (file) => {
+                return `./face_mesh/${file}`;
+            },
+        });
+        faceMeshRefined.setOptions({
+            maxNumFaces: 1,
+            refineLandmarks: true,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5,
+            enableFaceGeometry: false,
+            selfieMode: false,
+        });
+
+        return [faceMesh3D, faceMeshRefined];
     }
 
     function onResults(results) {
@@ -249,85 +297,122 @@
                 transformMatrix
             );
             geometryTransform.matrix = transformMatrix;
+        } else {
         }
     }
 
     function onResultsRefined(results) {
         //console.log("Refine result: ", clock.getElapsedTime());
-        let iMatrix = geometryTransform.matrix.clone().invert();
-        if (results.multiFaceLandmarks.length) {
-            results.multiFaceLandmarks[0].forEach((landmark, i) => {
-                //get point world position
-                let z =
-                    landmark.z * geometryTransform.zA + geometryTransform.zB;
-                let x =
-                    (((0.5 - landmark.x) *
-                        (Math.tan((cameraConfig.FOV / 2 / 180) * Math.PI) *
-                            2)) /
-                        height) *
-                    width *
-                    z;
-                let y =
-                    (landmark.y - 0.5) *
-                    (Math.tan((cameraConfig.FOV / 2 / 180) * Math.PI) * 2) *
-                    z;
+        if (geometryTransform.matrix != null) {
+            let iMatrix = geometryTransform.matrix.clone().invert();
+            if (results.multiFaceLandmarks.length) {
+                faceLandmarks.visible = true;
+                faceMesh.visible = true;
+                results.multiFaceLandmarks[0].forEach((landmark, i) => {
+                    //get point world position
+                    let z =
+                        landmark.z * geometryTransform.zA +
+                        geometryTransform.zB;
+                    let x =
+                        (((0.5 - landmark.x) *
+                            (Math.tan((cameraConfig.FOV / 2 / 180) * Math.PI) *
+                                2)) /
+                            height) *
+                        width *
+                        z;
+                    let y =
+                        (landmark.y - 0.5) *
+                        (Math.tan((cameraConfig.FOV / 2 / 180) * Math.PI) * 2) *
+                        z;
 
-                faceLandmarks.children[i].position.set(x, y, z);
+                    faceLandmarks.children[i].position.set(x, y, z);
 
-                //get local position
-                let localPos = new THREE.Vector3(x, y, z).applyMatrix4(iMatrix);
-                faceMesh.geometry.attributes.position.setXYZ(
-                    i,
-                    localPos.x,
-                    localPos.y,
-                    localPos.z
+                    //get local position
+                    let localPos = new THREE.Vector3(x, y, z).applyMatrix4(
+                        iMatrix
+                    );
+                    faceMesh.geometry.attributes.position.setXYZ(
+                        i,
+                        localPos.x,
+                        localPos.y,
+                        localPos.z
+                    );
+                    faceMesh.geometry.attributes.position.needsUpdate = true;
+                });
+                faceMesh.rotation.setFromRotationMatrix(
+                    geometryTransform.matrix
                 );
-                faceMesh.geometry.attributes.position.needsUpdate = true;
-            });
-            faceMesh.rotation.setFromRotationMatrix(geometryTransform.matrix);
-            faceMesh.position.setFromMatrixPosition(geometryTransform.matrix);
-            faceMesh.scale.setFromMatrixScale(geometryTransform.matrix);
-        }
+                faceMesh.position.setFromMatrixPosition(
+                    geometryTransform.matrix
+                );
+                faceMesh.scale.setFromMatrixScale(geometryTransform.matrix);
+            } else {
+                faceLandmarks.visible = false;
+                faceMesh.visible = false;
+            }
 
-        load = true;
-        renderer.render(scene, threeCamera);
+            load = true;
+            renderer.render(scene, threeCamera);
+        } else {
+            faceLandmarks.visible = false;
+            faceMesh.visible = false;
+        }
+    }
+
+    function setupDimention(aspect) {
+        let containerAspect = container.clientWidth / container.clientHeight;
+        if (aspect > containerAspect) {
+            width = container.clientWidth;
+            height = width / aspect;
+        } else {
+            height = container.clientHeight;
+            width = height * aspect;
+        }
     }
 
     onMount(() => {
-        if (
-            main.clientWidth / (main.clientHeight - fpsCounter.clientHeight) >
-            4 / 3
-        ) {
-            height = Math.min(
-                main.clientHeight - fpsCounter.clientHeight - margin * 2,
-                480
-            );
-            width = (height / 3) * 4;
-        } else {
-            width = Math.min(main.clientWidth - margin * 2, 640);
-            height = (width / 4) * 3;
-        }
-
+        //setupDimention();
         setupMediaPipe().then((faceMesh) => {
             [faceMesh3D, faceMeshRefined] = faceMesh;
-            init();
+            setupCamera().then((videoAspect) => {
+                setupDimention(videoAspect);
+                setupThree();
+            });
+
             videoFrame();
             //use the same call back cuz
             faceMesh3D.onResults(onResults);
             faceMeshRefined.onResults(onResultsRefined);
         });
+
+        window.addEventListener("resize", function resizeCanvas() {
+            if (videoElement.srcObject) {
+                let aspect =
+                    videoElement.srcObject.getVideoTracks()[0].getSettings()
+                        .width /
+                    videoElement.srcObject.getVideoTracks()[0].getSettings()
+                        .height;
+                setupDimention(aspect);
+                threeCamera.aspect = width / height;
+                threeCamera.updateProjectionMatrix();
+                renderer.setSize(width, height);
+            }
+        });
     });
 </script>
 
 <main bind:this={main}>
-    <div
-        bind:this={container}
-        style="width:{width}px; height:{height}px; margin:{margin}px;"
-        class="container"
-    >
+    <div class="info">
+        <div class="select">
+            <label for="videoSource"><h4>Source:&nbsp;</h4></label><select
+                bind:this={videoSelect}
+            />
+        </div>
+        <h4 bind:this={fpsCounter} class="fps">FPS: {fps}</h4>
+    </div>
+    <div bind:this={container} class="container">
         <video
             bind:this={videoElement}
-            style="width:{width}px; height:{height}px;"
             class="input-video"
             autoplay
             playsinline
@@ -338,12 +423,11 @@
             <Loading />
         {/if}
     </div>
-
-    <h3 bind:this={fpsCounter} class="fps">FPS: {fps}</h3>
 </main>
 
 <style>
     main {
+        position: relative;
         width: 100%;
         height: 100%;
         display: flex;
@@ -355,19 +439,33 @@
     .container {
         position: relative;
 
-        overflow: hidden;
         border-style: solid;
         border-color: #68d2e8;
         border-width: 5px;
         border-radius: 10px;
+
+        width: 100%;
+        height: 100%;
     }
 
-    .input-video,
-    .three-canvas,
+    .input-video {
+        position: fixed;
+    }
+
     Loading {
         position: absolute;
         width: 100%;
         height: 100%;
+    }
+
+    .three-canvas,
+    .input-video {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 
     .three-canvas {
@@ -380,5 +478,32 @@
 
     .fps {
         margin: 0;
+        width: 20%;
+    }
+
+    .select {
+        position: relative;
+        z-index: 40;
+        display: flex;
+        background-color: transparent;
+        align-items: center;
+    }
+
+    .info {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 5px;
+    }
+
+    @media (min-width: 1024px) {
+        .container {
+            width: 80%;
+            height: auto;
+            aspect-ratio: 1/1;
+        }
     }
 </style>
