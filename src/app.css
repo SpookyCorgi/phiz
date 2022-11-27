@@ -51,3 +51,23 @@ select {
 option {
     padding-left: 5px;
 }
+
+button {
+    background-color: black;
+    border: 3px solid;
+    border-radius: 5px;
+    border-color: #68d2e8;
+    color: #68d2e8;
+    padding: 14px 28px;
+    margin: 18px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+button:hover {
+    background-color: #68d2e8;
+    color: white;
+}

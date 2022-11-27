@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import * as THREE from "three";
     import { FaceMesh, matrixDataToMatrix } from "@mediapipe/face_mesh/";
-    import { FACES as indices, UVS as texCoords } from "./geometry.js";
+    import { FACES as indices, UVS as texCoords } from "../data/geometry";
 
     //html elements
     let canvas, videoElement, container, main, fpsCounter, videoSelect;
@@ -28,6 +28,7 @@
         rotation: null,
         scale: null,
         matrix: null,
+        vertices: null,
     };
 
     const cameraConfig = {
@@ -305,6 +306,7 @@
         //console.log("Refine result: ", clock.getElapsedTime());
         if (geometryTransform.matrix != null) {
             let iMatrix = geometryTransform.matrix.clone().invert();
+            geometryTransform.vertices = [];
             if (results.multiFaceLandmarks.length) {
                 faceLandmarks.visible = true;
                 faceMesh.visible = true;
@@ -331,6 +333,13 @@
                     let localPos = new THREE.Vector3(x, y, z).applyMatrix4(
                         iMatrix
                     );
+
+                    geometryTransform.vertices.push(
+                        localPos.x,
+                        localPos.y,
+                        localPos.z
+                    );
+
                     faceMesh.geometry.attributes.position.setXYZ(
                         i,
                         localPos.x,
@@ -399,6 +408,10 @@
             }
         });
     });
+
+    export function calibrate() {
+        return geometryTransform;
+    }
 </script>
 
 <main bind:this={main}>
@@ -444,8 +457,9 @@
         border-width: 5px;
         border-radius: 10px;
 
-        width: 100%;
+        width: auto;
         height: 100%;
+        aspect-ratio: 1/1;
     }
 
     .input-video {

@@ -2,6 +2,14 @@
   import svelteLogo from "./assets/svelte.svg";
   import Loading from "./lib/Loading.svelte";
   import Camera from "./lib/Camera.svelte";
+  import Blendshapes from "./lib/Blendshapes.svelte";
+
+  let camera;
+  let blendshapes;
+  function calibrate() {
+    let geometryTransform = camera.calibrate();
+    blendshapes.calibrate(geometryTransform);
+  }
 </script>
 
 <svelte:head>
@@ -13,11 +21,16 @@
   />
 </svelte:head>
 <main>
-  <div class="camera">
-    <Camera />
+  <div class="container">
+    <div class="camera">
+      <Camera bind:this={camera} />
+    </div>
+    <div class="result">
+      <Blendshapes bind:this={blendshapes} />
+    </div>
   </div>
-  <div class="result">
-    <Loading />
+  <div class="control">
+    <button class="button" on:click={calibrate}> Calibrate </button>
   </div>
 </main>
 
@@ -25,6 +38,15 @@
   main {
     height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .container {
+    position: relative;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -44,8 +66,12 @@
     padding: 20px;
   }
 
+  .control {
+    padding: 20px;
+  }
+
   @media (min-width: 1024px) {
-    main {
+    .container {
       flex-direction: row;
     }
     .camera {

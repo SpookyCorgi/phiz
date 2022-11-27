@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+#3d models
+*.obj
+*.blend
+*.blend1
