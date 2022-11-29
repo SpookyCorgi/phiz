@@ -12,14 +12,22 @@
     let canvas;
     let container;
 
+    let shapeDifference = {};
+
     const cameraConfig = {
         FOV: 50,
         near: 0.1,
         far: 1000,
     };
 
+    function calculateShapes() {
+        for (const [key, value] of Object.entries(data)) {
+            shapeDifference[key] = value.map((v, i) => v - data["neutral"][i]);
+        }
+    }
+
     function setupThree() {
-        names.forEach((name, i) => {
+        Object.values(data).forEach((vertices, i) => {
             const scene = new THREE.Scene();
 
             const camera = new THREE.PerspectiveCamera(
@@ -32,7 +40,6 @@
             scene.userData.camera = camera;
 
             const geometry = new THREE.BufferGeometry();
-            const vertices = data[i];
 
             geometry.setAttribute(
                 "position",
@@ -143,25 +150,28 @@
     onMount(() => {
         setupThree();
         animate();
+        calculateShapes();
     });
 
     export function calibrate(geometryTransform) {
         if (geometryTransform.vertices != null) {
             if (generateScenes.length > 0) {
-                generateScenes.forEach((scene) => {
+                generateScenes.forEach((scene, i) => {
+                    const base = geometryTransform.vertices.slice(0, 468 * 3);
+                    let diff = Object.values(shapeDifference)[i];
+                    let sum = base.map(function (num, idx) {
+                        return num * 0.01 + diff[idx];
+                    });
+
                     scene.children[0].geometry.setAttribute(
                         "position",
-                        new THREE.BufferAttribute(
-                            Float32Array.from(geometryTransform.vertices),
-                            3
-                        )
+                        new THREE.BufferAttribute(Float32Array.from(sum), 3)
                     );
-                    scene.children[0].geometry.scale(0.01, 0.01, 0.01);
 
                     scene.children[0].geometry.attributes.position.needsUpdate = true;
                 });
             } else {
-                names.forEach((name, i) => {
+                Object.values(shapeDifference).forEach((diff, i) => {
                     const scene = new THREE.Scene();
 
                     const camera = new THREE.PerspectiveCamera(
@@ -174,16 +184,16 @@
                     scene.userData.camera = camera;
 
                     const geometry = new THREE.BufferGeometry();
-                    const vertices = geometryTransform.vertices;
+                    const base = geometryTransform.vertices.slice(0, 468 * 3);
+                    let sum = base.map(function (num, idx) {
+                        return num * 0.01 + diff[idx];
+                    });
 
                     geometry.setAttribute(
                         "position",
-                        new THREE.BufferAttribute(
-                            Float32Array.from(geometryTransform.vertices),
-                            3
-                        )
+                        new THREE.BufferAttribute(Float32Array.from(sum), 3)
                     );
-                    geometry.scale(0.01, 0.01, 0.01);
+                    //geometry.scale(0.01, 0.01, 0.01);
                     geometry.setIndex(indices);
                     geometry.computeVertexNormals();
 

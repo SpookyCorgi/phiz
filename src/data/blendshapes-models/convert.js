@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 let files = fs.readdirSync('./obj')
-let blendshapes = []
+let blendshapes = {}
 let fileNames = []
 files.forEach(d => {
     let file = fs.readFileSync('./obj/' + d, 'utf8')
@@ -14,9 +14,9 @@ files.forEach(d => {
             i += 3;
         }
     }
-    blendshapes.push(vertices)
-
-    fileNames.push(d.split('.')[0])
+    let name = d.split('.')[0]
+    blendshapes[name] = vertices
+    fileNames.push(name)
 })
 
 let strBlendShapes = JSON.stringify(blendshapes);
