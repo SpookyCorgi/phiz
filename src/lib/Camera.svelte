@@ -2,14 +2,15 @@
     import Loading from "./Loading.svelte";
     import { onMount } from "svelte";
     import * as THREE from "three";
+    import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
     import { FaceMesh, matrixDataToMatrix } from "@mediapipe/face_mesh/";
     import { FACES as indices, UVS as texCoords } from "../data/geometry";
 
     //html elements
-    let canvas, videoElement, container, main, fpsCounter, videoSelect;
+    let canvas, videoElement, videoContainer, main, fpsCounter, videoSelect;
     let margin = 10;
 
-    let scene, renderer, clock, threeCamera;
+    let scene, renderer, clock, threeCamera, controls;
     let faceLandmarks = new THREE.Group();
     let faceMesh;
     let width, height;
@@ -19,16 +20,17 @@
 
     let load = false;
 
+    const verticesCount = 468;
+
     let fps = 0;
     const projectZDiff = 0.01;
-    let geometryTransform = {
-        zA: 0,
-        zB: 0,
+    let faceGeometry = {
         position: null,
         rotation: null,
         scale: null,
         matrix: null,
         vertices: null,
+        localVertices: null,
     };
 
     const cameraConfig = {
@@ -153,7 +155,7 @@
         //add landmark spheres
         let points = [];
 
-        for (let i = 0; i < 478; i++) {
+        for (let i = 0; i < verticesCount; i++) {
             const geometry = new THREE.SphereGeometry(0.15, 6, 3);
             const sphere = new THREE.Mesh(
                 geometry,
@@ -176,6 +178,11 @@
         });
         faceMesh = new THREE.Mesh(buffergeometry, bufferMaterial);
         scene.add(faceMesh);
+
+        controls = new OrbitControls(threeCamera, canvas);
+        controls.target.set(0, 0, -30);
+        threeCamera.position.set(0, 0, 0);
+        controls.update();
     }
 
     function videoFrame() {
@@ -251,90 +258,64 @@
             const transformMatrix = new THREE.Matrix4().fromArray(mArr);
 
             //get local vertices position and 2D projection position
-            let landmarks2D = results.multiFaceLandmarks[0];
-            let v = results.multiFaceGeometry[0]
+            let localVertices = results.multiFaceGeometry[0]
                 .getMesh()
                 .getVertexBufferList();
-            let vCount = v.length / 5;
-
-            let aSum = [];
-            let bSum = [];
-            for (let i = 0; i < vCount; i++) {
-                //calculate vertex world position
-                let vPos = new THREE.Vector3(
-                    v[5 * i],
-                    v[5 * i + 1],
-                    v[5 * i + 2]
+            faceGeometry.localVertices = [];
+            for (let i = 0; i < verticesCount; i++) {
+                let v = new THREE.Vector3(
+                    localVertices[i * 5],
+                    localVertices[i * 5 + 1],
+                    localVertices[i * 5 + 2]
                 );
-                let vPosNext = new THREE.Vector3(
-                    v[(5 * (i + 1)) % vCount],
-                    v[((5 * (i + 1)) % vCount) + 1],
-                    v[((5 * (i + 1)) % vCount) + 2]
-                );
-                vPos.applyMatrix4(transformMatrix);
-                vPosNext.applyMatrix4(transformMatrix);
-
-                //calculate linear transform y = ax + b between projection and world position
-                let diff = landmarks2D[(i + 1) % vCount].z - landmarks2D[i].z;
-
-                if (Math.abs(diff) > projectZDiff) {
-                    let a =
-                        (vPosNext.z - vPos.z) /
-                        (landmarks2D[(i + 1) % vCount].z - landmarks2D[i].z);
-                    let b = vPos.z - landmarks2D[i].z * a;
-
-                    aSum.push(a);
-                    bSum.push(b);
-                }
+                v.applyMatrix4(transformMatrix);
+                faceGeometry.localVertices.push(v);
             }
-            //store to global for refined result
-            geometryTransform.zA = aSum.reduce((a, b) => a + b) / aSum.length;
-            geometryTransform.zB = bSum.reduce((a, b) => a + b) / bSum.length;
-            geometryTransform.position =
-                new THREE.Vector3().setFromMatrixPosition(transformMatrix);
-            geometryTransform.rotation =
-                new THREE.Quaternion().setFromRotationMatrix(transformMatrix);
-            geometryTransform.scale = new THREE.Vector3().setFromMatrixScale(
+
+            faceGeometry.position = new THREE.Vector3().setFromMatrixPosition(
                 transformMatrix
             );
-            geometryTransform.matrix = transformMatrix;
+            faceGeometry.rotation =
+                new THREE.Quaternion().setFromRotationMatrix(transformMatrix);
+            faceGeometry.scale = new THREE.Vector3().setFromMatrixScale(
+                transformMatrix
+            );
+            faceGeometry.matrix = transformMatrix;
         } else {
         }
     }
 
     function onResultsRefined(results) {
         //console.log("Refine result: ", clock.getElapsedTime());
-        if (geometryTransform.matrix != null) {
-            let iMatrix = geometryTransform.matrix.clone().invert();
-            geometryTransform.vertices = [];
+        if (faceGeometry.matrix != null) {
+            let iMatrix = faceGeometry.matrix.clone().invert();
+            faceGeometry.vertices = [];
+
             if (results.multiFaceLandmarks.length) {
                 faceLandmarks.visible = true;
                 faceMesh.visible = true;
-                results.multiFaceLandmarks[0].forEach((landmark, i) => {
-                    //get point world position
-                    let z =
-                        landmark.z * geometryTransform.zA +
-                        geometryTransform.zB;
+                let landmarks = results.multiFaceLandmarks[0];
+
+                for (let i = 0; i < verticesCount; i++) {
+                    let z = faceGeometry.localVertices[i].z;
                     let x =
-                        (((0.5 - landmark.x) *
+                        (((0.5 - landmarks[i].x) *
                             (Math.tan((cameraConfig.FOV / 2 / 180) * Math.PI) *
                                 2)) /
                             height) *
                         width *
                         z;
                     let y =
-                        (landmark.y - 0.5) *
+                        (landmarks[i].y - 0.5) *
                         (Math.tan((cameraConfig.FOV / 2 / 180) * Math.PI) * 2) *
                         z;
-
                     faceLandmarks.children[i].position.set(x, y, z);
 
                     //get local position
-                    let localPos = new THREE.Vector3(x, y, z).applyMatrix4(
-                        iMatrix
-                    );
+                    let localPos = new THREE.Vector3(x, y, z);
+                    localPos.applyMatrix4(iMatrix);
 
-                    geometryTransform.vertices.push(
+                    faceGeometry.vertices.push(
                         localPos.x,
                         localPos.y,
                         localPos.z
@@ -347,20 +328,18 @@
                         localPos.z
                     );
                     faceMesh.geometry.attributes.position.needsUpdate = true;
-                });
-                faceMesh.rotation.setFromRotationMatrix(
-                    geometryTransform.matrix
-                );
-                faceMesh.position.setFromMatrixPosition(
-                    geometryTransform.matrix
-                );
-                faceMesh.scale.setFromMatrixScale(geometryTransform.matrix);
+                }
+                faceMesh.rotation.setFromRotationMatrix(faceGeometry.matrix);
+                faceMesh.position.setFromMatrixPosition(faceGeometry.matrix);
+                faceMesh.scale.setFromMatrixScale(faceGeometry.matrix);
             } else {
                 faceLandmarks.visible = false;
                 faceMesh.visible = false;
             }
 
             load = true;
+            controls.update();
+
             renderer.render(scene, threeCamera);
         } else {
             faceLandmarks.visible = false;
@@ -369,12 +348,13 @@
     }
 
     function setupDimention(aspect) {
-        let containerAspect = container.clientWidth / container.clientHeight;
+        let containerAspect =
+            videoContainer.clientWidth / videoContainer.clientHeight;
         if (aspect > containerAspect) {
-            width = container.clientWidth;
+            width = videoContainer.clientWidth;
             height = width / aspect;
         } else {
-            height = container.clientHeight;
+            height = videoContainer.clientHeight;
             width = height * aspect;
         }
     }
@@ -409,32 +389,40 @@
         });
     });
 
-    export function calibrate() {
-        return geometryTransform;
+    export function getFaceGeometry() {
+        return faceGeometry;
     }
 </script>
 
 <main bind:this={main}>
-    <div class="info">
-        <div class="select">
-            <label for="videoSource"><h4>Source:&nbsp;</h4></label><select
-                bind:this={videoSelect}
-            />
+    <div class="container">
+        <div class="content">
+            <div class="info">
+                <div class="select">
+                    <label for="videoSource"><h5>Source:&nbsp;</h5></label
+                    ><select bind:this={videoSelect} class="select-item" />
+                </div>
+                <h5 bind:this={fpsCounter} class="fps">FPS: {fps}</h5>
+            </div>
+            <div bind:this={videoContainer} class="videoContainer">
+                <video
+                    bind:this={videoElement}
+                    class="input-video"
+                    autoplay
+                    playsinline
+                    muted
+                />
+                <canvas bind:this={canvas} class="three-canvas" />
+                {#if !load}
+                    <Loading />
+                {/if}
+            </div>
         </div>
-        <h4 bind:this={fpsCounter} class="fps">FPS: {fps}</h4>
-    </div>
-    <div bind:this={container} class="container">
-        <video
-            bind:this={videoElement}
-            class="input-video"
-            autoplay
-            playsinline
-            muted
-        />
-        <canvas bind:this={canvas} class="three-canvas" />
-        {#if !load}
-            <Loading />
-        {/if}
+
+        <div class="output">
+            <div class="geometry" />
+            <div class="texture" />
+        </div>
     </div>
 </main>
 
@@ -444,22 +432,71 @@
         width: 100%;
         height: 100%;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
     }
 
     .container {
         position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
 
         border-style: solid;
         border-color: #68d2e8;
-        border-width: 5px;
+        border-width: 2px;
         border-radius: 10px;
 
-        width: auto;
+        padding: 8px;
+    }
+
+    .videoContainer {
+        position: relative;
+
+        width: 100%;
         height: 100%;
-        aspect-ratio: 1/1;
+    }
+
+    .output {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+    }
+
+    .geometry {
+        width: 100%;
+        height: 100%;
+
+        border-style: solid;
+        border-color: #68d2e8;
+        border-width: 2px;
+        border-radius: 10px;
+    }
+
+    .texture {
+        width: 100%;
+        height: 100%;
+
+        border-style: solid;
+        border-color: #68d2e8;
+        border-width: 2px;
+        border-radius: 10px;
     }
 
     .input-video {
@@ -470,6 +507,7 @@
         position: absolute;
         width: 100%;
         height: 100%;
+        z-index: 20;
     }
 
     .three-canvas,
@@ -486,13 +524,8 @@
         z-index: 10;
     }
 
-    Loading {
-        z-index: 20;
-    }
-
     .fps {
         margin: 0;
-        width: 20%;
     }
 
     .select {
@@ -503,21 +536,33 @@
         align-items: center;
     }
 
+    .select-item {
+        width: 100%;
+    }
+
     .info {
         width: 100%;
         display: flex;
-        align-items: center;
-        gap: 20px;
-        align-items: center;
-        justify-content: center;
+        flex-direction: column;
         padding-bottom: 5px;
     }
 
     @media (min-width: 1024px) {
+        .output {
+            flex-direction: row;
+        }
+
         .container {
-            width: 80%;
-            height: auto;
+            width: auto;
+            height: 100%;
             aspect-ratio: 1/1;
+            flex-direction: column;
+        }
+
+        .info {
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
         }
     }
 </style>

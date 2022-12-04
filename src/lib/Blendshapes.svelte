@@ -11,6 +11,7 @@
     let renderer;
     let canvas;
     let container;
+    let customBlendshapes = [];
 
     let shapeDifference = {};
 
@@ -48,8 +49,27 @@
             geometry.setIndex(indices);
             geometry.computeVertexNormals();
 
+            let diff = Object.values(shapeDifference)[i];
+
+            let colors = [];
+            for (let j = 0; j < diff.length / 3; j++) {
+                let x = diff[j * 3];
+                let y = diff[j * 3 + 1];
+                let z = diff[j * 3 + 2];
+                let color = new THREE.Color(0xffffff);
+                if (x * x + y * y + z * z > 0.000001) {
+                    color = new THREE.Color(0x68d2e8);
+                }
+                colors.push(color.r, color.g, color.b);
+            }
+            geometry.setAttribute(
+                "color",
+                new THREE.Float32BufferAttribute(colors, 3)
+            );
+
             const material = new THREE.MeshStandardMaterial({
-                color: new THREE.Color(0x68d2e8),
+                //color: new THREE.Color(0x68d2e8),
+                vertexColors: true,
             });
             const mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
@@ -148,10 +168,14 @@
     }
 
     onMount(() => {
+        calculateShapes();
         setupThree();
         animate();
-        calculateShapes();
     });
+
+    export function getCustomBlendshapes() {
+        return customBlendshapes;
+    }
 
     export function calibrate(geometryTransform) {
         if (geometryTransform.vertices != null) {
@@ -162,6 +186,7 @@
                     let sum = base.map(function (num, idx) {
                         return num * 0.01 + diff[idx];
                     });
+                    customBlendshapes[i] = sum;
 
                     scene.children[0].geometry.setAttribute(
                         "position",
@@ -188,6 +213,7 @@
                     let sum = base.map(function (num, idx) {
                         return num * 0.01 + diff[idx];
                     });
+                    customBlendshapes.push(sum);
 
                     geometry.setAttribute(
                         "position",
@@ -239,13 +265,19 @@
         display: flex;
         align-items: center;
         justify-content: center;
+
+        border-style: solid;
+        border-color: #68d2e8;
+        border-width: 2px;
+        border-radius: 10px;
+
+        padding: 8px;
     }
 
     .container {
         position: relative;
         width: 100%;
-        height: auto;
-        aspect-ratio: 1;
+        height: 100%;
         overflow-y: scroll;
         overflow-x: hidden;
     }
@@ -268,6 +300,7 @@
     .canvas-container {
         position: relative;
         width: 100%;
+        height: 100%;
 
         display: flex;
         flex-direction: row;
@@ -290,10 +323,5 @@
     }
 
     @media (min-width: 1024px) {
-        .container {
-            width: 80%;
-            height: auto;
-            aspect-ratio: 1/1;
-        }
     }
 </style>

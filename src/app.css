@@ -13,6 +13,7 @@ body {
 }
 
 #app {
+    position: relative;
     width: 100%;
     height: 100%;
 }
@@ -59,7 +60,6 @@ button {
     border-color: #68d2e8;
     color: #68d2e8;
     padding: 14px 28px;
-    margin: 18px;
     font-size: 1em;
     font-weight: bold;
     cursor: pointer;
@@ -70,4 +70,26 @@ button {
 button:hover {
     background-color: #68d2e8;
     color: white;
+}
+
+::-webkit-scrollbar {
+    background: #000000;
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #222222;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #68d2e8;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #9dd8e4;
 }
