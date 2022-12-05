@@ -11,8 +11,9 @@
   let regression;
 
   function calibrate() {
-    let geometryTransform = camera.getFaceGeometry();
-    blendshapes.calibrate(geometryTransform);
+    camera.getUVTexture();
+    let faceGeometry = camera.getFaceGeometry();
+    blendshapes.calibrate(faceGeometry);
     let customBlendshapes = blendshapes.getCustomBlendshapes();
     //regression.createCustomMesh(geometryTransform.vertices, customBlendshapes);
   }
@@ -40,7 +41,7 @@
   />
 </svelte:head>
 <main>
-  <h1 class="title">Face Cap</h1>
+  <h1 class="title text-headline-3">INEEDSLEEP</h1>
   <div class="container">
     <div class="camera">
       <Camera bind:this={camera} />
@@ -73,7 +74,6 @@
   .title {
     text-align: center;
     width: 100%;
-    font-size: xx-large;
   }
   .container {
     position: relative;
@@ -111,7 +111,7 @@
     padding: 16px;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1024px) and (min-aspect-ratio: 1/1) {
     .container {
       flex-direction: row;
       max-height: 1024px;

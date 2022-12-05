@@ -1,5 +1,5 @@
 /*code based on https://github.com/marcofugaro/three-projected-material*/
-import * as THREE from 'https://cdn.skypack.dev/three@v0.128';
+import * as THREE from "three";
 
 export default class ProjectedMaterial extends THREE.ShaderMaterial {
   constructor({ camera, texture, color = 0xffffff, opacity = 1.0, ...options } = {}) {

@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@mediapipe/face_mesh": "^0.4.1633559619",
+    "homography": "^1.8.0",
     "three": "^0.146.0"
   }
 }

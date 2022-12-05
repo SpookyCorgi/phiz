@@ -58,7 +58,7 @@
                 let z = diff[j * 3 + 2];
                 let color = new THREE.Color(0xffffff);
                 if (x * x + y * y + z * z > 0.000001) {
-                    color = new THREE.Color(0x68d2e8);
+                    color = new THREE.Color(0x4db6ac);
                 }
                 colors.push(color.r, color.g, color.b);
             }
@@ -177,11 +177,11 @@
         return customBlendshapes;
     }
 
-    export function calibrate(geometryTransform) {
-        if (geometryTransform.vertices != null) {
+    export function calibrate(faceGeometry) {
+        if (faceGeometry.vertices != null) {
             if (generateScenes.length > 0) {
                 generateScenes.forEach((scene, i) => {
-                    const base = geometryTransform.vertices.slice(0, 468 * 3);
+                    const base = faceGeometry.vertices.slice(0, 468 * 3);
                     let diff = Object.values(shapeDifference)[i];
                     let sum = base.map(function (num, idx) {
                         return num * 0.01 + diff[idx];
@@ -209,7 +209,7 @@
                     scene.userData.camera = camera;
 
                     const geometry = new THREE.BufferGeometry();
-                    const base = geometryTransform.vertices.slice(0, 468 * 3);
+                    const base = faceGeometry.vertices.slice(0, 468 * 3);
                     let sum = base.map(function (num, idx) {
                         return num * 0.01 + diff[idx];
                     });
@@ -219,12 +219,20 @@
                         "position",
                         new THREE.BufferAttribute(Float32Array.from(sum), 3)
                     );
-                    //geometry.scale(0.01, 0.01, 0.01);
                     geometry.setIndex(indices);
+                    let uv = [];
+                    texCoords.forEach((texCoord) => {
+                        uv.push(texCoord[0], 1 - texCoord[1]);
+                    });
+                    geometry.setAttribute(
+                        "uv",
+                        new THREE.BufferAttribute(new Float32Array(uv), 2)
+                    );
                     geometry.computeVertexNormals();
 
                     const material = new THREE.MeshStandardMaterial({
-                        color: new THREE.Color(0x68d2e8),
+                        color: new THREE.Color(0xffffff),
+                        map: new THREE.CanvasTexture(faceGeometry.texture),
                     });
                     const mesh = new THREE.Mesh(geometry, material);
                     scene.add(mesh);
@@ -245,7 +253,7 @@
         <div class="shapes">
             {#each names as shapes, index}
                 <div class="shape-container">
-                    <h5>{shapes}</h5>
+                    <h5 class="text-body">{shapes}</h5>
                     <div class="canvas-container">
                         <div bind:this={referenceCanvas[index]} class="grid" />
                         <div bind:this={generateCanvas[index]} class="grid" />
@@ -266,12 +274,11 @@
         align-items: center;
         justify-content: center;
 
-        border-style: solid;
-        border-color: #68d2e8;
-        border-width: 2px;
-        border-radius: 10px;
+        padding: 16px;
+        border-radius: 16px;
 
-        padding: 8px;
+        background-image: var(--gradient-background);
+        box-shadow: var(--shadow-1);
     }
 
     .container {
@@ -306,9 +313,9 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: 20px;
-        padding-left: 20px;
-        padding-right: 20px;
+        gap: 16px;
+        padding-left: 16px;
+        padding-right: 16px;
     }
 
     .grid {
@@ -322,6 +329,6 @@
         height: 100%;
     }
 
-    @media (min-width: 1024px) {
+    @media (min-width: 1024px) and (min-aspect-ratio: 1/1) {
     }
 </style>
