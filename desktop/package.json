@@ -2,7 +2,7 @@
   "name": "desktop",
   "version": "1.0.0",
   "description": "",
-  "main": "main.ts",
+  "main": "./src/main.js",
   "scripts": {
     "dev": "electron ."
   },
@@ -11,5 +11,6 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^22.0.0"
-  }
+  },
+  "dependencies": {}
 }

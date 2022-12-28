@@ -5,6 +5,8 @@
 	import { setupCamera, getDeviceInfos } from './camera';
 	import { startTracking } from './tracking';
 	import { Peer } from 'peerjs';
+	import type {DataConnection} from 'peerjs';
+	import { page } from '$app/stores';
 
 	interface Shape {
 		name: string;
@@ -14,17 +16,39 @@
 	let videoElement: HTMLVideoElement;
 	let videoSelect: HTMLSelectElement;
 	let deviceInfos: MediaDeviceInfo[] = [];
+
+	let connectionLink: string;
+	let dataConnection : DataConnection|null = null;
 	let blendshapes: Shape[] = [];
 
 	function onBlendshapeResult(result: Nullable<FaceTrackerResult>) {
 		if (result == null) {
 			return;
 		}
+		let arrFloat: number[] = [];
 		blendshapes = [];
 		for (const [name, value] of result.blendshapes) {
-			const fixedValue = parseFloat(value.toFixed(2));
-			blendshapes.push({ name: name, value: fixedValue });
+			let fixedValue=Math.round(value *100 )
+			blendshapes.push({ name: name, value: fixedValue/100 });
+			arrFloat.push(fixedValue)
 		}
+
+		let data = new Uint8Array(arrFloat);
+
+		if (dataConnection != null) {
+			dataConnection.send(data);
+			console.log('sent', data)
+		}
+	}
+
+	function copyLink(){
+		navigator.clipboard.writeText(connectionLink).then(
+			()=>{
+				alert('Copied to clipboard')
+				}	,
+			()=>{}
+		)
+
 	}
 
 	onMount(() => {
@@ -41,18 +65,20 @@
 			startTracking(videoElement, onBlendshapeResult);
 
 			let peer = new Peer({ host: '/', port: 9000, path: '/' });
+			//let peer = new Peer();
 			peer.on('open', function (id) {
+				let url = new URL($page.url.origin);
+				url.port = ''
+				connectionLink = url.toString()+'?id='+id;
 				console.log('My peer ID is: ' + id);
 			});
 			peer.on('connection', function (conn) {
+				dataConnection = conn
 				conn.on('open', function () {
 					// Receive messages
 					conn.on('data', function (data) {
 						console.log('Received', data);
 					});
-
-					// Send messages
-					conn.send('Hello!');
 				});
 			});
 		});
@@ -71,6 +97,14 @@
 </script>
 
 <main>
+	<div id="videoSource">
+		<label for="videoSource"><h3 class="text-body">Source:&nbsp;</h3></label>
+		<select bind:this={videoSelect} class="select-item">
+			{#each deviceInfos as device}
+				<option value={device.deviceId} kind="videoinput">{device.label}</option>
+			{/each}
+		</select>
+	</div>
 	<div id="graphics">
 		<div id="videoContainer">
 			<video autoplay playsinline bind:this={videoElement} id="videoElement">
@@ -78,14 +112,6 @@
 			</video>
 			<div id="overlay">
 				<div id="rectangle" class="rect" style="display: none;" />
-			</div>
-			<div id="videoSource">
-				<label for="videoSource"><h3 class="text-body">Source:&nbsp;</h3></label>
-				<select bind:this={videoSelect} class="select-item">
-					{#each deviceInfos as device}
-						<option value={device.deviceId} kind="videoinput">{device.label}</option>
-					{/each}
-				</select>
 			</div>
 		</div>
 
@@ -95,6 +121,11 @@
 			{/each}
 		</div>
 	</div>
+
+	<div id="link-info">
+		<h3 id="link-description">Use the link to connect to this page. Click to copy.</h3>
+		<h3 class="link" on:click={copyLink} on:keypress={copyLink}>{connectionLink}</h3>
+	</div>
 </main>
 
 <style>
@@ -102,11 +133,15 @@
 		position: relative;
 		width: 100%;
 		height: 100%;
+		display: flex; 
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 	}
 	#graphics {
 		position: relative;
 		width: 100%;
-		height: 100%;
+		height: 50%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -139,8 +174,12 @@
 	}
 
 	#videoSource {
-		position: absolute;
-		top: 0;
+		width:100%;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: start;
+		padding-left: 16px;
 	}
 
 	#result {
@@ -157,12 +196,42 @@
 		overflow-y: scroll;
 	}
 
+	#link-info{
+		width: 100%;
+		padding-left: 16px;
+
+	}
+
+	#link-description{
+		padding-left: 8px;
+	}
+	.link{
+		cursor: copy;
+		background-color: var(--secondary-background);
+		padding: 8px;
+	}
+
+	.link:hover{
+		color: var(--font-color-hover);
+	}
 	@media (min-width: 768px) {
 		#graphics {
 			width: 100%;
 			display: flex;
 			flex-direction: row;
 			justify-content: center;
+		}
+
+		#result{
+			width: 33%;
+			height: 100%;
+			aspect-ratio: 2/3;
+		}
+
+		#videoContainer {
+			width: 66%;
+			height: 100%;
+			aspect-ratio: 4/3;
 		}
 	}
 </style>
