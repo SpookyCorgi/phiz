@@ -45,7 +45,9 @@
 	}
 
 	function createPeer(host: string, peerId: string) {
-		let peer = new Peer({ host: host, port: 9000, path: '/' });
+		//let peer = new Peer({ host: host, port: 9000, path: '/' });
+		//use default server for prototyping
+		let peer = new Peer();
 		peer.on('open', function (id) {
 			connectPeer(peer, peerId);
 			setStatus(`Connected to signalling server.\nMy id : ${id}\r\n`);
@@ -63,6 +65,9 @@
 		conn.on('open', function () {
 			// here you have conn.id
 			setStatus(`Connected to peer\nPeer id : ${id}!`);
+			if (window.electron) {
+				window.electron.send('open-osc-server');
+			}
 		});
 		conn.on('data', function (data: unknown) {
 			if (data instanceof Object) {
@@ -76,8 +81,13 @@
 					if (second && hundredth) {
 						latency = (secondNow * 100 + hundredthNow - second * 100 - hundredth) * 10;
 					}
-					blendshapesValue = arr;
+
 					packageCount++;
+					if (window.electron) {
+						window.electron.send('set-blendshapes', [blendshapesName, arr]);
+					}
+
+					blendshapesValue = arr;
 				}
 			}
 		});

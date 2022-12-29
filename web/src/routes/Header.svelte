@@ -1,26 +1,24 @@
 <script>
 	import { page } from '$app/stores';
+	import { base } from "$app/paths";
 	import logo from '$lib/images/logo.svg';
 	import github from '$lib/images/github.svg';
 </script>
 
 <header>
 	<div class="corner">
-		<a href="https://kit.svelte.dev">
-			<img src={logo} alt="SvelteKit" />
+		<a href="https://jameslee.ninja">
+			<img src={logo} alt="SpookyCorgi" />
 		</a>
 	</div>
 
 	<nav>
 		<ul>
 			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Home</a>
-			</li>
-			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
-				<a href="/about">About</a>
+				<a href="{base}/">Home</a>
 			</li>
 			<li aria-current={$page.url.pathname.startsWith('/blendshape') ? 'page' : undefined}>
-				<a href="/blendshape">Blendshape</a>
+				<a href="{base}/blendshape">Blendshape</a>
 			</li>
 		</ul>
 	</nav>

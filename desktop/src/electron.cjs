@@ -3,6 +3,7 @@ const contextMenu = require('electron-context-menu');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const serve = require('electron-serve');
 const path = require('path');
+const OSC = require('osc-js');
 
 try {
 	require('electron-reloader')(module);
@@ -14,6 +15,7 @@ const serveURL = serve({ directory: '.' });
 const port = process.env.PORT || 5000;
 const dev = !app.isPackaged;
 let mainWindow;
+let oscServer;
 
 function createWindow () {
 	let windowState = windowStateManager({
@@ -87,7 +89,10 @@ function createMainWindow () {
 
 	if (dev) loadVite(port);
 	else serveURL(mainWindow);
+
 }
+
+
 
 app.once('ready', createMainWindow);
 app.on('activate', () => {
@@ -101,4 +106,23 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('to-main', (event, count) => {
 	return mainWindow.webContents.send('from-main', `next count is ${count + 1}`);
+});
+
+ipcMain.on('set-blendshapes', (event, content) => {
+	let [names, values] = content;
+	names.forEach((name, i) => {
+		let message = new OSC.Message(`/facecap/${name}`, values[i]);
+		oscServer.send(message);
+	});
+})
+
+ipcMain.on('open-osc-server', (event, title) => {
+	oscServer = new OSC({
+		plugin: new OSC.DatagramPlugin({
+			send: {
+				port: 41235,
+			}
+		})
+	});
+	oscServer.open(); // connect by default to ws://localhost:8080
 });
