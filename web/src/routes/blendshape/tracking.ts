@@ -7,14 +7,14 @@ import {
     FaceTrackerResultSerializer,
 } from "@0xalter/mocap4face";
 
-export function startTracking (videoElement: HTMLVideoElement, callback: Function) {
+export function startTracking (videoElement: HTMLVideoElement, callback: Function, fpsCallback: Function) {
     const context = new ApplicationContext(window.location.href)
     const fs = new ResourceFileSystem(context)
     const fps = new FPS(1)
     // uncomment for de/serialization example bellow
-    const serializer = FaceTrackerResultSerializer.create()
-    const deserializer = FaceTrackerResultDeserializer.create(serializer.serializationFormat)
-    console.log(deserializer)
+    // const serializer = FaceTrackerResultSerializer.create()
+    // const deserializer = FaceTrackerResultDeserializer.create(serializer.serializationFormat)
+    // console.log(deserializer)
     const asyncTracker = FaceTracker.createVideoTracker(fs)
         .then(tracker => {
             requestAnimationFrame(track);
@@ -38,6 +38,10 @@ export function startTracking (videoElement: HTMLVideoElement, callback: Functio
             return
         }
 
+        fps.tick((currentFps) => {
+            fpsCallback(currentFps)
+        })
+
         // Face tracking
         const lastResult = tracker.track(videoElement)
         //Serialize/deserialize tracking result for e.g. sending over WebRTC, use TrackerResultAvatarController for that
@@ -57,6 +61,8 @@ export function startTracking (videoElement: HTMLVideoElement, callback: Functio
             callback(null)
             return // No face found or video frame could not be processed
         }
+
+
         callback(lastResult)
     }
 }
