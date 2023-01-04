@@ -1,0 +1,7 @@
+{
+    "name": "phiz",
+    "workspaces": [
+        "app",
+        "site"
+    ]
+}

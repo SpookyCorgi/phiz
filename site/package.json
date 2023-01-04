@@ -1,6 +1,7 @@
 {
-	"name": "my-app",
+	"name": "phiz-site",
 	"version": "0.0.1",
+	"type": "module",
 	"scripts": {
 		"dev": "vite dev --host",
 		"build": "vite build",
@@ -18,6 +19,7 @@
 		"@sveltejs/adapter-static": "1.0.0-next.50",
 		"@sveltejs/kit": "^1.0.0",
 		"@types/cookie": "^0.5.1",
+		"@types/node": "^18.11.18",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"eslint": "^8.28.0",
@@ -31,7 +33,6 @@
 		"typescript": "^4.9.3",
 		"vite": "^4.0.0"
 	},
-	"type": "module",
 	"dependencies": {
 		"@0xalter/mocap4face": "file:src/lib/@0xalter/mocap4face",
 		"@fontsource/rubik": "^4.5.13",

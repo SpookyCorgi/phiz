@@ -14,6 +14,16 @@ const config = {
 		// 	},
 		// },
 	],
+	optimizeDeps: {
+		include: [
+			"src/lib/@0xalter/mocap4face"
+		]
+	},
+	build: {
+		commonjsOptions: {
+			include: [/@0xalter/, /node_modules/],
+		},
+	},
 };
 
 export default config;
