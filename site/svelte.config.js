@@ -26,10 +26,10 @@ const config = {
 			// instead of creating a single one for the entire app
 			split: false
 		}),
-		paths: {
-			// change below to your repo name
-			base: process.env.NODE_ENV === "production" ? "/face-capture" : "",
-		}
+		// paths: {
+		// 	// change below to your repo name
+		// 	base: process.env.NODE_ENV === "production" ? "/face-capture" : "",
+		// }
 	}
 };
 
