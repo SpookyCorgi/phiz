@@ -1,6 +1,6 @@
 {
-	"appId": "com.example.app",
-	"productName": "Svelte Electron",
+	"appId": "com.spookycorgi.phiz",
+	"productName": "Phiz App",
 	"directories": {
 		"output": "dist"
 	},
