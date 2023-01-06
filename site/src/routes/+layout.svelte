@@ -1,54 +1,48 @@
 <script>
-	import Header from './Header.svelte';
-	import './styles.css';
+	import '../theme.postcss';
+	import '@skeletonlabs/skeleton/styles/all.css';
+	import '../app.postcss';
+	import { AppShell } from '@skeletonlabs/skeleton';
+	import { AppBar } from '@skeletonlabs/skeleton';
+	import { Divider } from '@skeletonlabs/skeleton';
+	import { Toast, toastStore } from '@skeletonlabs/skeleton';
+
+	import LightSwitch from '$lib/utilities/LightSwitch/LightSwitch.svelte';
+	import logo from '$lib/images/logo.svg';
 </script>
 
 <div class="app">
-	<Header />
+	<AppShell>
+		<svelte:fragment slot="header">
+			<AppBar>
+				<svelte:fragment slot="lead">
+					<a href="/" title="Go to Homepage">
+						<span class="hidden sm:flex flex-row items-center">
+							<img src={logo} alt="Logo" />
+							<span class="text-4xl pl-2">Phiz</span>
+							<!-- <h1 class="pl-2">PHIZ</h1> -->
+						</span>
+						<span class="inline sm:hidden">
+							<img src={logo} alt="Logo" />
+						</span>
+					</a>
+				</svelte:fragment>
+				<svelte:fragment slot="trail">
+					<a href="/blendshape"> Blendshapes </a>
+					<a href="/blendshape"> Facemesh</a>
+					<Divider vertical={true} borderWidth="border-l" />
+					<LightSwitch />
+				</svelte:fragment>
+			</AppBar>
+		</svelte:fragment>
 
-	<main>
+		<!-- Router Slot -->
 		<slot />
-	</main>
-
-	<footer>
-		<p>Such a majestic sheep</p>
-	</footer>
+		<!-- ---- / ---- -->
+		<!-- <svelte:fragment slot="footer">Footer</svelte:fragment> -->
+	</AppShell>
+	<Toast />
 </div>
 
 <style>
-	.app {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
-
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		height: 100%;
-		max-width: 64rem;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
-
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 12px;
-	}
-
-	footer a {
-		font-weight: bold;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
-	}
 </style>
