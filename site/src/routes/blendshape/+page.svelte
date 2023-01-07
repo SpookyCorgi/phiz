@@ -1,6 +1,6 @@
 <script lang="ts">
 	//types
-	import type { FaceTrackerResult, Nullable, Rect } from '$lib/@0xalter/mocap4face/advanced';
+	import type { FaceTrackerResult, Nullable } from '$lib/@0xalter/mocap4face/advanced';
 	import type { DataConnection } from 'peerjs';
 	//svelte
 	import { onMount } from 'svelte';
@@ -12,6 +12,7 @@
 
 	import { Toast, toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
+	import { RangeSlider } from '@skeletonlabs/skeleton';
 
 	//types
 	interface Shape {
@@ -28,6 +29,17 @@
 	let overlay: HTMLDivElement;
 	let rectangle: HTMLDivElement;
 	let fps: string = '';
+
+	let smoothBin: number = 0.2;
+	const smoothQueueSize: number = 60;
+	let smoothFrames: number = 0;
+
+	//Shape frame
+	interface ShapeFrame {
+		shapes: Shape[];
+		time: number;
+	}
+	let storedData: ShapeFrame[] = [];
 
 	function setFaceRectangle(result: FaceTrackerResult) {
 		const rect = result.faceRectangle;
@@ -72,7 +84,7 @@
 		rectangle.style.height = (rect.height * scale).toString() + 'px';
 	}
 
-	function getTime() {
+	function getTrimmedTime() {
 		const date = new Date();
 		let time = date.getTime();
 		let second = Math.floor(time / 1000) - Math.floor(time / 100000) * 100;
@@ -82,6 +94,42 @@
 			hundredth = 0;
 		}
 		return [second, hundredth];
+	}
+
+	function dataSmoother(current: ShapeFrame): ShapeFrame {
+		//add current data to storedData
+		storedData.push(current);
+		//remove oldest data if storedData is longer than queue size
+		if (storedData.length > smoothQueueSize) {
+			storedData.shift();
+		}
+		//calculate average
+		let average: ShapeFrame = {
+			shapes: [],
+			time: current.time
+		};
+		//for all shapes
+		for (let i = 0; i < current.shapes.length; i++) {
+			let sum = 0;
+			let j = storedData.length - 1;
+			//go through all data within the time frame
+			while (j >= 0 && current.time - storedData[j].time < 1000 * smoothBin) {
+				sum += storedData[j].shapes[i].value;
+				j--;
+			}
+			let count = storedData.length - j - 1;
+			//if no data is available, use the current value
+			if (count === 0) {
+				sum = current.shapes[i].value;
+				count = 1;
+			}
+			smoothFrames = count;
+			average.shapes.push({
+				name: current.shapes[i].name,
+				value: Math.round((sum / count) * 100) / 100
+			});
+		}
+		return average;
 	}
 
 	//callback for face tracking
@@ -94,19 +142,27 @@
 		}
 		setFaceRectangle(result);
 
-		blendshapes = [];
-		let arrFloat: number[] = [];
+		//get blendshape values
+		let values: Shape[] = [];
 		for (const [name, value] of result.blendshapes) {
-			let fixedValue = Math.round(value * 100);
-			blendshapes.push({ name: name, value: (fixedValue / 100).toFixed(2) });
-			arrFloat.push(fixedValue);
+			values.push({ name: name, value: value });
 		}
-		let [second, hundredth] = getTime();
-		arrFloat.push(second, hundredth);
-		let b = new Uint8Array(arrFloat);
-
+		//apply smoothing
+		let smoothedResult = dataSmoother({ shapes: values, time: Date.now() });
+		//display blendshapes
+		blendshapes = [...smoothedResult.shapes];
+		//get shapes from smoothed result
+		let smoothedValues: number[] = [];
+		for (let i = 0; i < smoothedResult.shapes.length; i++) {
+			smoothedValues.push(smoothedResult.shapes[i].value * 100);
+		}
+		//get trimmed time
+		let [second, hundredth] = getTrimmedTime();
+		smoothedValues.push(second, hundredth);
+		//send data
+		let dataArray = new Uint8Array(smoothedValues);
 		if (dataConnection != null) {
-			dataConnection.send(b);
+			dataConnection.send(dataArray);
 			//console.log(dataConnection.bufferSize)
 		}
 	}
@@ -154,7 +210,9 @@
 				(id: string) => {
 					let url = new URL($page.url.origin);
 					url.port = '';
-					connectionLink = url.toString() + '?id=' + id;
+					//for current version use simple id
+					//connectionLink = url.toString() + '?id=' + id;
+					connectionLink = id;
 				},
 				(conn: DataConnection) => {
 					dataConnection = conn;
@@ -189,10 +247,10 @@
 			id="videoContainer"
 			class="relative card rounded-container-token aspect-square w-full h-full max-w-[640px] max-h-[640px] overflow-hidden flex items-center justify-center"
 		>
-			<video autoplay playsinline bind:this={videoElement}>
+			<video autoplay playsinline bind:this={videoElement} class="z-0">
 				<track kind="captions" />
 			</video>
-			<div id="overlay" bind:this={overlay} class="absolute">
+			<div id="overlay" bind:this={overlay} class="absolute z-10">
 				<div
 					id="rectangle"
 					bind:this={rectangle}
@@ -217,9 +275,22 @@
 			{/each}
 		</div>
 	</div>
+	<div class="w-full max-w-[640px] lg:max-w-[896px] mb-2 card p-2">
+		<div class="flex gap-2">
+			<span>Smoothing:</span>
+			<RangeSlider bind:value={smoothBin} min={0} max={1} step={0.01} />
+			<span class="text-secondary-500"> {smoothBin.toFixed(2)}</span>
+			<span> second</span>
+		</div>
+		<div>
+			<span>Output value is the average of the past</span>
+			<span class="text-secondary-500">{smoothFrames} </span>
+			<span>frames</span>
+		</div>
+	</div>
 
 	<div id="link-info" class="w-full max-w-[640px] lg:max-w-[896px]">
-		<h3 id="link-description" class="">Share the link to the app. Click to copy.</h3>
+		<h3 id="link-description" class="">Copy your code to the app. Click to copy.</h3>
 		<h3
 			class="link bg-primary-backdrop-token rounded-container-token p-2"
 			on:click={copyLink}

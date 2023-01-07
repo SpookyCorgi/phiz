@@ -2,6 +2,7 @@
 	import type { DataConnection } from 'peerjs';
 	import Peer from 'peerjs';
 	import { blendshapesName } from './blendshapes';
+	import { nanoid } from 'nanoid';
 
 	let url: string;
 	let status: string = 'Not connected';
@@ -31,23 +32,40 @@
 	}
 
 	function connect() {
-		let processedURl = new URL(url);
-		let host = processedURl.host;
-		let id = processedURl.searchParams.get('id');
+		//let processedURl = new URL(url);
+		//let host = processedURl.host;
+		//let id = processedURl.searchParams.get('id');
+		//for current version, used simple url as id
+		let id = url;
 		packageCount = 0;
 		clearStatus();
 		if (id == null) {
 			setStatus('No id provided');
 			return;
 		}
-		setStatus(`Connecting to server: ${host}\r\n`);
-		createPeer(host, id);
+		//setStatus(`Connecting to server: ${host}\r\n`);
+		//createPeer(host, id);
+		setStatus(`Connecting to server\r\n`);
+		createPeer('', id);
 	}
+	function generateID(): string {
+		let id: string = '';
+		while (
+			id === '' ||
+			id.startsWith('-') ||
+			id.endsWith('-') ||
+			id.startsWith('_') ||
+			id.endsWith('_')
+		) {
+			id = nanoid(6);
+		}
 
+		return 'PHIZ-' + id;
+	}
 	function createPeer(host: string, peerId: string) {
 		//let peer = new Peer({ host: host, port: 9000, path: '/' });
 		//use default server for prototyping
-		let peer = new Peer();
+		let peer = new Peer(generateID());
 		peer.on('open', function (id) {
 			connectPeer(peer, peerId);
 			setStatus(`Connected to signalling server.\nMy id : ${id}\r\n`);
@@ -64,7 +82,7 @@
 		// on open will be launch when you successfully connect to PeerServer
 		conn.on('open', function () {
 			// here you have conn.id
-			setStatus(`Connected to peer\nPeer id : ${id}!`);
+			setStatus(`Connected to peer\nPeer id : ${id}`);
 			if (window.electron) {
 				window.electron.send('open-osc-server');
 			}
