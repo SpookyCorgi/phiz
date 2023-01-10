@@ -30,10 +30,10 @@
   var isInterface = kotlin_kotlin.$_$.m8;
   var copyOf = kotlin_kotlin.$_$.h5;
   var fillArrayVal = kotlin_kotlin.$_$.x7;
-  var THROW_CCE = kotlin_kotlin.$_$.db;
+  var THROW_CCE = kotlin_kotlin.$_$.cb;
   var isArray = kotlin_kotlin.$_$.e8;
   var arrayCopy = kotlin_kotlin.$_$.r4;
-  var ensureNotNull = kotlin_kotlin.$_$.pb;
+  var ensureNotNull = kotlin_kotlin.$_$.ob;
   var toString = kotlin_kotlin.$_$.b9;
   var IllegalArgumentException_init_$Create$ = kotlin_kotlin.$_$.t1;
   var coerceAtMost = kotlin_kotlin.$_$.f9;
@@ -45,19 +45,19 @@
   var IllegalStateException_init_$Create$_0 = kotlin_kotlin.$_$.v1;
   var MutableListIterator = kotlin_kotlin.$_$.k4;
   var objectMeta = kotlin_kotlin.$_$.x8;
-  var indexOf = kotlin_kotlin.$_$.s5;
+  var indexOf = kotlin_kotlin.$_$.r5;
   var equals = kotlin_kotlin.$_$.w7;
   var AbstractMap = kotlin_kotlin.$_$.q3;
   var hashCode = kotlin_kotlin.$_$.c8;
   var AbstractMutableMap = kotlin_kotlin.$_$.t3;
   var Iterator = kotlin_kotlin.$_$.b4;
   var Entry = kotlin_kotlin.$_$.g4;
-  var toString_0 = kotlin_kotlin.$_$.ac;
+  var toString_0 = kotlin_kotlin.$_$.zb;
   var AbstractSet = kotlin_kotlin.$_$.v3;
   var AbstractCollection = kotlin_kotlin.$_$.o3;
   var until = kotlin_kotlin.$_$.h9;
   var step = kotlin_kotlin.$_$.g9;
-  var countOneBits = kotlin_kotlin.$_$.nb;
+  var countOneBits = kotlin_kotlin.$_$.mb;
   var AbstractMutableSet = kotlin_kotlin.$_$.u3;
   var ConcurrentModificationException_init_$Create$_0 = kotlin_kotlin.$_$.l1;
   var IndexOutOfBoundsException_init_$Create$ = kotlin_kotlin.$_$.x1;
@@ -148,10 +148,10 @@
   }
   ImmutableSet.$metadata$ = interfaceMeta('ImmutableSet', [Set, ImmutableCollection]);
   function persistentHashMapOf() {
-    return Companion_getInstance_0().mk();
+    return Companion_getInstance_0().kk();
   }
   function persistentSetOf() {
-    return Companion_getInstance_2().ok();
+    return Companion_getInstance_2().mk();
   }
   function persistentListOf() {
     return persistentVectorOf();
@@ -159,20 +159,20 @@
   function mutate(_this__u8e3s4, mutator) {
     var tmp$ret$0;
     // Inline function 'kotlin.apply' call
-    var tmp0_apply = _this__u8e3s4.kk();
+    var tmp0_apply = _this__u8e3s4.ik();
     // Inline function 'kotlin.contracts.contract' call
     mutator(tmp0_apply);
     tmp$ret$0 = tmp0_apply;
-    return tmp$ret$0.jk();
+    return tmp$ret$0.hk();
   }
   function AbstractListIterator(index, size) {
-    this.pk_1 = index;
-    this.qk_1 = size;
+    this.nk_1 = index;
+    this.ok_1 = size;
   }
   AbstractListIterator.prototype.m = function () {
-    return this.pk_1 < this.qk_1;
+    return this.nk_1 < this.ok_1;
   };
-  AbstractListIterator.prototype.rk = function () {
+  AbstractListIterator.prototype.pk = function () {
     if (!this.m())
       throw NoSuchElementException_init_$Create$();
   };
@@ -185,18 +185,18 @@
     // Inline function 'kotlinx.collections.immutable.mutate' call
     var tmp$ret$0;
     // Inline function 'kotlin.apply' call
-    var tmp0_apply = this.kk();
+    var tmp0_apply = this.ik();
     // Inline function 'kotlin.contracts.contract' call
     // Inline function 'kotlinx.collections.immutable.implementations.immutableList.AbstractPersistentList.addAll.<anonymous>' call
     tmp0_apply.q(elements);
     tmp$ret$0 = tmp0_apply;
-    tmp$ret$1 = tmp$ret$0.jk();
+    tmp$ret$1 = tmp$ret$0.hk();
     return tmp$ret$1;
   };
-  AbstractPersistentList.prototype.ee = function (element) {
+  AbstractPersistentList.prototype.de = function (element) {
     var index = this.f2(element);
     if (!(index === -1)) {
-      return this.j4(index);
+      return this.i4(index);
     }
     return this;
   };
@@ -233,41 +233,41 @@
     return tmp$ret$0;
   };
   AbstractPersistentList.prototype.l = function () {
-    return this.sk();
+    return this.qk();
   };
-  AbstractPersistentList.prototype.sk = function () {
+  AbstractPersistentList.prototype.qk = function () {
     return this.r(0);
   };
   AbstractPersistentList.$metadata$ = classMeta('AbstractPersistentList', [PersistentList], undefined, undefined, undefined, AbstractList.prototype);
   function BufferIterator(buffer, index, size) {
     AbstractListIterator.call(this, index, size);
-    this.vk_1 = buffer;
+    this.tk_1 = buffer;
   }
   BufferIterator.prototype.n = function () {
     if (!this.m()) {
       throw NoSuchElementException_init_$Create$();
     }
     var tmp0_this = this;
-    var tmp1 = tmp0_this.pk_1;
-    tmp0_this.pk_1 = tmp1 + 1 | 0;
-    return this.vk_1[tmp1];
+    var tmp1 = tmp0_this.nk_1;
+    tmp0_this.nk_1 = tmp1 + 1 | 0;
+    return this.tk_1[tmp1];
   };
   BufferIterator.$metadata$ = classMeta('BufferIterator', undefined, undefined, undefined, undefined, AbstractListIterator.prototype);
   function rootSize($this) {
-    return rootSize_1($this.yk_1);
+    return rootSize_1($this.wk_1);
   }
   function pushFilledTail($this, root, filledTail, newTail) {
-    if ($this.yk_1 >> get_LOG_MAX_BUFFER_SIZE() > 1 << $this.zk_1) {
+    if ($this.wk_1 >> get_LOG_MAX_BUFFER_SIZE() > 1 << $this.xk_1) {
       var newRoot = presizedBufferWith(root);
-      var newRootShift = $this.zk_1 + get_LOG_MAX_BUFFER_SIZE() | 0;
+      var newRootShift = $this.xk_1 + get_LOG_MAX_BUFFER_SIZE() | 0;
       newRoot = pushTail($this, newRoot, newRootShift, filledTail);
-      return new PersistentVector(newRoot, newTail, $this.yk_1 + 1 | 0, newRootShift);
+      return new PersistentVector(newRoot, newTail, $this.wk_1 + 1 | 0, newRootShift);
     }
-    var newRoot_0 = pushTail($this, root, $this.zk_1, filledTail);
-    return new PersistentVector(newRoot_0, newTail, $this.yk_1 + 1 | 0, $this.zk_1);
+    var newRoot_0 = pushTail($this, root, $this.xk_1, filledTail);
+    return new PersistentVector(newRoot_0, newTail, $this.wk_1 + 1 | 0, $this.xk_1);
   }
   function pushTail($this, root, shift, tail) {
-    var bufferIndex = indexSegment($this.yk_1 - 1 | 0, shift);
+    var bufferIndex = indexSegment($this.wk_1 - 1 | 0, shift);
     var tmp0_safe_receiver = root;
     var tmp1_elvis_lhs = tmp0_safe_receiver == null ? null : copyOf(tmp0_safe_receiver, get_MAX_BUFFER_SIZE());
     var tmp;
@@ -290,16 +290,16 @@
     return newRootNode;
   }
   function removeFromTailAt($this, root, rootSize, shift, index) {
-    var tailSize = $this.yk_1 - rootSize | 0;
+    var tailSize = $this.wk_1 - rootSize | 0;
     assert(index < tailSize);
     if (tailSize === 1) {
       return pullLastBufferFromRoot($this, root, rootSize, shift);
     }
-    var newTail = copyOf($this.xk_1, get_MAX_BUFFER_SIZE());
+    var newTail = copyOf($this.vk_1, get_MAX_BUFFER_SIZE());
     if (index < (tailSize - 1 | 0)) {
       var tmp$ret$0;
       // Inline function 'kotlin.collections.copyInto' call
-      var tmp0_copyInto = $this.xk_1;
+      var tmp0_copyInto = $this.vk_1;
       var tmp1_copyInto = index + 1 | 0;
       arrayCopy(tmp0_copyInto, newTail, index, tmp1_copyInto, tailSize);
       tmp$ret$0 = newTail;
@@ -314,7 +314,7 @@
     }
     var tailCarry = new ObjectRef(null);
     var newRoot = ensureNotNull(pullLastBuffer($this, root, shift, rootSize - 1 | 0, tailCarry));
-    var tmp = tailCarry.al_1;
+    var tmp = tailCarry.yk_1;
     var newTail = (!(tmp == null) ? isArray(tmp) : false) ? tmp : THROW_CCE();
     if (newRoot[1] == null) {
       var tmp_0 = newRoot[0];
@@ -327,7 +327,7 @@
     var bufferIndex = indexSegment(index, shift);
     var tmp;
     if (shift === get_LOG_MAX_BUFFER_SIZE()) {
-      tailCarry.al_1 = root[bufferIndex];
+      tailCarry.yk_1 = root[bufferIndex];
       tmp = null;
     } else {
       var tmp_0 = root[bufferIndex];
@@ -361,8 +361,8 @@
       var tmp2_copyInto = get_MAX_BUFFER_SIZE();
       arrayCopy(root, newRoot, bufferIndex, tmp1_copyInto, tmp2_copyInto);
       tmp$ret$1 = newRoot;
-      newRoot[get_MAX_BUFFER_SIZE() - 1 | 0] = tailCarry.al_1;
-      tailCarry.al_1 = root[bufferIndex];
+      newRoot[get_MAX_BUFFER_SIZE() - 1 | 0] = tailCarry.yk_1;
+      tailCarry.yk_1 = root[bufferIndex];
       return newRoot;
     }
     var bufferLastIndex = get_MAX_BUFFER_SIZE_MINUS_ONE();
@@ -387,10 +387,10 @@
   }
   function bufferFor($this, index) {
     if (rootSize($this) <= index) {
-      return $this.xk_1;
+      return $this.vk_1;
     }
-    var buffer = $this.wk_1;
-    var shift = $this.zk_1;
+    var buffer = $this.uk_1;
+    var shift = $this.xk_1;
     while (shift > 0) {
       var tmp = buffer[indexSegment(index, shift)];
       buffer = (!(tmp == null) ? isArray(tmp) : false) ? tmp : THROW_CCE();
@@ -400,64 +400,64 @@
   }
   function PersistentVector(root, tail, size, rootShift) {
     AbstractPersistentList.call(this);
-    this.wk_1 = root;
-    this.xk_1 = tail;
-    this.yk_1 = size;
-    this.zk_1 = rootShift;
+    this.uk_1 = root;
+    this.vk_1 = tail;
+    this.wk_1 = size;
+    this.xk_1 = rootShift;
     // Inline function 'kotlin.require' call
-    var tmp0_require = this.yk_1 > get_MAX_BUFFER_SIZE();
+    var tmp0_require = this.wk_1 > get_MAX_BUFFER_SIZE();
     // Inline function 'kotlin.contracts.contract' call
     if (!tmp0_require) {
       var tmp$ret$0;
       // Inline function 'kotlinx.collections.immutable.implementations.immutableList.PersistentVector.<anonymous>' call
-      tmp$ret$0 = 'Trie-based persistent vector should have at least ' + (get_MAX_BUFFER_SIZE() + 1 | 0) + ' elements, got ' + this.yk_1;
+      tmp$ret$0 = 'Trie-based persistent vector should have at least ' + (get_MAX_BUFFER_SIZE() + 1 | 0) + ' elements, got ' + this.wk_1;
       var message = tmp$ret$0;
       throw IllegalArgumentException_init_$Create$(toString(message));
     }
-    assert((this.yk_1 - rootSize_1(this.yk_1) | 0) <= coerceAtMost(this.xk_1.length, get_MAX_BUFFER_SIZE()));
+    assert((this.wk_1 - rootSize_1(this.wk_1) | 0) <= coerceAtMost(this.vk_1.length, get_MAX_BUFFER_SIZE()));
   }
   PersistentVector.prototype.o = function () {
-    return this.yk_1;
+    return this.wk_1;
   };
   PersistentVector.prototype.g = function (element) {
-    var tailSize = this.yk_1 - rootSize(this) | 0;
+    var tailSize = this.wk_1 - rootSize(this) | 0;
     if (tailSize < get_MAX_BUFFER_SIZE()) {
-      var newTail = copyOf(this.xk_1, get_MAX_BUFFER_SIZE());
+      var newTail = copyOf(this.vk_1, get_MAX_BUFFER_SIZE());
       newTail[tailSize] = element;
-      return new PersistentVector(this.wk_1, newTail, this.yk_1 + 1 | 0, this.zk_1);
+      return new PersistentVector(this.uk_1, newTail, this.wk_1 + 1 | 0, this.xk_1);
     }
     var newTail_0 = presizedBufferWith(element);
-    return pushFilledTail(this, this.wk_1, this.xk_1, newTail_0);
+    return pushFilledTail(this, this.uk_1, this.vk_1, newTail_0);
   };
-  PersistentVector.prototype.j4 = function (index) {
-    ListImplementation_getInstance().a2(index, this.yk_1);
+  PersistentVector.prototype.i4 = function (index) {
+    ListImplementation_getInstance().a2(index, this.wk_1);
     var rootSize_0 = rootSize(this);
     if (index >= rootSize_0) {
-      return removeFromTailAt(this, this.wk_1, rootSize_0, this.zk_1, index - rootSize_0 | 0);
+      return removeFromTailAt(this, this.uk_1, rootSize_0, this.xk_1, index - rootSize_0 | 0);
     }
-    var newRoot = removeFromRootAt(this, this.wk_1, this.zk_1, index, new ObjectRef(this.xk_1[0]));
-    return removeFromTailAt(this, newRoot, rootSize_0, this.zk_1, 0);
+    var newRoot = removeFromRootAt(this, this.uk_1, this.xk_1, index, new ObjectRef(this.vk_1[0]));
+    return removeFromTailAt(this, newRoot, rootSize_0, this.xk_1, 0);
   };
-  PersistentVector.prototype.kk = function () {
-    return new PersistentVectorBuilder(this, this.wk_1, this.xk_1, this.zk_1);
+  PersistentVector.prototype.ik = function () {
+    return new PersistentVectorBuilder(this, this.uk_1, this.vk_1, this.xk_1);
   };
   PersistentVector.prototype.r = function (index) {
-    ListImplementation_getInstance().z1(index, this.yk_1);
-    var tmp = this.xk_1;
-    return new PersistentVectorIterator(this.wk_1, isArray(tmp) ? tmp : THROW_CCE(), index, this.yk_1, (this.zk_1 / get_LOG_MAX_BUFFER_SIZE() | 0) + 1 | 0);
+    ListImplementation_getInstance().z1(index, this.wk_1);
+    var tmp = this.vk_1;
+    return new PersistentVectorIterator(this.uk_1, isArray(tmp) ? tmp : THROW_CCE(), index, this.wk_1, (this.xk_1 / get_LOG_MAX_BUFFER_SIZE() | 0) + 1 | 0);
   };
   PersistentVector.prototype.p = function (index) {
-    ListImplementation_getInstance().a2(index, this.yk_1);
+    ListImplementation_getInstance().a2(index, this.wk_1);
     var buffer = bufferFor(this, index);
     var tmp = buffer[index & get_MAX_BUFFER_SIZE_MINUS_ONE()];
     return (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
   };
   PersistentVector.$metadata$ = classMeta('PersistentVector', [PersistentList], undefined, undefined, undefined, AbstractPersistentList.prototype);
   function rootSize_0($this) {
-    if ($this.jl_1 <= get_MAX_BUFFER_SIZE()) {
+    if ($this.hl_1 <= get_MAX_BUFFER_SIZE()) {
       return 0;
     }
-    return rootSize_1($this.jl_1);
+    return rootSize_1($this.hl_1);
   }
   function tailSize($this, size) {
     if (size <= get_MAX_BUFFER_SIZE()) {
@@ -466,10 +466,10 @@
     return size - rootSize_1(size) | 0;
   }
   function tailSize_0($this) {
-    return tailSize($this, $this.jl_1);
+    return tailSize($this, $this.hl_1);
   }
   function isMutable($this, buffer) {
-    return buffer.length === get_MUTABLE_BUFFER_SIZE() ? buffer[get_MUTABLE_BUFFER_SIZE() - 1 | 0] === $this.gl_1 : false;
+    return buffer.length === get_MUTABLE_BUFFER_SIZE() ? buffer[get_MUTABLE_BUFFER_SIZE() - 1 | 0] === $this.el_1 : false;
   }
   function makeMutable($this, buffer) {
     if (buffer == null) {
@@ -493,7 +493,7 @@
     tmp$ret$0 = fillArrayVal(Array(tmp0_arrayOfNulls), null);
     var buffer = tmp$ret$0;
     buffer[0] = element;
-    buffer[get_MUTABLE_BUFFER_SIZE() - 1 | 0] = $this.gl_1;
+    buffer[get_MUTABLE_BUFFER_SIZE() - 1 | 0] = $this.el_1;
     return buffer;
   }
   function mutableBuffer($this) {
@@ -502,36 +502,36 @@
     var tmp0_arrayOfNulls = get_MUTABLE_BUFFER_SIZE();
     tmp$ret$0 = fillArrayVal(Array(tmp0_arrayOfNulls), null);
     var buffer = tmp$ret$0;
-    buffer[get_MUTABLE_BUFFER_SIZE() - 1 | 0] = $this.gl_1;
+    buffer[get_MUTABLE_BUFFER_SIZE() - 1 | 0] = $this.el_1;
     return buffer;
   }
   function pushFilledTail_0($this, root, filledTail, newTail) {
     var tmp;
-    if ($this.jl_1 >> get_LOG_MAX_BUFFER_SIZE() > 1 << $this.fl_1) {
-      $this.hl_1 = pushTail_0($this, mutableBufferWith($this, root), filledTail, $this.fl_1 + get_LOG_MAX_BUFFER_SIZE() | 0);
-      $this.il_1 = newTail;
+    if ($this.hl_1 >> get_LOG_MAX_BUFFER_SIZE() > 1 << $this.dl_1) {
+      $this.fl_1 = pushTail_0($this, mutableBufferWith($this, root), filledTail, $this.dl_1 + get_LOG_MAX_BUFFER_SIZE() | 0);
+      $this.gl_1 = newTail;
       var tmp0_this = $this;
-      tmp0_this.fl_1 = tmp0_this.fl_1 + get_LOG_MAX_BUFFER_SIZE() | 0;
+      tmp0_this.dl_1 = tmp0_this.dl_1 + get_LOG_MAX_BUFFER_SIZE() | 0;
       var tmp1_this = $this;
-      tmp1_this.jl_1 = tmp1_this.jl_1 + 1 | 0;
+      tmp1_this.hl_1 = tmp1_this.hl_1 + 1 | 0;
       tmp = Unit_getInstance();
     } else if (root == null) {
-      $this.hl_1 = filledTail;
-      $this.il_1 = newTail;
+      $this.fl_1 = filledTail;
+      $this.gl_1 = newTail;
       var tmp2_this = $this;
-      tmp2_this.jl_1 = tmp2_this.jl_1 + 1 | 0;
+      tmp2_this.hl_1 = tmp2_this.hl_1 + 1 | 0;
       tmp = Unit_getInstance();
     } else {
-      $this.hl_1 = pushTail_0($this, root, filledTail, $this.fl_1);
-      $this.il_1 = newTail;
+      $this.fl_1 = pushTail_0($this, root, filledTail, $this.dl_1);
+      $this.gl_1 = newTail;
       var tmp3_this = $this;
-      tmp3_this.jl_1 = tmp3_this.jl_1 + 1 | 0;
+      tmp3_this.hl_1 = tmp3_this.hl_1 + 1 | 0;
       tmp = Unit_getInstance();
     }
     return tmp;
   }
   function pushTail_0($this, root, tail, shift) {
-    var index = indexSegment($this.jl_1 - 1 | 0, shift);
+    var index = indexSegment($this.hl_1 - 1 | 0, shift);
     var mutableRoot = makeMutable($this, root);
     if (shift === get_LOG_MAX_BUFFER_SIZE()) {
       mutableRoot[index] = tail;
@@ -552,12 +552,12 @@
   }
   function pushBuffersIncreasingHeightIfNeeded($this, root, rootSize, buffers) {
     var buffersIterator = arrayIterator(buffers);
-    var mutableRoot = rootSize >> get_LOG_MAX_BUFFER_SIZE() < 1 << $this.fl_1 ? pushBuffers($this, root, rootSize, $this.fl_1, buffersIterator) : makeMutable($this, root);
+    var mutableRoot = rootSize >> get_LOG_MAX_BUFFER_SIZE() < 1 << $this.dl_1 ? pushBuffers($this, root, rootSize, $this.dl_1, buffersIterator) : makeMutable($this, root);
     while (buffersIterator.m()) {
       var tmp0_this = $this;
-      tmp0_this.fl_1 = tmp0_this.fl_1 + get_LOG_MAX_BUFFER_SIZE() | 0;
+      tmp0_this.dl_1 = tmp0_this.dl_1 + get_LOG_MAX_BUFFER_SIZE() | 0;
       mutableRoot = mutableBufferWith($this, mutableRoot);
-      pushBuffers($this, mutableRoot, 1 << $this.fl_1, $this.fl_1, buffersIterator);
+      pushBuffers($this, mutableRoot, 1 << $this.dl_1, $this.dl_1, buffersIterator);
     }
     return mutableRoot;
   }
@@ -613,24 +613,24 @@
   }
   function insertIntoTail($this, root, index, element) {
     var tailSize = tailSize_0($this);
-    var mutableTail = makeMutable($this, $this.il_1);
+    var mutableTail = makeMutable($this, $this.gl_1);
     if (tailSize < get_MAX_BUFFER_SIZE()) {
       var tmp$ret$0;
       // Inline function 'kotlin.collections.copyInto' call
-      var tmp0_copyInto = $this.il_1;
+      var tmp0_copyInto = $this.gl_1;
       var tmp1_copyInto = index + 1 | 0;
       arrayCopy(tmp0_copyInto, mutableTail, tmp1_copyInto, index, tailSize);
       tmp$ret$0 = mutableTail;
       mutableTail[index] = element;
-      $this.hl_1 = root;
-      $this.il_1 = mutableTail;
+      $this.fl_1 = root;
+      $this.gl_1 = mutableTail;
       var tmp0_this = $this;
-      tmp0_this.jl_1 = tmp0_this.jl_1 + 1 | 0;
+      tmp0_this.hl_1 = tmp0_this.hl_1 + 1 | 0;
     } else {
-      var lastElement = $this.il_1[get_MAX_BUFFER_SIZE_MINUS_ONE()];
+      var lastElement = $this.gl_1[get_MAX_BUFFER_SIZE_MINUS_ONE()];
       var tmp$ret$1;
       // Inline function 'kotlin.collections.copyInto' call
-      var tmp2_copyInto = $this.il_1;
+      var tmp2_copyInto = $this.gl_1;
       var tmp3_copyInto = index + 1 | 0;
       var tmp4_copyInto = get_MAX_BUFFER_SIZE_MINUS_ONE();
       arrayCopy(tmp2_copyInto, mutableTail, tmp3_copyInto, index, tmp4_copyInto);
@@ -642,7 +642,7 @@
   function insertIntoRoot($this, root, shift, index, element, elementCarry) {
     var bufferIndex = indexSegment(index, shift);
     if (shift === 0) {
-      elementCarry.al_1 = root[get_MAX_BUFFER_SIZE_MINUS_ONE()];
+      elementCarry.yk_1 = root[get_MAX_BUFFER_SIZE_MINUS_ONE()];
       var tmp$ret$0;
       // Inline function 'kotlin.collections.copyInto' call
       var tmp0_copyInto = makeMutable($this, root);
@@ -667,17 +667,17 @@
         if (mutableRoot_0[i] == null)
           break $l$loop;
         var tmp_0 = mutableRoot_0[i];
-        mutableRoot_0[i] = insertIntoRoot($this, (!(tmp_0 == null) ? isArray(tmp_0) : false) ? tmp_0 : THROW_CCE(), lowerLevelShift, 0, elementCarry.al_1, elementCarry);
+        mutableRoot_0[i] = insertIntoRoot($this, (!(tmp_0 == null) ? isArray(tmp_0) : false) ? tmp_0 : THROW_CCE(), lowerLevelShift, 0, elementCarry.yk_1, elementCarry);
       }
        while (inductionVariable < last);
     return mutableRoot_0;
   }
   function bufferFor_0($this, index) {
     if (rootSize_0($this) <= index) {
-      return $this.il_1;
+      return $this.gl_1;
     }
-    var buffer = ensureNotNull($this.hl_1);
-    var shift = $this.fl_1;
+    var buffer = ensureNotNull($this.fl_1);
+    var shift = $this.dl_1;
     while (shift > 0) {
       var tmp = buffer[indexSegment(index, shift)];
       buffer = (!(tmp == null) ? isArray(tmp) : false) ? tmp : THROW_CCE();
@@ -686,27 +686,27 @@
     return buffer;
   }
   function removeFromTailAt_0($this, root, rootSize, shift, index) {
-    var tailSize = $this.jl_1 - rootSize | 0;
+    var tailSize = $this.hl_1 - rootSize | 0;
     assert(index < tailSize);
     var removedElement;
     if (tailSize === 1) {
-      removedElement = $this.il_1[0];
+      removedElement = $this.gl_1[0];
       pullLastBufferFromRoot_0($this, root, rootSize, shift);
     } else {
-      removedElement = $this.il_1[index];
+      removedElement = $this.gl_1[index];
       var tmp$ret$0;
       // Inline function 'kotlin.collections.copyInto' call
-      var tmp0_copyInto = $this.il_1;
-      var tmp1_copyInto = makeMutable($this, $this.il_1);
+      var tmp0_copyInto = $this.gl_1;
+      var tmp1_copyInto = makeMutable($this, $this.gl_1);
       var tmp2_copyInto = index + 1 | 0;
       arrayCopy(tmp0_copyInto, tmp1_copyInto, index, tmp2_copyInto, tailSize);
       tmp$ret$0 = tmp1_copyInto;
       var mutableTail = tmp$ret$0;
       mutableTail[tailSize - 1 | 0] = null;
-      $this.hl_1 = root;
-      $this.il_1 = mutableTail;
-      $this.jl_1 = (rootSize + tailSize | 0) - 1 | 0;
-      $this.fl_1 = shift;
+      $this.fl_1 = root;
+      $this.gl_1 = mutableTail;
+      $this.hl_1 = (rootSize + tailSize | 0) - 1 | 0;
+      $this.dl_1 = shift;
     }
     return removedElement;
   }
@@ -722,8 +722,8 @@
       arrayCopy(root, tmp0_copyInto, bufferIndex, tmp1_copyInto, tmp2_copyInto);
       tmp$ret$0 = tmp0_copyInto;
       var mutableRoot = tmp$ret$0;
-      mutableRoot[get_MAX_BUFFER_SIZE() - 1 | 0] = tailCarry.al_1;
-      tailCarry.al_1 = removedElement;
+      mutableRoot[get_MAX_BUFFER_SIZE() - 1 | 0] = tailCarry.yk_1;
+      tailCarry.yk_1 = removedElement;
       return mutableRoot;
     }
     var bufferLastIndex = get_MAX_BUFFER_SIZE_MINUS_ONE();
@@ -748,7 +748,7 @@
   }
   function pullLastBufferFromRoot_0($this, root, rootSize, shift) {
     if (shift === 0) {
-      $this.hl_1 = null;
+      $this.fl_1 = null;
       var tmp = $this;
       var tmp0_elvis_lhs = root;
       var tmp_0;
@@ -760,32 +760,32 @@
       } else {
         tmp_0 = tmp0_elvis_lhs;
       }
-      tmp.il_1 = tmp_0;
-      $this.jl_1 = rootSize;
-      $this.fl_1 = shift;
+      tmp.gl_1 = tmp_0;
+      $this.hl_1 = rootSize;
+      $this.dl_1 = shift;
       return Unit_getInstance();
     }
     var tailCarry = new ObjectRef(null);
     var newRoot = ensureNotNull(pullLastBuffer_0($this, ensureNotNull(root), shift, rootSize, tailCarry));
     var tmp_1 = $this;
-    var tmp_2 = tailCarry.al_1;
-    tmp_1.il_1 = (!(tmp_2 == null) ? isArray(tmp_2) : false) ? tmp_2 : THROW_CCE();
-    $this.jl_1 = rootSize;
+    var tmp_2 = tailCarry.yk_1;
+    tmp_1.gl_1 = (!(tmp_2 == null) ? isArray(tmp_2) : false) ? tmp_2 : THROW_CCE();
+    $this.hl_1 = rootSize;
     if (newRoot[1] == null) {
       var tmp_3 = $this;
       var tmp_4 = newRoot[0];
-      tmp_3.hl_1 = (tmp_4 == null ? true : isArray(tmp_4)) ? tmp_4 : THROW_CCE();
-      $this.fl_1 = shift - get_LOG_MAX_BUFFER_SIZE() | 0;
+      tmp_3.fl_1 = (tmp_4 == null ? true : isArray(tmp_4)) ? tmp_4 : THROW_CCE();
+      $this.dl_1 = shift - get_LOG_MAX_BUFFER_SIZE() | 0;
     } else {
-      $this.hl_1 = newRoot;
-      $this.fl_1 = shift;
+      $this.fl_1 = newRoot;
+      $this.dl_1 = shift;
     }
   }
   function pullLastBuffer_0($this, root, shift, rootSize, tailCarry) {
     var bufferIndex = indexSegment(rootSize - 1 | 0, shift);
     var tmp;
     if (shift === get_LOG_MAX_BUFFER_SIZE()) {
-      tailCarry.al_1 = root[bufferIndex];
+      tailCarry.yk_1 = root[bufferIndex];
       tmp = null;
     } else {
       var tmp_0 = root[bufferIndex];
@@ -805,10 +805,10 @@
     if (shift === 0) {
       if (!(mutableRoot === root)) {
         var tmp0_this = $this;
-        var tmp1 = tmp0_this.tc_1;
-        tmp0_this.tc_1 = tmp1 + 1 | 0;
+        var tmp1 = tmp0_this.sc_1;
+        tmp0_this.sc_1 = tmp1 + 1 | 0;
       }
-      oldElementCarry.al_1 = mutableRoot[bufferIndex];
+      oldElementCarry.yk_1 = mutableRoot[bufferIndex];
       mutableRoot[bufferIndex] = e;
       return mutableRoot;
     }
@@ -818,64 +818,64 @@
   }
   function PersistentVectorBuilder(vector, vectorRoot, vectorTail, rootShift) {
     AbstractMutableList.call(this);
-    this.cl_1 = vector;
-    this.dl_1 = vectorRoot;
-    this.el_1 = vectorTail;
-    this.fl_1 = rootShift;
-    this.gl_1 = new MutabilityOwnership();
-    this.hl_1 = this.dl_1;
-    this.il_1 = this.el_1;
-    this.jl_1 = this.cl_1.o();
+    this.al_1 = vector;
+    this.bl_1 = vectorRoot;
+    this.cl_1 = vectorTail;
+    this.dl_1 = rootShift;
+    this.el_1 = new MutabilityOwnership();
+    this.fl_1 = this.bl_1;
+    this.gl_1 = this.cl_1;
+    this.hl_1 = this.al_1.o();
   }
   PersistentVectorBuilder.prototype.o = function () {
-    return this.jl_1;
+    return this.hl_1;
   };
-  PersistentVectorBuilder.prototype.kl = function () {
-    return this.tc_1;
+  PersistentVectorBuilder.prototype.il = function () {
+    return this.sc_1;
   };
-  PersistentVectorBuilder.prototype.jk = function () {
+  PersistentVectorBuilder.prototype.hk = function () {
     var tmp = this;
     var tmp_0;
-    if (this.hl_1 === this.dl_1 ? this.il_1 === this.el_1 : false) {
-      tmp_0 = this.cl_1;
+    if (this.fl_1 === this.bl_1 ? this.gl_1 === this.cl_1 : false) {
+      tmp_0 = this.al_1;
     } else {
-      this.gl_1 = new MutabilityOwnership();
-      this.dl_1 = this.hl_1;
-      this.el_1 = this.il_1;
+      this.el_1 = new MutabilityOwnership();
+      this.bl_1 = this.fl_1;
+      this.cl_1 = this.gl_1;
       var tmp_1;
-      if (this.hl_1 == null) {
+      if (this.fl_1 == null) {
         var tmp_2;
         var tmp$ret$0;
         // Inline function 'kotlin.collections.isEmpty' call
-        var tmp0_isEmpty = this.il_1;
+        var tmp0_isEmpty = this.gl_1;
         tmp$ret$0 = tmp0_isEmpty.length === 0;
         if (tmp$ret$0) {
           tmp_2 = persistentVectorOf();
         } else {
-          tmp_2 = new SmallPersistentVector(copyOf(this.il_1, this.jl_1));
+          tmp_2 = new SmallPersistentVector(copyOf(this.gl_1, this.hl_1));
         }
         tmp_1 = tmp_2;
       } else {
-        tmp_1 = new PersistentVector(ensureNotNull(this.hl_1), this.il_1, this.jl_1, this.fl_1);
+        tmp_1 = new PersistentVector(ensureNotNull(this.fl_1), this.gl_1, this.hl_1, this.dl_1);
       }
       tmp_0 = tmp_1;
     }
-    tmp.cl_1 = tmp_0;
-    return this.cl_1;
+    tmp.al_1 = tmp_0;
+    return this.al_1;
   };
   PersistentVectorBuilder.prototype.g = function (element) {
     var tmp0_this = this;
-    tmp0_this.tc_1 = tmp0_this.tc_1 + 1 | 0;
+    tmp0_this.sc_1 = tmp0_this.sc_1 + 1 | 0;
     var tailSize = tailSize_0(this);
     if (tailSize < get_MAX_BUFFER_SIZE()) {
-      var mutableTail = makeMutable(this, this.il_1);
+      var mutableTail = makeMutable(this, this.gl_1);
       mutableTail[tailSize] = element;
-      this.il_1 = mutableTail;
+      this.gl_1 = mutableTail;
       var tmp1_this = this;
-      tmp1_this.jl_1 = tmp1_this.jl_1 + 1 | 0;
+      tmp1_this.hl_1 = tmp1_this.hl_1 + 1 | 0;
     } else {
       var newTail = mutableBufferWith(this, element);
-      pushFilledTail_0(this, this.hl_1, this.il_1, newTail);
+      pushFilledTail_0(this, this.fl_1, this.gl_1, newTail);
     }
     return true;
   };
@@ -884,21 +884,21 @@
       return false;
     }
     var tmp0_this = this;
-    var tmp1 = tmp0_this.tc_1;
-    tmp0_this.tc_1 = tmp1 + 1 | 0;
+    var tmp1 = tmp0_this.sc_1;
+    tmp0_this.sc_1 = tmp1 + 1 | 0;
     var tailSize = tailSize_0(this);
     var elementsIterator = elements.l();
     if ((get_MAX_BUFFER_SIZE() - tailSize | 0) >= elements.o()) {
-      this.il_1 = copyToBuffer(this, makeMutable(this, this.il_1), tailSize, elementsIterator);
+      this.gl_1 = copyToBuffer(this, makeMutable(this, this.gl_1), tailSize, elementsIterator);
       var tmp2_this = this;
-      tmp2_this.jl_1 = tmp2_this.jl_1 + elements.o() | 0;
+      tmp2_this.hl_1 = tmp2_this.hl_1 + elements.o() | 0;
     } else {
       var buffersSize = ((elements.o() + tailSize | 0) - 1 | 0) / get_MAX_BUFFER_SIZE() | 0;
       var tmp$ret$0;
       // Inline function 'kotlin.arrayOfNulls' call
       tmp$ret$0 = fillArrayVal(Array(buffersSize), null);
       var buffers = tmp$ret$0;
-      buffers[0] = copyToBuffer(this, makeMutable(this, this.il_1), tailSize, elementsIterator);
+      buffers[0] = copyToBuffer(this, makeMutable(this, this.gl_1), tailSize, elementsIterator);
       var inductionVariable = 1;
       if (inductionVariable < buffersSize)
         do {
@@ -908,154 +908,154 @@
         }
          while (inductionVariable < buffersSize);
       var tmp = this;
-      var tmp_0 = this.hl_1;
+      var tmp_0 = this.fl_1;
       var tmp_1 = rootSize_0(this);
-      tmp.hl_1 = pushBuffersIncreasingHeightIfNeeded(this, tmp_0, tmp_1, isArray(buffers) ? buffers : THROW_CCE());
-      this.il_1 = copyToBuffer(this, mutableBuffer(this), 0, elementsIterator);
+      tmp.fl_1 = pushBuffersIncreasingHeightIfNeeded(this, tmp_0, tmp_1, isArray(buffers) ? buffers : THROW_CCE());
+      this.gl_1 = copyToBuffer(this, mutableBuffer(this), 0, elementsIterator);
       var tmp4_this = this;
-      tmp4_this.jl_1 = tmp4_this.jl_1 + elements.o() | 0;
+      tmp4_this.hl_1 = tmp4_this.hl_1 + elements.o() | 0;
     }
     return true;
   };
-  PersistentVectorBuilder.prototype.yc = function (index, element) {
-    ListImplementation_getInstance().z1(index, this.jl_1);
-    if (index === this.jl_1) {
+  PersistentVectorBuilder.prototype.xc = function (index, element) {
+    ListImplementation_getInstance().z1(index, this.hl_1);
+    if (index === this.hl_1) {
       this.g(element);
       return Unit_getInstance();
     }
     var tmp0_this = this;
-    tmp0_this.tc_1 = tmp0_this.tc_1 + 1 | 0;
+    tmp0_this.sc_1 = tmp0_this.sc_1 + 1 | 0;
     var rootSize = rootSize_0(this);
     if (index >= rootSize) {
-      insertIntoTail(this, this.hl_1, index - rootSize | 0, element);
+      insertIntoTail(this, this.fl_1, index - rootSize | 0, element);
       return Unit_getInstance();
     }
     var elementCarry = new ObjectRef(null);
-    var newRest = insertIntoRoot(this, ensureNotNull(this.hl_1), this.fl_1, index, element, elementCarry);
-    var tmp = elementCarry.al_1;
+    var newRest = insertIntoRoot(this, ensureNotNull(this.fl_1), this.dl_1, index, element, elementCarry);
+    var tmp = elementCarry.yk_1;
     insertIntoTail(this, newRest, 0, (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE());
   };
   PersistentVectorBuilder.prototype.p = function (index) {
-    ListImplementation_getInstance().a2(index, this.jl_1);
+    ListImplementation_getInstance().a2(index, this.hl_1);
     var buffer = bufferFor_0(this, index);
     var tmp = buffer[index & get_MAX_BUFFER_SIZE_MINUS_ONE()];
     return (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
   };
-  PersistentVectorBuilder.prototype.j4 = function (index) {
-    ListImplementation_getInstance().a2(index, this.jl_1);
+  PersistentVectorBuilder.prototype.i4 = function (index) {
+    ListImplementation_getInstance().a2(index, this.hl_1);
     var tmp0_this = this;
-    tmp0_this.tc_1 = tmp0_this.tc_1 + 1 | 0;
+    tmp0_this.sc_1 = tmp0_this.sc_1 + 1 | 0;
     var rootSize = rootSize_0(this);
     if (index >= rootSize) {
-      var tmp = removeFromTailAt_0(this, this.hl_1, rootSize, this.fl_1, index - rootSize | 0);
+      var tmp = removeFromTailAt_0(this, this.fl_1, rootSize, this.dl_1, index - rootSize | 0);
       return (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
     }
-    var elementCarry = new ObjectRef(this.il_1[0]);
-    var newRoot = removeFromRootAt_0(this, ensureNotNull(this.hl_1), this.fl_1, index, elementCarry);
-    removeFromTailAt_0(this, newRoot, rootSize, this.fl_1, 0);
-    var tmp_0 = elementCarry.al_1;
+    var elementCarry = new ObjectRef(this.gl_1[0]);
+    var newRoot = removeFromRootAt_0(this, ensureNotNull(this.fl_1), this.dl_1, index, elementCarry);
+    removeFromTailAt_0(this, newRoot, rootSize, this.dl_1, 0);
+    var tmp_0 = elementCarry.yk_1;
     return (tmp_0 == null ? true : isObject(tmp_0)) ? tmp_0 : THROW_CCE();
   };
-  PersistentVectorBuilder.prototype.i4 = function (index, element) {
-    ListImplementation_getInstance().a2(index, this.jl_1);
+  PersistentVectorBuilder.prototype.h4 = function (index, element) {
+    ListImplementation_getInstance().a2(index, this.hl_1);
     if (rootSize_0(this) <= index) {
-      var mutableTail = makeMutable(this, this.il_1);
-      if (!(mutableTail === this.il_1)) {
+      var mutableTail = makeMutable(this, this.gl_1);
+      if (!(mutableTail === this.gl_1)) {
         var tmp0_this = this;
-        var tmp1 = tmp0_this.tc_1;
-        tmp0_this.tc_1 = tmp1 + 1 | 0;
+        var tmp1 = tmp0_this.sc_1;
+        tmp0_this.sc_1 = tmp1 + 1 | 0;
       }
       var tailIndex = index & get_MAX_BUFFER_SIZE_MINUS_ONE();
       var oldElement = mutableTail[tailIndex];
       mutableTail[tailIndex] = element;
-      this.il_1 = mutableTail;
+      this.gl_1 = mutableTail;
       return (oldElement == null ? true : isObject(oldElement)) ? oldElement : THROW_CCE();
     }
     var oldElementCarry = new ObjectRef(null);
-    this.hl_1 = setInRoot(this, ensureNotNull(this.hl_1), this.fl_1, index, element, oldElementCarry);
-    var tmp = oldElementCarry.al_1;
+    this.fl_1 = setInRoot(this, ensureNotNull(this.fl_1), this.dl_1, index, element, oldElementCarry);
+    var tmp = oldElementCarry.yk_1;
     return (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
   };
   PersistentVectorBuilder.prototype.l = function () {
-    return this.sk();
+    return this.qk();
   };
-  PersistentVectorBuilder.prototype.sk = function () {
+  PersistentVectorBuilder.prototype.qk = function () {
     return this.r(0);
   };
   PersistentVectorBuilder.prototype.r = function (index) {
-    ListImplementation_getInstance().z1(index, this.jl_1);
+    ListImplementation_getInstance().z1(index, this.hl_1);
     return new PersistentVectorMutableIterator(this, index);
   };
   PersistentVectorBuilder.$metadata$ = classMeta('PersistentVectorBuilder', [Builder_0], undefined, undefined, undefined, AbstractMutableList.prototype);
   function PersistentVectorIterator(root, tail, index, size, trieHeight) {
     AbstractListIterator.call(this, index, size);
-    this.nl_1 = tail;
+    this.ll_1 = tail;
     var trieSize = rootSize_1(size);
     var trieIndex = coerceAtMost(index, trieSize);
-    this.ol_1 = new TrieIterator(root, trieIndex, trieSize, trieHeight);
+    this.ml_1 = new TrieIterator(root, trieIndex, trieSize, trieHeight);
   }
   PersistentVectorIterator.prototype.n = function () {
-    this.rk();
-    if (this.ol_1.m()) {
+    this.pk();
+    if (this.ml_1.m()) {
       var tmp0_this = this;
-      var tmp1 = tmp0_this.pk_1;
-      tmp0_this.pk_1 = tmp1 + 1 | 0;
-      return this.ol_1.n();
+      var tmp1 = tmp0_this.nk_1;
+      tmp0_this.nk_1 = tmp1 + 1 | 0;
+      return this.ml_1.n();
     }
     var tmp2_this = this;
-    var tmp3 = tmp2_this.pk_1;
-    tmp2_this.pk_1 = tmp3 + 1 | 0;
-    return this.nl_1[tmp3 - this.ol_1.qk_1 | 0];
+    var tmp3 = tmp2_this.nk_1;
+    tmp2_this.nk_1 = tmp3 + 1 | 0;
+    return this.ll_1[tmp3 - this.ml_1.ok_1 | 0];
   };
   PersistentVectorIterator.$metadata$ = classMeta('PersistentVectorIterator', undefined, undefined, undefined, undefined, AbstractListIterator.prototype);
   function reset($this) {
-    $this.qk_1 = $this.wl_1.jl_1;
-    $this.xl_1 = $this.wl_1.kl();
-    $this.zl_1 = -1;
+    $this.ok_1 = $this.ul_1.hl_1;
+    $this.vl_1 = $this.ul_1.il();
+    $this.xl_1 = -1;
     setupTrieIterator($this);
   }
   function setupTrieIterator($this) {
-    var root = $this.wl_1.hl_1;
+    var root = $this.ul_1.fl_1;
     if (root == null) {
-      $this.yl_1 = null;
+      $this.wl_1 = null;
       return Unit_getInstance();
     }
-    var trieSize = rootSize_1($this.wl_1.jl_1);
-    var trieIndex = coerceAtMost($this.pk_1, trieSize);
-    var trieHeight = ($this.wl_1.fl_1 / get_LOG_MAX_BUFFER_SIZE() | 0) + 1 | 0;
-    if ($this.yl_1 == null) {
-      $this.yl_1 = new TrieIterator(root, trieIndex, trieSize, trieHeight);
+    var trieSize = rootSize_1($this.ul_1.hl_1);
+    var trieIndex = coerceAtMost($this.nk_1, trieSize);
+    var trieHeight = ($this.ul_1.dl_1 / get_LOG_MAX_BUFFER_SIZE() | 0) + 1 | 0;
+    if ($this.wl_1 == null) {
+      $this.wl_1 = new TrieIterator(root, trieIndex, trieSize, trieHeight);
     } else {
-      ensureNotNull($this.yl_1).am(root, trieIndex, trieSize, trieHeight);
+      ensureNotNull($this.wl_1).yl(root, trieIndex, trieSize, trieHeight);
     }
   }
   function checkForComodification($this) {
-    if (!($this.xl_1 === $this.wl_1.kl()))
+    if (!($this.vl_1 === $this.ul_1.il()))
       throw ConcurrentModificationException_init_$Create$();
   }
   function checkHasIterated($this) {
-    if ($this.zl_1 === -1)
+    if ($this.xl_1 === -1)
       throw IllegalStateException_init_$Create$_0();
   }
   function PersistentVectorMutableIterator(builder, index) {
-    AbstractListIterator.call(this, index, builder.jl_1);
-    this.wl_1 = builder;
-    this.xl_1 = this.wl_1.kl();
-    this.yl_1 = null;
-    this.zl_1 = -1;
+    AbstractListIterator.call(this, index, builder.hl_1);
+    this.ul_1 = builder;
+    this.vl_1 = this.ul_1.il();
+    this.wl_1 = null;
+    this.xl_1 = -1;
     setupTrieIterator(this);
   }
   PersistentVectorMutableIterator.prototype.n = function () {
     checkForComodification(this);
-    this.rk();
-    this.zl_1 = this.pk_1;
-    var tmp2_elvis_lhs = this.yl_1;
+    this.pk();
+    this.xl_1 = this.nk_1;
+    var tmp2_elvis_lhs = this.wl_1;
     var tmp;
     if (tmp2_elvis_lhs == null) {
-      var tmp_0 = this.wl_1.il_1;
+      var tmp_0 = this.ul_1.gl_1;
       var tmp0_this = this;
-      var tmp1 = tmp0_this.pk_1;
-      tmp0_this.pk_1 = tmp1 + 1 | 0;
+      var tmp1 = tmp0_this.nk_1;
+      tmp0_this.nk_1 = tmp1 + 1 | 0;
       var tmp_1 = tmp_0[tmp1];
       return (tmp_1 == null ? true : isObject(tmp_1)) ? tmp_1 : THROW_CCE();
     } else {
@@ -1064,23 +1064,23 @@
     var trieIterator = tmp;
     if (trieIterator.m()) {
       var tmp3_this = this;
-      var tmp4 = tmp3_this.pk_1;
-      tmp3_this.pk_1 = tmp4 + 1 | 0;
+      var tmp4 = tmp3_this.nk_1;
+      tmp3_this.nk_1 = tmp4 + 1 | 0;
       return trieIterator.n();
     }
-    var tmp_2 = this.wl_1.il_1;
+    var tmp_2 = this.ul_1.gl_1;
     var tmp5_this = this;
-    var tmp6 = tmp5_this.pk_1;
-    tmp5_this.pk_1 = tmp6 + 1 | 0;
-    var tmp_3 = tmp_2[tmp6 - trieIterator.qk_1 | 0];
+    var tmp6 = tmp5_this.nk_1;
+    tmp5_this.nk_1 = tmp6 + 1 | 0;
+    var tmp_3 = tmp_2[tmp6 - trieIterator.ok_1 | 0];
     return (tmp_3 == null ? true : isObject(tmp_3)) ? tmp_3 : THROW_CCE();
   };
-  PersistentVectorMutableIterator.prototype.k4 = function () {
+  PersistentVectorMutableIterator.prototype.j4 = function () {
     checkForComodification(this);
     checkHasIterated(this);
-    this.wl_1.j4(this.zl_1);
-    if (this.zl_1 < this.pk_1)
-      this.pk_1 = this.zl_1;
+    this.ul_1.i4(this.xl_1);
+    if (this.xl_1 < this.nk_1)
+      this.nk_1 = this.xl_1;
     reset(this);
   };
   PersistentVectorMutableIterator.$metadata$ = classMeta('PersistentVectorMutableIterator', [MutableListIterator], undefined, undefined, undefined, AbstractListIterator.prototype);
@@ -1090,7 +1090,7 @@
     var tmp$ret$0;
     // Inline function 'kotlin.emptyArray' call
     tmp$ret$0 = [];
-    tmp.bm_1 = new SmallPersistentVector(tmp$ret$0);
+    tmp.zl_1 = new SmallPersistentVector(tmp$ret$0);
   }
   Companion.$metadata$ = objectMeta('Companion');
   var Companion_instance;
@@ -1102,24 +1102,24 @@
   function SmallPersistentVector(buffer) {
     Companion_getInstance();
     AbstractPersistentList.call(this);
-    this.cm_1 = buffer;
-    assert(this.cm_1.length <= get_MAX_BUFFER_SIZE());
+    this.am_1 = buffer;
+    assert(this.am_1.length <= get_MAX_BUFFER_SIZE());
   }
   SmallPersistentVector.prototype.o = function () {
-    return this.cm_1.length;
+    return this.am_1.length;
   };
   SmallPersistentVector.prototype.g = function (element) {
     if (this.o() < get_MAX_BUFFER_SIZE()) {
-      var newBuffer = copyOf(this.cm_1, this.o() + 1 | 0);
+      var newBuffer = copyOf(this.am_1, this.o() + 1 | 0);
       newBuffer[this.o()] = element;
       return new SmallPersistentVector(newBuffer);
     }
     var tail = presizedBufferWith(element);
-    return new PersistentVector(this.cm_1, tail, this.o() + 1 | 0, 0);
+    return new PersistentVector(this.am_1, tail, this.o() + 1 | 0, 0);
   };
   SmallPersistentVector.prototype.q = function (elements) {
     if ((this.o() + elements.o() | 0) <= get_MAX_BUFFER_SIZE()) {
-      var newBuffer = copyOf(this.cm_1, this.o() + elements.o() | 0);
+      var newBuffer = copyOf(this.am_1, this.o() + elements.o() | 0);
       var index = this.o();
       var tmp0_iterator = elements.l();
       while (tmp0_iterator.m()) {
@@ -1134,53 +1134,53 @@
     // Inline function 'kotlinx.collections.immutable.mutate' call
     var tmp$ret$0;
     // Inline function 'kotlin.apply' call
-    var tmp0_apply = this.kk();
+    var tmp0_apply = this.ik();
     // Inline function 'kotlin.contracts.contract' call
     // Inline function 'kotlinx.collections.immutable.implementations.immutableList.SmallPersistentVector.addAll.<anonymous>' call
     tmp0_apply.q(elements);
     tmp$ret$0 = tmp0_apply;
-    tmp$ret$1 = tmp$ret$0.jk();
+    tmp$ret$1 = tmp$ret$0.hk();
     return tmp$ret$1;
   };
-  SmallPersistentVector.prototype.j4 = function (index) {
+  SmallPersistentVector.prototype.i4 = function (index) {
     ListImplementation_getInstance().a2(index, this.o());
     if (this.o() === 1) {
-      return Companion_getInstance().bm_1;
+      return Companion_getInstance().zl_1;
     }
-    var newBuffer = copyOf(this.cm_1, this.o() - 1 | 0);
+    var newBuffer = copyOf(this.am_1, this.o() - 1 | 0);
     var tmp$ret$0;
     // Inline function 'kotlin.collections.copyInto' call
-    var tmp0_copyInto = this.cm_1;
+    var tmp0_copyInto = this.am_1;
     var tmp1_copyInto = index + 1 | 0;
     var tmp2_copyInto = this.o();
     arrayCopy(tmp0_copyInto, newBuffer, index, tmp1_copyInto, tmp2_copyInto);
     tmp$ret$0 = newBuffer;
     return new SmallPersistentVector(newBuffer);
   };
-  SmallPersistentVector.prototype.kk = function () {
-    return new PersistentVectorBuilder(this, null, this.cm_1, 0);
+  SmallPersistentVector.prototype.ik = function () {
+    return new PersistentVectorBuilder(this, null, this.am_1, 0);
   };
   SmallPersistentVector.prototype.f2 = function (element) {
-    return indexOf(this.cm_1, element);
+    return indexOf(this.am_1, element);
   };
   SmallPersistentVector.prototype.r = function (index) {
     ListImplementation_getInstance().z1(index, this.o());
-    var tmp = this.cm_1;
+    var tmp = this.am_1;
     return new BufferIterator(isArray(tmp) ? tmp : THROW_CCE(), index, this.o());
   };
   SmallPersistentVector.prototype.p = function (index) {
     ListImplementation_getInstance().a2(index, this.o());
-    var tmp = this.cm_1[index];
+    var tmp = this.am_1[index];
     return (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
   };
   SmallPersistentVector.$metadata$ = classMeta('SmallPersistentVector', [ImmutableList], undefined, undefined, undefined, AbstractPersistentList.prototype);
   function fillPath($this, index, startLevel) {
-    var shift = imul($this.rl_1 - startLevel | 0, get_LOG_MAX_BUFFER_SIZE());
+    var shift = imul($this.pl_1 - startLevel | 0, get_LOG_MAX_BUFFER_SIZE());
     var i = startLevel;
-    while (i < $this.rl_1) {
-      var tmp = $this.sl_1;
+    while (i < $this.pl_1) {
+      var tmp = $this.ql_1;
       var tmp_0 = i;
-      var tmp_1 = $this.sl_1[i - 1 | 0];
+      var tmp_1 = $this.ql_1[i - 1 | 0];
       tmp[tmp_0] = ((!(tmp_1 == null) ? isArray(tmp_1) : false) ? tmp_1 : THROW_CCE())[indexSegment(index, shift)];
       shift = shift - get_LOG_MAX_BUFFER_SIZE() | 0;
       i = i + 1 | 0;
@@ -1188,46 +1188,46 @@
   }
   function fillPathIfNeeded($this, indexPredicate) {
     var shift = 0;
-    while (indexSegment($this.pk_1, shift) === indexPredicate) {
+    while (indexSegment($this.nk_1, shift) === indexPredicate) {
       shift = shift + get_LOG_MAX_BUFFER_SIZE() | 0;
     }
     if (shift > 0) {
-      var level = ($this.rl_1 - 1 | 0) - (shift / get_LOG_MAX_BUFFER_SIZE() | 0) | 0;
-      fillPath($this, $this.pk_1, level + 1 | 0);
+      var level = ($this.pl_1 - 1 | 0) - (shift / get_LOG_MAX_BUFFER_SIZE() | 0) | 0;
+      fillPath($this, $this.nk_1, level + 1 | 0);
     }
   }
   function elementAtCurrentIndex($this) {
-    var leafBufferIndex = $this.pk_1 & get_MAX_BUFFER_SIZE_MINUS_ONE();
-    var tmp = $this.sl_1[$this.rl_1 - 1 | 0];
+    var leafBufferIndex = $this.nk_1 & get_MAX_BUFFER_SIZE_MINUS_ONE();
+    var tmp = $this.ql_1[$this.pl_1 - 1 | 0];
     return ((!(tmp == null) ? isArray(tmp) : false) ? tmp : THROW_CCE())[leafBufferIndex];
   }
   function TrieIterator(root, index, size, height) {
     AbstractListIterator.call(this, index, size);
-    this.rl_1 = height;
+    this.pl_1 = height;
     var tmp = this;
     var tmp$ret$0;
     // Inline function 'kotlin.arrayOfNulls' call
-    var tmp0_arrayOfNulls = this.rl_1;
+    var tmp0_arrayOfNulls = this.pl_1;
     tmp$ret$0 = fillArrayVal(Array(tmp0_arrayOfNulls), null);
-    tmp.sl_1 = tmp$ret$0;
-    this.tl_1 = index === size;
-    this.sl_1[0] = root;
-    fillPath(this, index - (this.tl_1 ? 1 : 0) | 0, 1);
+    tmp.ql_1 = tmp$ret$0;
+    this.rl_1 = index === size;
+    this.ql_1[0] = root;
+    fillPath(this, index - (this.rl_1 ? 1 : 0) | 0, 1);
   }
-  TrieIterator.prototype.am = function (root, index, size, height) {
-    this.pk_1 = index;
-    this.qk_1 = size;
-    this.rl_1 = height;
-    if (this.sl_1.length < height) {
+  TrieIterator.prototype.yl = function (root, index, size, height) {
+    this.nk_1 = index;
+    this.ok_1 = size;
+    this.pl_1 = height;
+    if (this.ql_1.length < height) {
       var tmp = this;
       var tmp$ret$0;
       // Inline function 'kotlin.arrayOfNulls' call
       tmp$ret$0 = fillArrayVal(Array(height), null);
-      tmp.sl_1 = tmp$ret$0;
+      tmp.ql_1 = tmp$ret$0;
     }
-    this.sl_1[0] = root;
-    this.tl_1 = index === size;
-    fillPath(this, index - (this.tl_1 ? 1 : 0) | 0, 1);
+    this.ql_1[0] = root;
+    this.rl_1 = index === size;
+    fillPath(this, index - (this.rl_1 ? 1 : 0) | 0, 1);
   };
   TrieIterator.prototype.n = function () {
     if (!this.m()) {
@@ -1235,9 +1235,9 @@
     }
     var result = elementAtCurrentIndex(this);
     var tmp0_this = this;
-    tmp0_this.pk_1 = tmp0_this.pk_1 + 1 | 0;
-    if (this.pk_1 === this.qk_1) {
-      this.tl_1 = true;
+    tmp0_this.nk_1 = tmp0_this.nk_1 + 1 | 0;
+    if (this.nk_1 === this.ok_1) {
+      this.rl_1 = true;
       return result;
     }
     fillPathIfNeeded(this, 0);
@@ -1245,7 +1245,7 @@
   };
   TrieIterator.$metadata$ = classMeta('TrieIterator', undefined, undefined, undefined, undefined, AbstractListIterator.prototype);
   function persistentVectorOf() {
-    return Companion_getInstance().bm_1;
+    return Companion_getInstance().zl_1;
   }
   function get_MAX_BUFFER_SIZE() {
     return MAX_BUFFER_SIZE;
@@ -1275,7 +1275,7 @@
     return index >> shift & 31;
   }
   function ObjectRef(value) {
-    this.al_1 = value;
+    this.yk_1 = value;
   }
   ObjectRef.$metadata$ = classMeta('ObjectRef');
   function get_MUTABLE_BUFFER_SIZE() {
@@ -1287,10 +1287,10 @@
   }
   function Companion_0() {
     Companion_instance_0 = this;
-    this.lk_1 = new PersistentHashMap(Companion_getInstance_1().dm_1, 0);
+    this.jk_1 = new PersistentHashMap(Companion_getInstance_1().bm_1, 0);
   }
-  Companion_0.prototype.mk = function () {
-    var tmp = this.lk_1;
+  Companion_0.prototype.kk = function () {
+    var tmp = this.jk_1;
     return tmp instanceof PersistentHashMap ? tmp : THROW_CCE();
   };
   Companion_0.$metadata$ = objectMeta('Companion');
@@ -1301,10 +1301,10 @@
     return Companion_instance_0;
   }
   function PersistentHashMap$equals$lambda(a, b) {
-    return equals(a, b.em_1);
+    return equals(a, b.cm_1);
   }
   function PersistentHashMap$equals$lambda_0(a, b) {
-    return equals(a, b.em_1);
+    return equals(a, b.cm_1);
   }
   function PersistentHashMap$equals$lambda_1(a, b) {
     return equals(a, b);
@@ -1315,11 +1315,11 @@
   function PersistentHashMap(node, size) {
     Companion_getInstance_0();
     AbstractMap.call(this);
-    this.jm_1 = node;
-    this.km_1 = size;
+    this.hm_1 = node;
+    this.im_1 = size;
   }
   PersistentHashMap.prototype.o = function () {
-    return this.km_1;
+    return this.im_1;
   };
   PersistentHashMap.prototype.y2 = function () {
     return new PersistentHashMapKeys(this);
@@ -1336,7 +1336,7 @@
     var tmp0_safe_receiver = key;
     var tmp1_elvis_lhs = tmp0_safe_receiver == null ? null : hashCode(tmp0_safe_receiver);
     tmp$ret$0 = tmp1_elvis_lhs == null ? 0 : tmp1_elvis_lhs;
-    return this.jm_1.pm(tmp$ret$0, key, 0);
+    return this.hm_1.nm(tmp$ret$0, key, 0);
   };
   PersistentHashMap.prototype.x2 = function (key) {
     var tmp$ret$0;
@@ -1344,7 +1344,7 @@
     var tmp0_safe_receiver = key;
     var tmp1_elvis_lhs = tmp0_safe_receiver == null ? null : hashCode(tmp0_safe_receiver);
     tmp$ret$0 = tmp1_elvis_lhs == null ? 0 : tmp1_elvis_lhs;
-    return this.jm_1.qm(tmp$ret$0, key, 0);
+    return this.hm_1.om(tmp$ret$0, key, 0);
   };
   PersistentHashMap.prototype.s = function (key, value) {
     var tmp$ret$0;
@@ -1352,7 +1352,7 @@
     var tmp0_safe_receiver = key;
     var tmp1_elvis_lhs = tmp0_safe_receiver == null ? null : hashCode(tmp0_safe_receiver);
     tmp$ret$0 = tmp1_elvis_lhs == null ? 0 : tmp1_elvis_lhs;
-    var tmp0_elvis_lhs = this.jm_1.rm(tmp$ret$0, key, value, 0);
+    var tmp0_elvis_lhs = this.hm_1.pm(tmp$ret$0, key, value, 0);
     var tmp;
     if (tmp0_elvis_lhs == null) {
       return this;
@@ -1360,30 +1360,30 @@
       tmp = tmp0_elvis_lhs;
     }
     var newNodeResult = tmp;
-    return new PersistentHashMap(newNodeResult.sm_1, this.km_1 + newNodeResult.tm_1 | 0);
+    return new PersistentHashMap(newNodeResult.qm_1, this.im_1 + newNodeResult.rm_1 | 0);
   };
   PersistentHashMap.prototype.equals = function (other) {
     if (other === this)
       return true;
     if (!(!(other == null) ? isInterface(other, Map) : false))
       return false;
-    if (!(this.km_1 === other.o()))
+    if (!(this.im_1 === other.o()))
       return false;
     var tmp0_subject = other;
     var tmp;
     if (tmp0_subject instanceof PersistentOrderedMap) {
-      tmp = this.jm_1.zm(other.hn_1.jm_1, PersistentHashMap$equals$lambda);
+      tmp = this.hm_1.xm(other.fn_1.hm_1, PersistentHashMap$equals$lambda);
     } else {
       if (tmp0_subject instanceof PersistentOrderedMapBuilder) {
-        var tmp_0 = other.en_1.ym_1;
-        tmp = this.jm_1.zm(tmp_0, PersistentHashMap$equals$lambda_0);
+        var tmp_0 = other.cn_1.wm_1;
+        tmp = this.hm_1.xm(tmp_0, PersistentHashMap$equals$lambda_0);
       } else {
         if (tmp0_subject instanceof PersistentHashMap) {
-          tmp = this.jm_1.zm(other.jm_1, PersistentHashMap$equals$lambda_1);
+          tmp = this.hm_1.xm(other.hm_1, PersistentHashMap$equals$lambda_1);
         } else {
           if (tmp0_subject instanceof PersistentHashMapBuilder) {
-            var tmp_1 = other.ym_1;
-            tmp = this.jm_1.zm(tmp_1, PersistentHashMap$equals$lambda_2);
+            var tmp_1 = other.wm_1;
+            tmp = this.hm_1.xm(tmp_1, PersistentHashMap$equals$lambda_2);
           } else {
             tmp = AbstractMap.prototype.equals.call(this, other);
           }
@@ -1454,111 +1454,111 @@
   }
   PersistentHashMapEntriesIterator.$metadata$ = classMeta('PersistentHashMapEntriesIterator', undefined, undefined, undefined, undefined, PersistentHashMapBaseIterator.prototype);
   function moveToNextNodeWithData($this, pathIndex) {
-    if ($this.in_1[pathIndex].on()) {
+    if ($this.gn_1[pathIndex].mn()) {
       return pathIndex;
     }
-    if ($this.in_1[pathIndex].sn()) {
-      var node = $this.in_1[pathIndex].pn();
+    if ($this.gn_1[pathIndex].qn()) {
+      var node = $this.gn_1[pathIndex].nn();
       if (pathIndex === 6) {
-        $this.in_1[pathIndex + 1 | 0].rn(node.om_1, node.om_1.length);
+        $this.gn_1[pathIndex + 1 | 0].pn(node.mm_1, node.mm_1.length);
       } else {
-        $this.in_1[pathIndex + 1 | 0].rn(node.om_1, imul(get_ENTRY_SIZE(), node.qn()));
+        $this.gn_1[pathIndex + 1 | 0].pn(node.mm_1, imul(get_ENTRY_SIZE(), node.on()));
       }
       return moveToNextNodeWithData($this, pathIndex + 1 | 0);
     }
     return -1;
   }
   function ensureNextEntryIsReady($this) {
-    if ($this.in_1[$this.jn_1].on()) {
+    if ($this.gn_1[$this.hn_1].mn()) {
       return Unit_getInstance();
     }
-    var inductionVariable = $this.jn_1;
+    var inductionVariable = $this.hn_1;
     if (0 <= inductionVariable)
       do {
         var i = inductionVariable;
         inductionVariable = inductionVariable + -1 | 0;
         var result = moveToNextNodeWithData($this, i);
-        if (result === -1 ? $this.in_1[i].sn() : false) {
-          $this.in_1[i].tn();
+        if (result === -1 ? $this.gn_1[i].qn() : false) {
+          $this.gn_1[i].rn();
           result = moveToNextNodeWithData($this, i);
         }
         if (!(result === -1)) {
-          $this.jn_1 = result;
+          $this.hn_1 = result;
           return Unit_getInstance();
         }
         if (i > 0) {
-          $this.in_1[i - 1 | 0].tn();
+          $this.gn_1[i - 1 | 0].rn();
         }
-        $this.in_1[i].rn(Companion_getInstance_1().dm_1.om_1, 0);
+        $this.gn_1[i].pn(Companion_getInstance_1().bm_1.mm_1, 0);
       }
        while (0 <= inductionVariable);
-    $this.kn_1 = false;
+    $this.in_1 = false;
   }
   function checkHasNext($this) {
     if (!$this.m())
       throw NoSuchElementException_init_$Create$();
   }
   function PersistentHashMapBaseIterator(node, path) {
-    this.in_1 = path;
-    this.jn_1 = 0;
-    this.kn_1 = true;
-    this.in_1[0].rn(node.om_1, imul(get_ENTRY_SIZE(), node.qn()));
-    this.jn_1 = 0;
+    this.gn_1 = path;
+    this.hn_1 = 0;
+    this.in_1 = true;
+    this.gn_1[0].pn(node.mm_1, imul(get_ENTRY_SIZE(), node.on()));
+    this.hn_1 = 0;
     ensureNextEntryIsReady(this);
   }
   PersistentHashMapBaseIterator.prototype.m = function () {
-    return this.kn_1;
+    return this.in_1;
   };
   PersistentHashMapBaseIterator.prototype.n = function () {
     checkHasNext(this);
-    var result = this.in_1[this.jn_1].n();
+    var result = this.gn_1[this.hn_1].n();
     ensureNextEntryIsReady(this);
     return result;
   };
   PersistentHashMapBaseIterator.$metadata$ = classMeta('PersistentHashMapBaseIterator', [Iterator]);
   function TrieNodeBaseIterator() {
-    this.ln_1 = Companion_getInstance_1().dm_1.om_1;
-    this.mn_1 = 0;
-    this.nn_1 = 0;
+    this.jn_1 = Companion_getInstance_1().bm_1.mm_1;
+    this.kn_1 = 0;
+    this.ln_1 = 0;
   }
-  TrieNodeBaseIterator.prototype.un = function (buffer, dataSize, index) {
-    this.ln_1 = buffer;
-    this.mn_1 = dataSize;
-    this.nn_1 = index;
+  TrieNodeBaseIterator.prototype.sn = function (buffer, dataSize, index) {
+    this.jn_1 = buffer;
+    this.kn_1 = dataSize;
+    this.ln_1 = index;
   };
-  TrieNodeBaseIterator.prototype.rn = function (buffer, dataSize) {
-    this.un(buffer, dataSize, 0);
+  TrieNodeBaseIterator.prototype.pn = function (buffer, dataSize) {
+    this.sn(buffer, dataSize, 0);
   };
-  TrieNodeBaseIterator.prototype.on = function () {
-    return this.nn_1 < this.mn_1;
+  TrieNodeBaseIterator.prototype.mn = function () {
+    return this.ln_1 < this.kn_1;
   };
-  TrieNodeBaseIterator.prototype.sn = function () {
-    assert(this.nn_1 >= this.mn_1);
-    return this.nn_1 < this.ln_1.length;
+  TrieNodeBaseIterator.prototype.qn = function () {
+    assert(this.ln_1 >= this.kn_1);
+    return this.ln_1 < this.jn_1.length;
   };
-  TrieNodeBaseIterator.prototype.pn = function () {
-    assert(this.sn());
-    var tmp = this.ln_1[this.nn_1];
+  TrieNodeBaseIterator.prototype.nn = function () {
+    assert(this.qn());
+    var tmp = this.jn_1[this.ln_1];
     return tmp instanceof TrieNode ? tmp : THROW_CCE();
   };
-  TrieNodeBaseIterator.prototype.tn = function () {
-    assert(this.sn());
+  TrieNodeBaseIterator.prototype.rn = function () {
+    assert(this.qn());
     var tmp0_this = this;
-    var tmp1 = tmp0_this.nn_1;
-    tmp0_this.nn_1 = tmp1 + 1 | 0;
+    var tmp1 = tmp0_this.ln_1;
+    tmp0_this.ln_1 = tmp1 + 1 | 0;
   };
   TrieNodeBaseIterator.prototype.m = function () {
-    return this.on();
+    return this.mn();
   };
   TrieNodeBaseIterator.$metadata$ = classMeta('TrieNodeBaseIterator', [Iterator]);
   function TrieNodeKeysIterator() {
     TrieNodeBaseIterator.call(this);
   }
   TrieNodeKeysIterator.prototype.n = function () {
-    assert(this.on());
+    assert(this.mn());
     var tmp0_this = this;
-    tmp0_this.nn_1 = tmp0_this.nn_1 + 2 | 0;
-    var tmp = this.ln_1[this.nn_1 - 2 | 0];
+    tmp0_this.ln_1 = tmp0_this.ln_1 + 2 | 0;
+    var tmp = this.jn_1[this.ln_1 - 2 | 0];
     return (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
   };
   TrieNodeKeysIterator.$metadata$ = classMeta('TrieNodeKeysIterator', undefined, undefined, undefined, undefined, TrieNodeBaseIterator.prototype);
@@ -1566,10 +1566,10 @@
     TrieNodeBaseIterator.call(this);
   }
   TrieNodeValuesIterator.prototype.n = function () {
-    assert(this.on());
+    assert(this.mn());
     var tmp0_this = this;
-    tmp0_this.nn_1 = tmp0_this.nn_1 + 2 | 0;
-    var tmp = this.ln_1[this.nn_1 - 1 | 0];
+    tmp0_this.ln_1 = tmp0_this.ln_1 + 2 | 0;
+    var tmp = this.jn_1[this.ln_1 - 1 | 0];
     return (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
   };
   TrieNodeValuesIterator.$metadata$ = classMeta('TrieNodeValuesIterator', undefined, undefined, undefined, undefined, TrieNodeBaseIterator.prototype);
@@ -1577,24 +1577,24 @@
     TrieNodeBaseIterator.call(this);
   }
   TrieNodeEntriesIterator.prototype.n = function () {
-    assert(this.on());
+    assert(this.mn());
     var tmp0_this = this;
-    tmp0_this.nn_1 = tmp0_this.nn_1 + 2 | 0;
-    var tmp = this.ln_1[this.nn_1 - 2 | 0];
+    tmp0_this.ln_1 = tmp0_this.ln_1 + 2 | 0;
+    var tmp = this.jn_1[this.ln_1 - 2 | 0];
     var tmp_0 = (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
-    var tmp_1 = this.ln_1[this.nn_1 - 1 | 0];
+    var tmp_1 = this.jn_1[this.ln_1 - 1 | 0];
     return new MapEntry(tmp_0, (tmp_1 == null ? true : isObject(tmp_1)) ? tmp_1 : THROW_CCE());
   };
   TrieNodeEntriesIterator.$metadata$ = classMeta('TrieNodeEntriesIterator', undefined, undefined, undefined, undefined, TrieNodeBaseIterator.prototype);
   function MapEntry(key, value) {
-    this.eo_1 = key;
-    this.fo_1 = value;
+    this.co_1 = key;
+    this.do_1 = value;
   }
   MapEntry.prototype.h2 = function () {
-    return this.eo_1;
+    return this.co_1;
   };
   MapEntry.prototype.j2 = function () {
-    return this.fo_1;
+    return this.do_1;
   };
   MapEntry.prototype.hashCode = function () {
     var tmp$ret$0;
@@ -1636,13 +1636,13 @@
   MapEntry.$metadata$ = classMeta('MapEntry', [Entry]);
   function PersistentHashMapKeys(map) {
     AbstractSet.call(this);
-    this.go_1 = map;
+    this.eo_1 = map;
   }
   PersistentHashMapKeys.prototype.o = function () {
-    return this.go_1.km_1;
+    return this.eo_1.im_1;
   };
   PersistentHashMapKeys.prototype.o2 = function (element) {
-    return this.go_1.r2(element);
+    return this.eo_1.r2(element);
   };
   PersistentHashMapKeys.prototype.k1 = function (element) {
     if (!(element == null ? true : isObject(element)))
@@ -1650,18 +1650,18 @@
     return this.o2((element == null ? true : isObject(element)) ? element : THROW_CCE());
   };
   PersistentHashMapKeys.prototype.l = function () {
-    return new PersistentHashMapKeysIterator(this.go_1.jm_1);
+    return new PersistentHashMapKeysIterator(this.eo_1.hm_1);
   };
   PersistentHashMapKeys.$metadata$ = classMeta('PersistentHashMapKeys', [ImmutableSet], undefined, undefined, undefined, AbstractSet.prototype);
   function PersistentHashMapValues(map) {
     AbstractCollection.call(this);
-    this.ho_1 = map;
+    this.fo_1 = map;
   }
   PersistentHashMapValues.prototype.o = function () {
-    return this.ho_1.km_1;
+    return this.fo_1.im_1;
   };
   PersistentHashMapValues.prototype.u2 = function (element) {
-    return this.ho_1.v2(element);
+    return this.fo_1.v2(element);
   };
   PersistentHashMapValues.prototype.k1 = function (element) {
     if (!(element == null ? true : isObject(element)))
@@ -1669,26 +1669,26 @@
     return this.u2((element == null ? true : isObject(element)) ? element : THROW_CCE());
   };
   PersistentHashMapValues.prototype.l = function () {
-    return new PersistentHashMapValuesIterator(this.ho_1.jm_1);
+    return new PersistentHashMapValuesIterator(this.fo_1.hm_1);
   };
   PersistentHashMapValues.$metadata$ = classMeta('PersistentHashMapValues', [ImmutableCollection], undefined, undefined, undefined, AbstractCollection.prototype);
   function PersistentHashMapEntries(map) {
     AbstractSet.call(this);
-    this.io_1 = map;
+    this.go_1 = map;
   }
   PersistentHashMapEntries.prototype.o = function () {
-    return this.io_1.km_1;
+    return this.go_1.im_1;
   };
-  PersistentHashMapEntries.prototype.jo = function (element) {
-    return MapImplementation_getInstance().ko(this.io_1, element);
+  PersistentHashMapEntries.prototype.ho = function (element) {
+    return MapImplementation_getInstance().io(this.go_1, element);
   };
   PersistentHashMapEntries.prototype.k1 = function (element) {
     if (!(!(element == null) ? isInterface(element, Entry) : false))
       return false;
-    return this.jo((!(element == null) ? isInterface(element, Entry) : false) ? element : THROW_CCE());
+    return this.ho((!(element == null) ? isInterface(element, Entry) : false) ? element : THROW_CCE());
   };
   PersistentHashMapEntries.prototype.l = function () {
-    return new PersistentHashMapEntriesIterator(this.io_1.jm_1);
+    return new PersistentHashMapEntriesIterator(this.go_1.hm_1);
   };
   PersistentHashMapEntries.$metadata$ = classMeta('PersistentHashMapEntries', [ImmutableSet], undefined, undefined, undefined, AbstractSet.prototype);
   function TrieNode_init_$Init$(dataMap, nodeMap, buffer, $this) {
@@ -1699,21 +1699,21 @@
     return TrieNode_init_$Init$(dataMap, nodeMap, buffer, Object.create(TrieNode.prototype));
   }
   function ModificationResult(node, sizeDelta) {
-    this.sm_1 = node;
-    this.tm_1 = sizeDelta;
+    this.qm_1 = node;
+    this.rm_1 = sizeDelta;
   }
-  ModificationResult.prototype.lo = function (_set____db54di) {
-    this.sm_1 = _set____db54di;
+  ModificationResult.prototype.jo = function (_set____db54di) {
+    this.qm_1 = _set____db54di;
   };
-  ModificationResult.prototype.mo = function () {
-    return this.sm_1;
+  ModificationResult.prototype.ko = function () {
+    return this.qm_1;
   };
-  ModificationResult.prototype.no = function (operation) {
+  ModificationResult.prototype.lo = function (operation) {
     var tmp$ret$0;
     // Inline function 'kotlin.apply' call
     // Inline function 'kotlin.contracts.contract' call
     // Inline function 'kotlinx.collections.immutable.implementations.immutableMap.ModificationResult.replaceNode.<anonymous>' call
-    this.sm_1 = operation(this.sm_1);
+    this.qm_1 = operation(this.qm_1);
     tmp$ret$0 = this;
     return tmp$ret$0;
   };
@@ -1725,47 +1725,47 @@
     return new ModificationResult($this, 0);
   }
   function hasNodeAt($this, positionMask) {
-    return !(($this.mm_1 & positionMask) === 0);
+    return !(($this.km_1 & positionMask) === 0);
   }
   function keyAtIndex($this, keyIndex) {
-    var tmp = $this.om_1[keyIndex];
+    var tmp = $this.mm_1[keyIndex];
     return (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
   }
   function valueAtKeyIndex($this, keyIndex) {
-    var tmp = $this.om_1[keyIndex + 1 | 0];
+    var tmp = $this.mm_1[keyIndex + 1 | 0];
     return (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
   }
   function insertEntryAt($this, positionMask, key, value) {
-    var keyIndex = $this.oo(positionMask);
-    var newBuffer = insertEntryAtIndex($this.om_1, keyIndex, key, value);
-    return TrieNode_init_$Create$($this.lm_1 | positionMask, $this.mm_1, newBuffer);
+    var keyIndex = $this.mo(positionMask);
+    var newBuffer = insertEntryAtIndex($this.mm_1, keyIndex, key, value);
+    return TrieNode_init_$Create$($this.jm_1 | positionMask, $this.km_1, newBuffer);
   }
   function updateValueAtIndex($this, keyIndex, value) {
     var tmp$ret$1;
     // Inline function 'kotlin.collections.copyOf' call
-    var tmp0_copyOf = $this.om_1;
+    var tmp0_copyOf = $this.mm_1;
     var tmp$ret$0;
     // Inline function 'kotlin.js.asDynamic' call
     tmp$ret$0 = tmp0_copyOf;
     tmp$ret$1 = tmp$ret$0.slice();
     var newBuffer = tmp$ret$1;
     newBuffer[keyIndex + 1 | 0] = value;
-    return TrieNode_init_$Create$($this.lm_1, $this.mm_1, newBuffer);
+    return TrieNode_init_$Create$($this.jm_1, $this.km_1, newBuffer);
   }
   function updateNodeAtIndex($this, nodeIndex, positionMask, newNode) {
-    var newNodeBuffer = newNode.om_1;
-    if (newNodeBuffer.length === 2 ? newNode.mm_1 === 0 : false) {
-      if ($this.om_1.length === 1) {
-        newNode.lm_1 = $this.mm_1;
+    var newNodeBuffer = newNode.mm_1;
+    if (newNodeBuffer.length === 2 ? newNode.km_1 === 0 : false) {
+      if ($this.mm_1.length === 1) {
+        newNode.jm_1 = $this.km_1;
         return newNode;
       }
-      var keyIndex = $this.oo(positionMask);
-      var newBuffer = replaceNodeWithEntry($this.om_1, nodeIndex, keyIndex, newNodeBuffer[0], newNodeBuffer[1]);
-      return TrieNode_init_$Create$($this.lm_1 ^ positionMask, $this.mm_1 ^ positionMask, newBuffer);
+      var keyIndex = $this.mo(positionMask);
+      var newBuffer = replaceNodeWithEntry($this.mm_1, nodeIndex, keyIndex, newNodeBuffer[0], newNodeBuffer[1]);
+      return TrieNode_init_$Create$($this.jm_1 ^ positionMask, $this.km_1 ^ positionMask, newBuffer);
     }
-    var newBuffer_0 = copyOf($this.om_1, $this.om_1.length);
+    var newBuffer_0 = copyOf($this.mm_1, $this.mm_1.length);
     newBuffer_0[nodeIndex] = newNode;
-    return TrieNode_init_$Create$($this.lm_1, $this.mm_1, newBuffer_0);
+    return TrieNode_init_$Create$($this.jm_1, $this.km_1, newBuffer_0);
   }
   function bufferMoveEntryToNode($this, keyIndex, positionMask, newKeyHash, newKey, newValue, shift, owner) {
     var storedKey = keyAtIndex($this, keyIndex);
@@ -1777,12 +1777,12 @@
     var storedKeyHash = tmp$ret$0;
     var storedValue = valueAtKeyIndex($this, keyIndex);
     var newNode = makeNode($this, storedKeyHash, storedKey, storedValue, newKeyHash, newKey, newValue, shift + 5 | 0, owner);
-    var nodeIndex = $this.po(positionMask) + 1 | 0;
-    return replaceEntryWithNode($this.om_1, keyIndex, nodeIndex, newNode);
+    var nodeIndex = $this.no(positionMask) + 1 | 0;
+    return replaceEntryWithNode($this.mm_1, keyIndex, nodeIndex, newNode);
   }
   function moveEntryToNode($this, keyIndex, positionMask, newKeyHash, newKey, newValue, shift) {
     var newBuffer = bufferMoveEntryToNode($this, keyIndex, positionMask, newKeyHash, newKey, newValue, shift, null);
-    return TrieNode_init_$Create$($this.lm_1 ^ positionMask, $this.mm_1 | positionMask, newBuffer);
+    return TrieNode_init_$Create$($this.jm_1 ^ positionMask, $this.km_1 | positionMask, newBuffer);
   }
   function makeNode($this, keyHash1, key1, value1, keyHash2, key2, value2, shift, owner) {
     if (shift > 30) {
@@ -1841,7 +1841,7 @@
     return new TrieNode(0, tmp_0, tmp$ret$11, owner);
   }
   function collisionKeyIndex($this, key) {
-    var progression = step(until(0, $this.om_1.length), 2);
+    var progression = step(until(0, $this.mm_1.length), 2);
     var inductionVariable = progression.c1_1;
     var last = progression.d1_1;
     var step_0 = progression.e1_1;
@@ -1870,7 +1870,7 @@
       }
       var tmp$ret$1;
       // Inline function 'kotlin.collections.copyOf' call
-      var tmp0_copyOf = $this.om_1;
+      var tmp0_copyOf = $this.mm_1;
       var tmp$ret$0;
       // Inline function 'kotlin.js.asDynamic' call
       tmp$ret$0 = tmp0_copyOf;
@@ -1879,7 +1879,7 @@
       newBuffer[keyIndex + 1 | 0] = value;
       return asUpdateResult(TrieNode_init_$Create$(0, 0, newBuffer));
     }
-    var newBuffer_0 = insertEntryAtIndex($this.om_1, 0, key, value);
+    var newBuffer_0 = insertEntryAtIndex($this.mm_1, 0, key, value);
     return asInsertResult(TrieNode_init_$Create$(0, 0, newBuffer_0));
   }
   function Companion_1() {
@@ -1888,7 +1888,7 @@
     var tmp$ret$0;
     // Inline function 'kotlin.emptyArray' call
     tmp$ret$0 = [];
-    tmp.dm_1 = TrieNode_init_$Create$(0, 0, tmp$ret$0);
+    tmp.bm_1 = TrieNode_init_$Create$(0, 0, tmp$ret$0);
   }
   Companion_1.$metadata$ = objectMeta('Companion');
   var Companion_instance_1;
@@ -1899,63 +1899,63 @@
   }
   function TrieNode(dataMap, nodeMap, buffer, ownedBy) {
     Companion_getInstance_1();
-    this.lm_1 = dataMap;
-    this.mm_1 = nodeMap;
-    this.nm_1 = ownedBy;
-    this.om_1 = buffer;
+    this.jm_1 = dataMap;
+    this.km_1 = nodeMap;
+    this.lm_1 = ownedBy;
+    this.mm_1 = buffer;
   }
-  TrieNode.prototype.qn = function () {
-    return countOneBits(this.lm_1);
-  };
-  TrieNode.prototype.qo = function (positionMask) {
-    return !((this.lm_1 & positionMask) === 0);
+  TrieNode.prototype.on = function () {
+    return countOneBits(this.jm_1);
   };
   TrieNode.prototype.oo = function (positionMask) {
-    return imul(2, countOneBits(this.lm_1 & (positionMask - 1 | 0)));
+    return !((this.jm_1 & positionMask) === 0);
   };
-  TrieNode.prototype.po = function (positionMask) {
-    return (this.om_1.length - 1 | 0) - countOneBits(this.mm_1 & (positionMask - 1 | 0)) | 0;
+  TrieNode.prototype.mo = function (positionMask) {
+    return imul(2, countOneBits(this.jm_1 & (positionMask - 1 | 0)));
   };
-  TrieNode.prototype.ro = function (nodeIndex) {
-    var tmp = this.om_1[nodeIndex];
+  TrieNode.prototype.no = function (positionMask) {
+    return (this.mm_1.length - 1 | 0) - countOneBits(this.km_1 & (positionMask - 1 | 0)) | 0;
+  };
+  TrieNode.prototype.po = function (nodeIndex) {
+    var tmp = this.mm_1[nodeIndex];
     return tmp instanceof TrieNode ? tmp : THROW_CCE();
   };
-  TrieNode.prototype.pm = function (keyHash, key, shift) {
+  TrieNode.prototype.nm = function (keyHash, key, shift) {
     var keyPositionMask = 1 << indexSegment_0(keyHash, shift);
-    if (this.qo(keyPositionMask)) {
-      return equals(key, keyAtIndex(this, this.oo(keyPositionMask)));
+    if (this.oo(keyPositionMask)) {
+      return equals(key, keyAtIndex(this, this.mo(keyPositionMask)));
     }
     if (hasNodeAt(this, keyPositionMask)) {
-      var targetNode = this.ro(this.po(keyPositionMask));
+      var targetNode = this.po(this.no(keyPositionMask));
       if (shift === 30) {
         return collisionContainsKey(targetNode, key);
       }
-      return targetNode.pm(keyHash, key, shift + 5 | 0);
+      return targetNode.nm(keyHash, key, shift + 5 | 0);
     }
     return false;
   };
-  TrieNode.prototype.qm = function (keyHash, key, shift) {
+  TrieNode.prototype.om = function (keyHash, key, shift) {
     var keyPositionMask = 1 << indexSegment_0(keyHash, shift);
-    if (this.qo(keyPositionMask)) {
-      var keyIndex = this.oo(keyPositionMask);
+    if (this.oo(keyPositionMask)) {
+      var keyIndex = this.mo(keyPositionMask);
       if (equals(key, keyAtIndex(this, keyIndex))) {
         return valueAtKeyIndex(this, keyIndex);
       }
       return null;
     }
     if (hasNodeAt(this, keyPositionMask)) {
-      var targetNode = this.ro(this.po(keyPositionMask));
+      var targetNode = this.po(this.no(keyPositionMask));
       if (shift === 30) {
         return collisionGet(targetNode, key);
       }
-      return targetNode.qm(keyHash, key, shift + 5 | 0);
+      return targetNode.om(keyHash, key, shift + 5 | 0);
     }
     return null;
   };
-  TrieNode.prototype.rm = function (keyHash, key, value, shift) {
+  TrieNode.prototype.pm = function (keyHash, key, value, shift) {
     var keyPositionMask = 1 << indexSegment_0(keyHash, shift);
-    if (this.qo(keyPositionMask)) {
-      var keyIndex = this.oo(keyPositionMask);
+    if (this.oo(keyPositionMask)) {
+      var keyIndex = this.mo(keyPositionMask);
       if (equals(key, keyAtIndex(this, keyIndex))) {
         if (valueAtKeyIndex(this, keyIndex) === value)
           return null;
@@ -1964,8 +1964,8 @@
       return asInsertResult(moveEntryToNode(this, keyIndex, keyPositionMask, keyHash, key, value, shift));
     }
     if (hasNodeAt(this, keyPositionMask)) {
-      var nodeIndex = this.po(keyPositionMask);
-      var targetNode = this.ro(nodeIndex);
+      var nodeIndex = this.no(keyPositionMask);
+      var targetNode = this.po(nodeIndex);
       var tmp;
       if (shift === 30) {
         var tmp0_elvis_lhs = collisionPut(targetNode, key, value);
@@ -1977,7 +1977,7 @@
         }
         tmp = tmp_0;
       } else {
-        var tmp1_elvis_lhs = targetNode.rm(keyHash, key, value, shift + 5 | 0);
+        var tmp1_elvis_lhs = targetNode.pm(keyHash, key, value, shift + 5 | 0);
         var tmp_1;
         if (tmp1_elvis_lhs == null) {
           return null;
@@ -1996,27 +1996,27 @@
       var tmp_2 = putResult;
       var tmp$ret$0;
       // Inline function 'kotlinx.collections.immutable.implementations.immutableMap.TrieNode.put.<anonymous>' call
-      var tmp0__anonymous__q1qw7t = putResult.sm_1;
+      var tmp0__anonymous__q1qw7t = putResult.qm_1;
       tmp$ret$0 = updateNodeAtIndex(this, nodeIndex, keyPositionMask, tmp0__anonymous__q1qw7t);
-      tmp_2.sm_1 = tmp$ret$0;
+      tmp_2.qm_1 = tmp$ret$0;
       tmp$ret$1 = putResult;
       tmp$ret$2 = tmp$ret$1;
       return tmp$ret$2;
     }
     return asInsertResult(insertEntryAt(this, keyPositionMask, key, value));
   };
-  TrieNode.prototype.zm = function (that, equalityComparator) {
+  TrieNode.prototype.xm = function (that, equalityComparator) {
     if (this === that)
       return true;
-    if (!(this.lm_1 === that.lm_1) ? true : !(this.mm_1 === that.mm_1))
+    if (!(this.jm_1 === that.jm_1) ? true : !(this.km_1 === that.km_1))
       return false;
-    if (this.lm_1 === 0 ? this.mm_1 === 0 : false) {
-      if (!(this.om_1.length === that.om_1.length))
+    if (this.jm_1 === 0 ? this.km_1 === 0 : false) {
+      if (!(this.mm_1.length === that.mm_1.length))
         return false;
       var tmp$ret$0;
       $l$block_0: {
         // Inline function 'kotlin.collections.all' call
-        var tmp0_all = step(until(0, this.om_1.length), 2);
+        var tmp0_all = step(until(0, this.mm_1.length), 2);
         var tmp;
         if (isInterface(tmp0_all, Collection)) {
           tmp = tmp0_all.d();
@@ -2057,7 +2057,7 @@
       }
       return tmp$ret$0;
     }
-    var valueSize = imul(countOneBits(this.lm_1), 2);
+    var valueSize = imul(countOneBits(this.jm_1), 2);
     var progression = step(until(0, valueSize), 2);
     var inductionVariable_0 = progression.c1_1;
     var last_0 = progression.d1_1;
@@ -2073,12 +2073,12 @@
       }
        while (!(i === last_0));
     var inductionVariable_1 = valueSize;
-    var last_1 = this.om_1.length;
+    var last_1 = this.mm_1.length;
     if (inductionVariable_1 < last_1)
       do {
         var i_0 = inductionVariable_1;
         inductionVariable_1 = inductionVariable_1 + 1 | 0;
-        if (!this.ro(i_0).zm(that.ro(i_0), equalityComparator))
+        if (!this.po(i_0).xm(that.po(i_0), equalityComparator))
           return false;
       }
        while (inductionVariable_1 < last_1);
@@ -2163,10 +2163,10 @@
   PersistentOrderedMapBuilder.$metadata$ = classMeta('PersistentOrderedMapBuilder', [Builder_1], undefined, undefined, undefined, AbstractMutableMap.prototype);
   function Companion_2() {
     Companion_instance_2 = this;
-    this.nk_1 = new PersistentOrderedSet(EndOfChain_getInstance(), EndOfChain_getInstance(), Companion_getInstance_0().mk());
+    this.lk_1 = new PersistentOrderedSet(EndOfChain_getInstance(), EndOfChain_getInstance(), Companion_getInstance_0().kk());
   }
-  Companion_2.prototype.ok = function () {
-    return this.nk_1;
+  Companion_2.prototype.mk = function () {
+    return this.lk_1;
   };
   Companion_2.$metadata$ = objectMeta('Companion');
   var Companion_instance_2;
@@ -2184,18 +2184,18 @@
   function PersistentOrderedSet(firstElement, lastElement, hashMap) {
     Companion_getInstance_2();
     AbstractSet.call(this);
-    this.so_1 = firstElement;
-    this.to_1 = lastElement;
-    this.uo_1 = hashMap;
+    this.qo_1 = firstElement;
+    this.ro_1 = lastElement;
+    this.so_1 = hashMap;
   }
   PersistentOrderedSet.prototype.o = function () {
-    return this.uo_1.km_1;
+    return this.so_1.im_1;
   };
   PersistentOrderedSet.prototype.k1 = function (element) {
-    return this.uo_1.r2(element);
+    return this.so_1.r2(element);
   };
   PersistentOrderedSet.prototype.l = function () {
-    return new PersistentOrderedSetIterator(this.so_1, this.uo_1);
+    return new PersistentOrderedSetIterator(this.qo_1, this.so_1);
   };
   PersistentOrderedSet.prototype.equals = function (other) {
     if (other === this)
@@ -2207,11 +2207,11 @@
     var tmp0_subject = other;
     var tmp;
     if (tmp0_subject instanceof PersistentOrderedSet) {
-      tmp = this.uo_1.jm_1.zm(other.uo_1.jm_1, PersistentOrderedSet$equals$lambda);
+      tmp = this.so_1.hm_1.xm(other.so_1.hm_1, PersistentOrderedSet$equals$lambda);
     } else {
       if (tmp0_subject instanceof PersistentOrderedSetBuilder) {
-        var tmp_0 = other.vo_1.ym_1;
-        tmp = this.uo_1.jm_1.zm(tmp_0, PersistentOrderedSet$equals$lambda_0);
+        var tmp_0 = other.to_1.wm_1;
+        tmp = this.so_1.hm_1.xm(tmp_0, PersistentOrderedSet$equals$lambda_0);
       } else {
         tmp = AbstractSet.prototype.equals.call(this, other);
       }
@@ -2230,24 +2230,24 @@
       throw NoSuchElementException_init_$Create$();
   }
   function PersistentOrderedSetIterator(nextElement, map) {
-    this.wo_1 = nextElement;
-    this.xo_1 = map;
-    this.yo_1 = 0;
+    this.uo_1 = nextElement;
+    this.vo_1 = map;
+    this.wo_1 = 0;
   }
   PersistentOrderedSetIterator.prototype.m = function () {
-    return this.yo_1 < this.xo_1.o();
+    return this.wo_1 < this.vo_1.o();
   };
   PersistentOrderedSetIterator.prototype.n = function () {
     checkHasNext_0(this);
-    var tmp = this.wo_1;
+    var tmp = this.uo_1;
     var result = (tmp == null ? true : isObject(tmp)) ? tmp : THROW_CCE();
     var tmp0_this = this;
-    var tmp1 = tmp0_this.yo_1;
-    tmp0_this.yo_1 = tmp1 + 1 | 0;
+    var tmp1 = tmp0_this.wo_1;
+    tmp0_this.wo_1 = tmp1 + 1 | 0;
     var tmp_0 = this;
     var tmp$ret$0;
     // Inline function 'kotlin.collections.getOrElse' call
-    var tmp0_getOrElse = this.xo_1;
+    var tmp0_getOrElse = this.vo_1;
     var tmp0_elvis_lhs = tmp0_getOrElse.x2(result);
     var tmp_1;
     if (tmp0_elvis_lhs == null) {
@@ -2256,7 +2256,7 @@
       tmp_1 = tmp0_elvis_lhs;
     }
     tmp$ret$0 = tmp_1;
-    tmp_0.wo_1 = tmp$ret$0.ap_1;
+    tmp_0.uo_1 = tmp$ret$0.yo_1;
     return result;
   };
   PersistentOrderedSetIterator.$metadata$ = classMeta('PersistentOrderedSetIterator', [Iterator]);
@@ -2293,7 +2293,7 @@
   function MapImplementation() {
     MapImplementation_instance = this;
   }
-  MapImplementation.prototype.ko = function (map, element) {
+  MapImplementation.prototype.io = function (map, element) {
     var tmp = isObject(element) ? element : THROW_CCE();
     if (!(!(tmp == null) ? isInterface(tmp, Entry) : false))
       return false;

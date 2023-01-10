@@ -1,5 +1,5 @@
 //modules
-import { Peer, util } from 'peerjs';
+import { Peer } from 'peerjs';
 import { customAlphabet } from 'nanoid'
 import { alphanumeric } from 'nanoid-dictionary';
 

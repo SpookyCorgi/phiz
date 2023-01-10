@@ -4,8 +4,8 @@ export namespace kotlin {
     export class Enum {}
 
     export class Pair<A, B> {
-        readonly first: A;
-        readonly second: B;
+        readonly _first: A;
+        readonly _second: B;
         toString(): string;
     }
     
@@ -39,7 +39,6 @@ export namespace kotlin.collections {
         toArray(): Array<T>;
         readonly size: number;
         toString(): string;
-        forEach(fn: (T) => void);
     }
     
     export interface Map<K, V> extends JSIterable<[K, V]> {
@@ -1668,7 +1667,6 @@ export class DeviceFileSystem implements WriteableFileSystem {
     watcher(this: FileSystem, watchFilter?: Nullable<(p0: string) => boolean>, errorSensitivity?: FileWatchErrorSensitivityType): FileSystemWatcher;
 }
 export namespace DeviceFileSystem {
-    const BASE_LOCATION: string;
     function create(root: Path): DeviceFileSystem;
 
 }
@@ -1837,24 +1835,6 @@ export class FaceTrackerWithResult {
     hashCode(): number;
     equals(other: Nullable<any>): boolean;
 }
-type TrackerEngineType = {
-    readonly Auto: TrackerEngineType;
-    readonly CPU: TrackerEngineType;
-    readonly GPU: TrackerEngineType;
-    readonly NeuralEngine: TrackerEngineType;
-}
-/**
- * Declares which engine to prefer for executing neural nets
- */
-export const TrackerEngine: TrackerEngineType;
-type TrackerVariantType = {
-    readonly COMPATIBLE: TrackerVariantType;
-    readonly QUALITY: TrackerVariantType;
-}
-/**
- * Defines possible tracker variants to use
- */
-export const TrackerVariant: TrackerVariantType;
 export interface PersistentFaceTracker {
     readonly version: string;
     readonly blendshapeNames: kotlin.collections.List<string>;
@@ -1865,11 +1845,11 @@ export interface PersistentFaceTracker {
  * all the details of video post processing, we recommend using defaults for production use.
  */
 export class AdvancedFaceTrackerOptions {
-    constructor(trackerVariant?: Nullable<TrackerVariantType>, trackerEngine?: Nullable<TrackerEngineType>, modelName?: Nullable<string>, transformsProcessor?: Nullable<TransformsProcessor>, blendshapeProcessor?: Nullable<BlendshapeProcessor>, feedbackDetectorScale?: Nullable<number>, feedbackDetectorOffset?: Nullable<number>);
-    readonly trackerVariant: Nullable<TrackerVariantType>;
-    readonly trackerEngine: Nullable<TrackerEngineType>;
+    constructor(modelName?: Nullable<string>, stabilizerImagePosition?: Nullable<Stabilizer<Vec2>>, stabilizerImageScale?: Nullable<Stabilizer<Vec1>>, stabilizerRotation?: Nullable<Stabilizer<Quaternion>>, blendshapeProcessor?: Nullable<BlendshapeProcessor>, feedbackDetectorScale?: Nullable<number>, feedbackDetectorOffset?: Nullable<number>);
     readonly modelName: Nullable<string>;
-    readonly transformsProcessor: Nullable<TransformsProcessor>;
+    readonly stabilizerImagePosition: Nullable<Stabilizer<Vec2>>;
+    readonly stabilizerImageScale: Nullable<Stabilizer<Vec1>>;
+    readonly stabilizerRotation: Nullable<Stabilizer<Quaternion>>;
     readonly blendshapeProcessor: Nullable<BlendshapeProcessor>;
     readonly feedbackDetectorScale: Nullable<number>;
     readonly feedbackDetectorOffset: Nullable<number>;
@@ -1909,12 +1889,6 @@ export namespace FaceTracker {
      * The options parameter allows you to tune all the ins and outs of the video tracker, aimed at power users.
      */
     function createVideoTracker(fileSystem: FileSystem, context: TrackerGPUContext, options: AdvancedFaceTrackerOptions): Future<Try<FaceTracker>>;
-    /**
-     * Create a face tracker for tracking facial expressions in a single image.
-     * Does not perform any inter-frame smoothing, always outputs the same values
-     * for the given input image.
-     */
-    function createImageTracker(fileSystem: FileSystem, context: TrackerGPUContext, options: AdvancedFaceTrackerOptions): Future<Try<FaceTracker>>;
     /**
      * Create a face tracker for tracking facial expressions in a single image.
      * Does not perform any inter-frame smoothing, always outputs the same values
@@ -2096,36 +2070,6 @@ export namespace Rect {
     const FULL: Rect;
 
 }
-export class TransformsProcessorResult {
-    constructor(processor: TransformsProcessor, imagePosition: Vec2, imageScale: number, rotation: Quaternion);
-    readonly processor: TransformsProcessor;
-    readonly imagePosition: Vec2;
-    readonly imageScale: number;
-    readonly rotation: Quaternion;
-    component1(): TransformsProcessor;
-    component2(): Vec2;
-    component3(): number;
-    component4(): Quaternion;
-    copy(processor?: TransformsProcessor, imagePosition?: Vec2, imageScale?: number, rotation?: Quaternion): TransformsProcessorResult;
-    toString(): string;
-    hashCode(): number;
-    equals(other: Nullable<any>): boolean;
-}
-export interface TransformsProcessor {
-    process(imagePosition: Vec2, imageScale: number, rotation: Quaternion): TransformsProcessorResult;
-}
-export class TPStabilize implements TransformsProcessor {
-    constructor(stabilizerImagePosition: Stabilizer<Vec2>, stabilizerImageScale: Stabilizer<Vec1>, stabilizerRotation: Stabilizer<Quaternion>);
-    process(imagePosition: Vec2, imageScale: number, rotation: Quaternion): TransformsProcessorResult;
-}
-export class TPOffsetPosition implements TransformsProcessor {
-    constructor(offset: Vec2);
-    process(imagePosition: Vec2, imageScale: number, rotation: Quaternion): TransformsProcessorResult;
-}
-export class TPChain implements TransformsProcessor {
-    constructor(processors: (Array<TransformsProcessor> | kotlin.collections.Iterable<TransformsProcessor>));
-    process(imagePosition: Vec2, imageScale: number, rotation: Quaternion): TransformsProcessorResult;
-}
 /**
  * A basic wrapper around HTMLVideoElement for Webcamera input.
  */
@@ -2147,7 +2091,7 @@ export class CameraWrapper {
      * whether the image should be flipped horizontally. Returns a future that resolves
      * when the webcam is started and ready to provide data.
      */
-    start(frontFacing?: boolean, deviceId?: Nullable<string>): Future<Try<void>>;
+    start(frontFacing?: boolean, deviceId?: Nullable<any>): Future<Try<void>>;
     /**
      * Stops the webcamera playback
      */

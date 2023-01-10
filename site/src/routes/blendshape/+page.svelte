@@ -146,7 +146,7 @@
 
 	//callback for face tracking
 	function onBlendshapeResult(result: Nullable<FaceTrackerResult>) {
-		if (result == null || result.blendshapes.size != 42) {
+		if (result == null) {
 			if (rectangle != null) {
 				rectangle.style.display = 'none';
 			}
