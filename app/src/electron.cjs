@@ -110,11 +110,29 @@ ipcMain.on('to-main', (event, count) => {
 
 ipcMain.on('set-blendshapes', (event, content) => {
 	let [names, values] = content;
-	names.forEach((name, i) => {
-		let message = new OSC.Message(`/facecap/${name}`, values[i]);
-		oscServer.send(message);
-	});
+	// names.forEach((name, i) => {
+	// 	let message = new OSC.Message(`/facecap/${name}`, values[i]);
+	// 	oscServer.send(message);
+
+	// });
+	let message = new OSC.Message('/phiz/blendshapes');
+	for (let i = 0; i < values.length; i++) {
+		message.add(values[i]);
+	}
+	oscServer.send(message);
 })
+
+ipcMain.on('set-eye-rotation', (event, content) => {
+	let [[leftX, leftY], [rightX, rightY]] = content;
+	let message = new OSC.Message('/phiz/eyeRotation', leftX, leftY, rightX, rightY);
+	oscServer.send(message);
+});
+
+ipcMain.on('set-quaternion', (event, content) => {
+	let [x, y, z, w] = content;
+	let message = new OSC.Message('/phiz/quaternion', x, y, z, w);
+	oscServer.send(message);
+});
 
 ipcMain.on('open-osc-server', (event, title) => {
 	oscServer = new OSC({

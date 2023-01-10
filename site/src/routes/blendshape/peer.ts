@@ -1,19 +1,12 @@
 //modules
 import { Peer, util } from 'peerjs';
-import { nanoid } from 'nanoid'
-function generateID (): string {
-    let id: string = '';
-    while (
-        id === '' ||
-        id.startsWith('-') ||
-        id.endsWith('-') ||
-        id.startsWith('_') ||
-        id.endsWith('_')
-    ) {
-        id = nanoid(6);
-    }
+import { customAlphabet } from 'nanoid'
+import { alphanumeric } from 'nanoid-dictionary';
 
-    return "PHIZ-" + id;
+function generateID (): string {
+    const nanoid = customAlphabet(alphanumeric, 6);
+    let id: string = nanoid();
+    return "p-" + id;
 }
 
 export function createPeer (host: string, port: number, path: string, openCallback: Function, connectCallback: Function) {

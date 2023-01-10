@@ -2,7 +2,8 @@
 	import type { DataConnection } from 'peerjs';
 	import Peer from 'peerjs';
 	import { blendshapesName } from './blendshapes';
-	import { nanoid } from 'nanoid';
+	import { customAlphabet } from 'nanoid';
+	import { alphanumeric } from 'nanoid-dictionary';
 
 	let url: string;
 	let status: string = 'Not connected';
@@ -10,18 +11,27 @@
 	let blendshapesValue: number[] = [];
 	let latency: number = 0;
 	let packageCount: number = 0;
+	const valueLength: number = 48; //42 blendshapes, 4 for rotation, 2 for time
 
-	function getTime() {
-		const date = new Date();
-		let time = date.getTime();
-		let second = Math.floor(time / 1000) - Math.floor(time / 100000) * 100;
-		let hundredth = Math.round((time - Math.floor(time / 1000) * 1000) / 10);
-		if (hundredth === 100) {
-			second += 1;
-			hundredth = 0;
-		}
-		return [second, hundredth];
-	}
+	type Data = {
+		blendshapes: { [key: string]: number };
+		leftEyeRotation: { [key: string]: number };
+		rightEyeRotation: { [key: string]: number };
+		headQuaternion: { [key: string]: number };
+		time: { [key: string]: number };
+	};
+
+	// function getTime() {
+	// 	const date = new Date();
+	// 	let time = date.getTime();
+	// 	let second = Math.floor(time / 1000) - Math.floor(time / 100000) * 100;
+	// 	let hundredth = Math.round((time - Math.floor(time / 1000) * 1000) / 10);
+	// 	if (hundredth === 100) {
+	// 		second += 1;
+	// 		hundredth = 0;
+	// 	}
+	// 	return [second, hundredth];
+	// }
 
 	function setStatus(statusText: string) {
 		status += statusText;
@@ -49,18 +59,9 @@
 		createPeer('', id);
 	}
 	function generateID(): string {
-		let id: string = '';
-		while (
-			id === '' ||
-			id.startsWith('-') ||
-			id.endsWith('-') ||
-			id.startsWith('_') ||
-			id.endsWith('_')
-		) {
-			id = nanoid(6);
-		}
-
-		return 'PHIZ-' + id;
+		const nanoid = customAlphabet(alphanumeric, 6);
+		let id: string = nanoid();
+		return 'p-' + id;
 	}
 	function createPeer(host: string, peerId: string) {
 		//let peer = new Peer({ host: host, port: 9000, path: '/' });
@@ -87,26 +88,66 @@
 				window.electron.send('open-osc-server');
 			}
 		});
+
 		conn.on('data', function (data: unknown) {
-			if (data instanceof Object) {
-				let blendshapes = Object.values(data);
-				if (blendshapes && blendshapes.length === blendshapesName.length + 2) {
-					let arr = Array.from(blendshapes);
+			if (data) {
+				let decodedData = data as Data;
+				let blendshapes = Object.values(decodedData.blendshapes);
+				let leftEye = Object.values(decodedData.leftEyeRotation);
+				let rightEye = Object.values(decodedData.rightEyeRotation);
+				let quaternion = Object.values(decodedData.headQuaternion);
+				let [dataSecond, dataMillisecond] = Object.values(decodedData.time);
 
-					let hundredth = arr.pop();
-					let second = arr.pop();
-					let [secondNow, hundredthNow] = getTime();
-					if (second && hundredth) {
-						latency = (secondNow * 100 + hundredthNow - second * 100 - hundredth) * 10;
-					}
-
-					packageCount++;
+				//blendshapes
+				if (blendshapes && blendshapes.length === 42) {
 					if (window.electron) {
-						window.electron.send('set-blendshapes', [blendshapesName, arr]);
+						window.electron.send('set-blendshapes', [blendshapesName, blendshapes]);
 					}
-
-					blendshapesValue = arr;
+					blendshapesValue = blendshapes;
 				}
+
+				//eye rotation
+				if (leftEye && rightEye && leftEye.length === 2 && rightEye.length === 2) {
+					if (window.electron) {
+						window.electron.send('set-eye-rotation', [leftEye, rightEye]);
+					}
+				}
+
+				//quaternion
+				if (quaternion && quaternion.length === 4) {
+					if (window.electron) {
+						window.electron.send('set-quaternion', quaternion);
+					}
+				}
+
+				//time
+				if (dataSecond && dataMillisecond) {
+					let date = new Date();
+					latency =
+						(date.getSeconds() - dataSecond) * 1000 +
+						date.getMilliseconds() -
+						dataMillisecond;
+				}
+				// let values = Object.values(data);
+				// if (values && values.length === valueLength) {
+				// 	let arr = Array.from(values);
+				// 	let blendshapes = arr.slice(0, 42);
+				// 	let quaternion = arr.slice(42, 46).map((value) => (value - 100) / 100);
+
+				// 	let [second, hundredth] = arr.slice(46, 48);
+				// 	let [secondNow, hundredthNow] = getTime();
+				// 	if (second && hundredth) {
+				// 		latency = (secondNow * 100 + hundredthNow - second * 100 - hundredth) * 10;
+				// 	}
+
+				// 	packageCount++;
+				// 	if (window.electron) {
+				// 		window.electron.send('set-blendshapes', [blendshapesName, blendshapes]);
+				// 		window.electron.send('set-quaternion', quaternion);
+				// 	}
+
+				// 	blendshapesValue = blendshapes;
+				// }
 			}
 		});
 	}

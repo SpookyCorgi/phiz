@@ -15,31 +15,30 @@
 	import { RangeSlider } from '@skeletonlabs/skeleton';
 
 	//types
-	interface Shape {
-		name: string;
-		value: number;
+	interface ShapeFrame {
+		shapes: Map<string, number>;
+		time: number;
 	}
+
 	//public variables for svelte
 	let videoElement: HTMLVideoElement;
 	let videoSelect: HTMLSelectElement;
 	let deviceInfos: MediaDeviceInfo[] = [];
 	let connectionLink: string;
 	let dataConnection: DataConnection | null = null;
-	let blendshapes: Shape[] = [];
+	let blendshapes: Map<string, number> = new Map<string, number>();
 	let overlay: HTMLDivElement;
 	let rectangle: HTMLDivElement;
 	let fps: string = '';
 
-	let smoothBin: number = 0.2;
+	let smoothBin: number = 0.1;
 	const smoothQueueSize: number = 60;
 	let smoothFrames: number = 0;
 
-	//Shape frame
-	interface ShapeFrame {
-		shapes: Shape[];
-		time: number;
-	}
 	let storedData: ShapeFrame[] = [];
+
+	let eyeSensitivity: number = 0.8;
+	let eyeRotateLimit: { [key: string]: number } = { up: 42.0, down: 48.0, in: 50.0, out: 50.0 };
 
 	function setFaceRectangle(result: FaceTrackerResult) {
 		const rect = result.faceRectangle;
@@ -84,17 +83,17 @@
 		rectangle.style.height = (rect.height * scale).toString() + 'px';
 	}
 
-	function getTrimmedTime() {
-		const date = new Date();
-		let time = date.getTime();
-		let second = Math.floor(time / 1000) - Math.floor(time / 100000) * 100;
-		let hundredth = Math.round((time - Math.floor(time / 1000) * 1000) / 10);
-		if (hundredth === 100) {
-			second += 1;
-			hundredth = 0;
-		}
-		return [second, hundredth];
-	}
+	// function getTrimmedTime() {
+	// 	const date = new Date();
+	// 	let time = date.getTime();
+	// 	let second = Math.floor(time / 1000) - Math.floor(time / 100000) * 100;
+	// 	let hundredth = Math.round((time - Math.floor(time / 1000) * 1000) / 10);
+	// 	if (hundredth === 100) {
+	// 		second += 1;
+	// 		hundredth = 0;
+	// 	}
+	// 	return [second, hundredth];
+	// }
 
 	function dataSmoother(current: ShapeFrame): ShapeFrame {
 		//add current data to storedData
@@ -105,36 +104,49 @@
 		}
 		//calculate average
 		let average: ShapeFrame = {
-			shapes: [],
+			shapes: new Map<string, number>(),
 			time: current.time
 		};
-		//for all shapes
-		for (let i = 0; i < current.shapes.length; i++) {
+		for (let [name, value] of current.shapes.entries()) {
 			let sum = 0;
 			let j = storedData.length - 1;
 			//go through all data within the time frame
 			while (j >= 0 && current.time - storedData[j].time < 1000 * smoothBin) {
-				sum += storedData[j].shapes[i].value;
+				sum += storedData[j].shapes.get(name) ?? 0;
 				j--;
 			}
 			let count = storedData.length - j - 1;
 			//if no data is available, use the current value
 			if (count === 0) {
-				sum = current.shapes[i].value;
+				sum = value;
 				count = 1;
 			}
 			smoothFrames = count;
-			average.shapes.push({
-				name: current.shapes[i].name,
-				value: Math.round((sum / count) * 100) / 100
-			});
+			average.shapes.set(name, Math.round((sum / count) * 100));
 		}
 		return average;
 	}
 
+	function getEyeRotation(current: Map<string, number>): [[number, number], [number, number]] {
+		let directions = ['up', 'down', 'in', 'out'];
+		let rightRotation: number[] = [];
+		let leftRotation: number[] = [];
+		for (const direction of directions) {
+			let shape = 'eyeLook' + direction.charAt(0).toUpperCase() + direction.slice(1);
+			rightRotation.push(current.get(shape + '_R')! * eyeRotateLimit[direction] * eyeSensitivity);
+			leftRotation.push(current.get(shape + '_L')! * eyeRotateLimit[direction] * eyeSensitivity);
+		}
+		//rotation left x(up-down) and y(in-out)
+		//rotation right x(up-down) and y(out-in)
+		return [
+			[leftRotation[0] - leftRotation[1], leftRotation[2] - leftRotation[3]],
+			[rightRotation[0] - rightRotation[1], rightRotation[3] - rightRotation[2]]
+		];
+	}
+
 	//callback for face tracking
 	function onBlendshapeResult(result: Nullable<FaceTrackerResult>) {
-		if (result == null) {
+		if (result == null || result.blendshapes.size != 42) {
 			if (rectangle != null) {
 				rectangle.style.display = 'none';
 			}
@@ -143,27 +155,42 @@
 		setFaceRectangle(result);
 
 		//get blendshape values
-		let values: Shape[] = [];
+		let values = new Map<string, number>();
 		for (const [name, value] of result.blendshapes) {
-			values.push({ name: name, value: value });
+			//clamp value to 0.0~1.0
+			values.set(name, Math.max(0, Math.min(1, value)));
 		}
 		//apply smoothing
 		let smoothedResult = dataSmoother({ shapes: values, time: Date.now() });
 		//display blendshapes
-		blendshapes = [...smoothedResult.shapes];
+		blendshapes = smoothedResult.shapes;
 		//get shapes from smoothed result
-		let smoothedValues: number[] = [];
-		for (let i = 0; i < smoothedResult.shapes.length; i++) {
-			smoothedValues.push(smoothedResult.shapes[i].value * 100);
-		}
-		//get trimmed time
-		let [second, hundredth] = getTrimmedTime();
-		smoothedValues.push(second, hundredth);
+		let dataBlendshapes = new Uint8Array(Array.from(blendshapes.values()));
+
+		//estimate eye rotation based on not smoothed eye blendshapes
+		let [leftEye, rightEye] = getEyeRotation(values);
+		let dataLeftEye = new Float32Array(leftEye);
+		let dataRightEye = new Float32Array(rightEye);
+
+		//get rotation map quaternion range -1 to 1 to 0 to 20000
+		let rotation = result.rotationQuaternion.xyzw;
+		let dataQuaternion = new Float32Array([rotation.x, rotation.y, rotation.z, rotation.w]);
+
+		//get time
+		let date = new Date();
+		let dataTime = new Uint16Array([date.getSeconds(), date.getMilliseconds()]);
+
+		//create sendable data
+		let data = {
+			blendshapes: dataBlendshapes,
+			leftEyeRotation: dataLeftEye,
+			rightEyeRotation: dataRightEye,
+			headQuaternion: dataQuaternion,
+			time: dataTime
+		};
 		//send data
-		let dataArray = new Uint8Array(smoothedValues);
 		if (dataConnection != null) {
-			dataConnection.send(dataArray);
-			//console.log(dataConnection.bufferSize)
+			dataConnection.send(data);
 		}
 	}
 	function triggerToast(): void {
@@ -267,10 +294,10 @@
 			id="result"
 			class="w-[240px] p-4 card overflow-y-scroll max-h-[640px] hidden lg:flex flex-col"
 		>
-			{#each blendshapes as shape}
+			{#each [...blendshapes] as [key, value]}
 				<div class="flex gap-2 justify-end">
-					<p>{shape.name}:</p>
-					<p class="w-8">{shape.value}</p>
+					<p>{key}:</p>
+					<p class="w-8">{value / 100}</p>
 				</div>
 			{/each}
 		</div>
@@ -278,7 +305,7 @@
 	<div class="w-full max-w-[640px] lg:max-w-[896px] mb-2 card p-2">
 		<div class="flex gap-2">
 			<span>Smoothing:</span>
-			<RangeSlider bind:value={smoothBin} min={0} max={1} step={0.01} />
+			<RangeSlider bind:value={smoothBin} min={0} max={0.5} step={0.01} />
 			<span class="text-secondary-500"> {smoothBin.toFixed(2)}</span>
 			<span> second</span>
 		</div>

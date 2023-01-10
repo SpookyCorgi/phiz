@@ -3,8 +3,6 @@ import {
     FaceTracker,
     FPS,
     ResourceFileSystem,
-    FaceTrackerResultDeserializer,
-    FaceTrackerResultSerializer,
 } from "@0xalter/mocap4face";
 
 export function startTracking (videoElement: HTMLVideoElement, callback: Function, fpsCallback: Function) {
