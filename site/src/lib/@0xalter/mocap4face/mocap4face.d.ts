@@ -189,12 +189,22 @@ export class FaceTrackerWithResult {
     hashCode(): number;
     equals(other: Nullable<any>): boolean;
 }
+export const TrackerEngine: {
+    get Auto(): any/* TrackerEngineType */;
+    get CPU(): any/* TrackerEngineType */;
+    get GPU(): any/* TrackerEngineType */;
+    get NeuralEngine(): any/* TrackerEngineType */;
+};
+export const TrackerVariant: {
+    get COMPATIBLE(): any/* TrackerVariantType */;
+    get QUALITY(): any/* TrackerVariantType */;
+};
 export class AdvancedFaceTrackerOptions {
-    constructor(modelName?: Nullable<string>, stabilizerImagePosition?: any/* Nullable<Stabilizer<Vec2>> */, stabilizerImageScale?: any/* Nullable<Stabilizer<Vec1>> */, stabilizerRotation?: any/* Nullable<Stabilizer<Quaternion>> */, blendshapeProcessor?: any/* Nullable<BlendshapeProcessor> */, feedbackDetectorScale?: Nullable<number>, feedbackDetectorOffset?: Nullable<number>);
+    constructor(trackerVariant?: any/* Nullable<TrackerVariantType> */, trackerEngine?: any/* Nullable<TrackerEngineType> */, modelName?: Nullable<string>, transformsProcessor?: any/* Nullable<TransformsProcessor> */, blendshapeProcessor?: any/* Nullable<BlendshapeProcessor> */, feedbackDetectorScale?: Nullable<number>, feedbackDetectorOffset?: Nullable<number>);
+    get trackerVariant(): any/* Nullable<TrackerVariantType> */;
+    get trackerEngine(): any/* Nullable<TrackerEngineType> */;
     get modelName(): Nullable<string>;
-    get stabilizerImagePosition(): any/* Nullable<Stabilizer<Vec2>> */;
-    get stabilizerImageScale(): any/* Nullable<Stabilizer<Vec1>> */;
-    get stabilizerRotation(): any/* Nullable<Stabilizer<Quaternion>> */;
+    get transformsProcessor(): any/* Nullable<TransformsProcessor> */;
     get blendshapeProcessor(): any/* Nullable<BlendshapeProcessor> */;
     get feedbackDetectorScale(): Nullable<number>;
     get feedbackDetectorOffset(): Nullable<number>;
@@ -212,11 +222,12 @@ export class FaceTracker {
     static get Companion(): {
         createVideoTrackerWithFileSystemAndTrackerGPUContext(fileSystem: any/* FileSystem */, context: TrackerGPUContext): Future<Try<FaceTracker>>;
         createVideoTrackerWithFileSystemAndTrackerGPUContextAndAdvancedFaceTrackerOptions(fileSystem: any/* FileSystem */, context: TrackerGPUContext, options: AdvancedFaceTrackerOptions): Future<Try<FaceTracker>>;
-        createImageTrackerWithFileSystem(fileSystem: any/* FileSystem */, context: TrackerGPUContext): Future<Try<FaceTracker>>;
+        createImageTrackerWithFileSystemAndTrackerGPUContextAndAdvancedFaceTrackerOptions(fileSystem: any/* FileSystem */, context: TrackerGPUContext, options: AdvancedFaceTrackerOptions): Future<Try<FaceTracker>>;
+        createImageTrackerWithFileSystemAndTrackerGPUContext(fileSystem: any/* FileSystem */, context: TrackerGPUContext): Future<Try<FaceTracker>>;
         createVideoTrackerWithThis(fs: any/* FileSystem */): Future<Try<FaceTracker>>;
         createImageTrackerWithThis(fs: any/* FileSystem */): Future<Try<FaceTracker>>;
         createVideoTracker(p0: Nullable<any>, p1?: Nullable<any>, p2?: Nullable<any>): Nullable<any>;
-        createImageTracker(p0: Nullable<any>, p1?: Nullable<any>): Nullable<any>;
+        createImageTracker(p0: Nullable<any>, p1?: Nullable<any>, p2?: Nullable<any>): Nullable<any>;
     };
 }
 export const FaceTrackerReprojectorsCompanionInit: void;
@@ -414,7 +425,7 @@ export class CameraWrapper {
     set frontFacing(value: boolean);
     addOnFrameListener(listener: (p0: TrackerImage) => void): void;
     start0(frontFacing?: boolean): Future<Try<void>>;
-    startWithAny(frontFacing?: boolean, deviceId?: Nullable<any>): Future<Try<void>>;
+    startWithString(frontFacing?: boolean, deviceId?: Nullable<string>): Future<Try<void>>;
     stop(): Future<Try<void>>;
     pause(): Future<Try<void>>;
     resume(): Future<Try<void>>;
@@ -464,6 +475,7 @@ export class ResourceFileSystem /* implements FileSystem */ {
 export class DeviceFileSystem /* implements WriteableFileSystem */ {
     constructor(root?: Path);
     static get Companion(): {
+        get BASE_LOCATION(): string;
         createWithThis(root: Path): DeviceFileSystem;
         create(p0?: Nullable<any>): Nullable<any>;
     };
@@ -1072,6 +1084,30 @@ export class Ticker {
     tickWithTickerMapperOfT<T>(value: T, mapper: any/* TickerMapper<T> */): T;
     tickWithFn<T>(value: T, mapper: (p0: T) => T): T;
     tick(p0: Nullable<any>, p1: Nullable<any>): Nullable<any>;
+}
+export class TransformsProcessorResult {
+    constructor(processor: any/* TransformsProcessor */, imagePosition: Vec2, imageScale: number, rotation: Quaternion);
+    get processor(): any/* TransformsProcessor */;
+    get imagePosition(): Vec2;
+    get imageScale(): number;
+    get rotation(): Quaternion;
+    component1(): any/* TransformsProcessor */;
+    component2(): Vec2;
+    component3(): number;
+    component4(): Quaternion;
+    copy(processor?: any/* TransformsProcessor */, imagePosition?: Vec2, imageScale?: number, rotation?: Quaternion): TransformsProcessorResult;
+    toString(): string;
+    hashCode(): number;
+    equals(other: Nullable<any>): boolean;
+}
+export class TPStabilize /* implements TransformsProcessor */ {
+    constructor(stabilizerImagePosition: any/* Stabilizer<Vec2> */, stabilizerImageScale: any/* Stabilizer<Vec1> */, stabilizerRotation: any/* Stabilizer<Quaternion> */);
+}
+export class TPOffsetPosition /* implements TransformsProcessor */ {
+    constructor(offset: Vec2);
+}
+export class TPChain /* implements TransformsProcessor */ {
+    constructor(processors: any/* kotlin.collections.Iterable<TransformsProcessor> */);
 }
 export const TryCompanionInit: void;
 export abstract class Try<T> {
