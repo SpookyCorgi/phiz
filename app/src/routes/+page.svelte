@@ -1,17 +1,18 @@
 <script lang="ts">
 	import type { DataConnection } from 'peerjs';
 	import Peer from 'peerjs';
-	import { blendshapesName } from './blendshapes';
+	import { arkitBlendshapeNames } from '../../../lib/blendshapes';
 	import { customAlphabet } from 'nanoid';
 	import { alphanumeric } from 'nanoid-dictionary';
 
 	let url: string;
 	let status: string = 'Not connected';
 	let conn: DataConnection | null = null;
+	let blendshapeName: string[] = Array.from(arkitBlendshapeNames.keys());
 	let blendshapesValue: number[] = [];
 	let latency: number = 0;
 	let packageCount: number = 0;
-	const valueLength: number = 48; //42 blendshapes, 4 for rotation, 2 for time
+	//const valueLength: number = 58; //52 blendshapes, 4 for rotation, 2 for time
 
 	type Data = {
 		blendshapes: { [key: string]: number };
@@ -99,9 +100,9 @@
 				let [dataSecond, dataMillisecond] = Object.values(decodedData.time);
 
 				//blendshapes
-				if (blendshapes && blendshapes.length === 42) {
+				if (blendshapes && blendshapes.length === 52) {
 					if (window.electron) {
-						window.electron.send('set-blendshapes', [blendshapesName, blendshapes]);
+						window.electron.send('set-blendshapes', [blendshapeName, blendshapes]);
 					}
 					blendshapesValue = blendshapes;
 				}
@@ -166,10 +167,10 @@
 	<p id="latency">Latency: {latency} millisecond</p>
 	<p id="package-count">Package count: {packageCount}</p>
 	<ul id="blendshapes">
-		{#each blendshapesName as blendshape, i}
+		{#each blendshapeName as blendshape, i}
 			<li>
 				<p id="blendshape-name">{blendshape}:</p>
-				<p id="{i}-shape">{blendshapesValue[i] / 100}</p>
+				<p id="{i}-shape">{blendshapesValue[i]?.toFixed(2)}</p>
 			</li>
 		{/each}
 	</ul>
