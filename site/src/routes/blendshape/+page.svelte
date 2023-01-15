@@ -7,8 +7,8 @@
 	import { page } from '$app/stores';
 	//code
 	import { setupCamera, getDeviceInfos } from './camera';
-	import { startTracking } from './tracking';
 	import { createPeer } from './peer';
+	import { arkitBlendshapeNames } from '../../../../lib/blendshapes';
 
 	import { Toast, toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
@@ -26,7 +26,7 @@
 	let deviceInfos: MediaDeviceInfo[] = [];
 	let connectionLink: string;
 	let dataConnection: DataConnection | null = null;
-	let blendshapes: Map<string, number> = new Map<string, number>();
+	let blendshapes: Map<string, number> = new Map();
 	let overlay: HTMLDivElement;
 	let rectangle: HTMLDivElement;
 	let fps: string = '';
@@ -122,7 +122,8 @@
 				count = 1;
 			}
 			smoothFrames = count;
-			average.shapes.set(name, Math.round((sum / count) * 100));
+			//average.shapes.set(name, Math.round((sum / count) * 100));
+			average.shapes.set(name, sum / count);
 		}
 		return average;
 	}
@@ -162,10 +163,25 @@
 		}
 		//apply smoothing
 		let smoothedResult = dataSmoother({ shapes: values, time: Date.now() });
-		//display blendshapes
-		blendshapes = smoothedResult.shapes;
-		//get shapes from smoothed result
-		let dataBlendshapes = new Uint8Array(Array.from(blendshapes.values()));
+		//map result to arkit names
+		let arkitBlendshapes = [];
+		for (let [arkitName, mocapName] of arkitBlendshapeNames) {
+			let value = 0;
+			if (arkitName === 'browInnerUp') {
+				let left = smoothedResult.shapes.get('browInnerUp_L') ?? 0;
+				let right = smoothedResult.shapes.get('browInnerUp_R') ?? 0;
+				value = (left + right) / 2;
+			}
+			value = smoothedResult.shapes.get(mocapName) ?? 0;
+			arkitBlendshapes.push(value);
+
+			if (mocapName) {
+				blendshapes.set(arkitName, value);
+			}
+		}
+		//display
+		blendshapes = blendshapes;
+		let dataBlendshapes = new Float32Array(arkitBlendshapes);
 
 		//estimate eye rotation based on not smoothed eye blendshapes
 		let [leftEye, rightEye] = getEyeRotation(values);
@@ -218,7 +234,9 @@
 		fps = receivedFps.toFixed(0);
 	}
 
-	onMount(() => {
+	onMount(async () => {
+		//mocap4face is not side effect free, so we need to import it dynamically
+		const { startTracking } = await import('./tracking');
 		//get available device first in case all devices are occupied and return error later
 		getDeviceInfos().then((d) => (deviceInfos = d));
 
@@ -297,7 +315,7 @@
 			{#each [...blendshapes] as [key, value]}
 				<div class="flex gap-2 justify-end">
 					<p>{key}:</p>
-					<p class="w-8">{value / 100}</p>
+					<p class="w-8">{value.toFixed(2)}</p>
 				</div>
 			{/each}
 		</div>
