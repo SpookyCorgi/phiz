@@ -23,13 +23,13 @@ Phiz consists of a **website**, a **desktop app**, and **custom plugins** for co
 ## Plugins Setup
 ### Unreal Engine Without Additional App (Only works on Win64 pc)
 **This feature is experimental! Might crash!**
-1. Download the latest release **ue-node-example** for your Unreal version. Unzip it.
+1. Download the latest release of [**phiz-plugin-embedded**](https://github.com/SpookyCorgi/phiz/releases) for your Unreal version. Unzip it.
 2. Copy the *Plugins* folder into your {project root} (usually at Documents/Unreal Project/Project Name/)
 3. Copy everything in the *Content* folder into **your project Content folder** ({project root}/Content/)
 
 **For metahuman**
 
-4. Open your metahuman blueprint and navigate to **face** component.
+4. Open your metahuman blueprint and navigate to **Face** component.
 
     ![image](https://user-images.githubusercontent.com/37282156/212817085-bc3f2dd7-e78d-4486-b82c-aebd31e4ae15.png)
 5. In the details panel, find the Animation section and set the following.
@@ -38,7 +38,7 @@ Phiz consists of a **website**, a **desktop app**, and **custom plugins** for co
     - Anim Class: **AnimBP_MH_Node**
     
     ![image](https://user-images.githubusercontent.com/37282156/212817466-ceabdb47-3527-461c-b291-759d20496c2b.png)
-6. Go back to your level and drag **BP_Node** into your level
+6. Go back to your level and drag **BP_Node** in the *PhizAssets* folder into your level
 
     ![image](https://user-images.githubusercontent.com/37282156/212818081-19417d39-e809-4ba3-8940-240bf475da7f.png)
     
