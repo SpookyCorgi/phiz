@@ -205,9 +205,9 @@
 		let dataLeftEye = new Float32Array(leftEye);
 		let dataRightEye = new Float32Array(rightEye);
 
-		//get rotation map quaternion range -1 to 1 to 0 to 20000
+		//get head rotation in quaternion
 		let rotation = result.rotationQuaternion.xyzw;
-		let dataQuaternion = new Float32Array([rotation.x, rotation.y, rotation.z, rotation.w]);
+		let dataHead = new Float32Array([rotation.x, rotation.y, rotation.z, rotation.w]);
 
 		//get time
 		let date = new Date();
@@ -215,10 +215,11 @@
 
 		//create sendable data
 		let data = {
+			connection: true,
 			blendshapes: dataBlendshapes,
 			leftEyeRotation: dataLeftEye,
 			rightEyeRotation: dataRightEye,
-			headQuaternion: dataQuaternion,
+			headRotation: dataHead,
 			time: dataTime
 		};
 		//send data
@@ -266,9 +267,6 @@
 
 			startTracking(videoElement, onBlendshapeResult, getFPS);
 			createPeer(
-				'/',
-				9000,
-				'/',
 				(id: string) => {
 					let url = new URL($page.url.origin);
 					url.port = '';

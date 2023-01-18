@@ -4,6 +4,7 @@
 	import { arkitBlendshapeNames } from '../../../lib/blendshapes';
 	import { customAlphabet } from 'nanoid';
 	import { alphanumeric } from 'nanoid-dictionary';
+	import { metadata } from '../../../lib/metadata';
 
 	let url: string;
 	let status: string = 'Not connected';
@@ -12,9 +13,11 @@
 	let blendshapesValue: number[] = [];
 	let latency: number = 0;
 	let packageCount: number = 0;
+	let checkVersion: boolean = false;
 	//const valueLength: number = 58; //52 blendshapes, 4 for rotation, 2 for time
 
 	type Data = {
+		connection: boolean;
 		blendshapes: { [key: string]: number };
 		leftEyeRotation: { [key: string]: number };
 		rightEyeRotation: { [key: string]: number };
@@ -80,28 +83,49 @@
 			conn.close();
 		}
 
-		conn = peer.connect(id, { serialization: 'json' });
+		conn = peer.connect(id, {
+			metadata: {},
+			serialization: 'json',
+		});
 		// on open will be launch when you successfully connect to PeerServer
 		conn.on('open', function () {
 			// here you have conn.id
-			setStatus(`Connected to peer\nPeer id : ${id}`);
+			setStatus(`Connected to peer id : ${id}. Checking version...\r\n`);
 			if (window.electron) {
 				window.electron.send('open-osc-server');
 			}
 		});
 
+		conn.on('close', function () {
+			if (!checkVersion) {
+				setStatus(
+					`Your version ${metadata.version} is outdated. Please go to https://github.com/SpookyCorgi/phiz to download the latest version.\r\n`,
+				);
+			}
+
+			setStatus(`Peer closed connection.\r\n`);
+			checkVersion = false;
+		});
+
 		conn.on('data', function (data: unknown) {
 			if (data) {
 				let decodedData = data as Data;
+
+				if (decodedData.connection) {
+					if (!checkVersion) {
+						setStatus(`Version check passed.\r\n`);
+						checkVersion = true;
+					}
+				}
+
 				let blendshapes = Object.values(decodedData.blendshapes);
 				let leftEye = Object.values(decodedData.leftEyeRotation);
 				let rightEye = Object.values(decodedData.rightEyeRotation);
-				let quaternion = Object.values(decodedData.headRotation);
+				let headRotation = Object.values(decodedData.headRotation);
 				let [dataSecond, dataMillisecond] = Object.values(decodedData.time);
 
 				//blendshapes
 				if (blendshapes && blendshapes.length === 52) {
-					console.log(blendshapes);
 					if (window.electron) {
 						window.electron.send('set-blendshapes', [blendshapeName, blendshapes]);
 					}
@@ -116,9 +140,9 @@
 				}
 
 				//quaternion
-				if (quaternion && quaternion.length === 4) {
+				if (headRotation && headRotation.length === 4) {
 					if (window.electron) {
-						window.electron.send('set-quaternion', quaternion);
+						window.electron.send('set-quaternion', headRotation);
 					}
 				}
 
@@ -130,26 +154,6 @@
 						date.getMilliseconds() -
 						dataMillisecond;
 				}
-				// let values = Object.values(data);
-				// if (values && values.length === valueLength) {
-				// 	let arr = Array.from(values);
-				// 	let blendshapes = arr.slice(0, 42);
-				// 	let quaternion = arr.slice(42, 46).map((value) => (value - 100) / 100);
-
-				// 	let [second, hundredth] = arr.slice(46, 48);
-				// 	let [secondNow, hundredthNow] = getTime();
-				// 	if (second && hundredth) {
-				// 		latency = (secondNow * 100 + hundredthNow - second * 100 - hundredth) * 10;
-				// 	}
-
-				// 	packageCount++;
-				// 	if (window.electron) {
-				// 		window.electron.send('set-blendshapes', [blendshapesName, blendshapes]);
-				// 		window.electron.send('set-quaternion', quaternion);
-				// 	}
-
-				// 	blendshapesValue = blendshapes;
-				// }
 			}
 		});
 	}
