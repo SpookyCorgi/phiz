@@ -18,7 +18,7 @@
 		blendshapes: { [key: string]: number };
 		leftEyeRotation: { [key: string]: number };
 		rightEyeRotation: { [key: string]: number };
-		headQuaternion: { [key: string]: number };
+		headRotation: { [key: string]: number };
 		time: { [key: string]: number };
 	};
 
@@ -96,11 +96,12 @@
 				let blendshapes = Object.values(decodedData.blendshapes);
 				let leftEye = Object.values(decodedData.leftEyeRotation);
 				let rightEye = Object.values(decodedData.rightEyeRotation);
-				let quaternion = Object.values(decodedData.headQuaternion);
+				let quaternion = Object.values(decodedData.headRotation);
 				let [dataSecond, dataMillisecond] = Object.values(decodedData.time);
 
 				//blendshapes
 				if (blendshapes && blendshapes.length === 52) {
+					console.log(blendshapes);
 					if (window.electron) {
 						window.electron.send('set-blendshapes', [blendshapeName, blendshapes]);
 					}
@@ -108,7 +109,7 @@
 				}
 
 				//eye rotation
-				if (leftEye && rightEye && leftEye.length === 2 && rightEye.length === 2) {
+				if (leftEye && rightEye && leftEye.length === 4 && rightEye.length === 4) {
 					if (window.electron) {
 						window.electron.send('set-eye-rotation', [leftEye, rightEye]);
 					}

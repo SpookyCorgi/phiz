@@ -10,7 +10,7 @@
 
 <section class="">
 	<div class="text-center py-20">
-		<h1 class="whitespace-nowrap text-5xl md:text-6xl lg:text-7xl font-bold">Face MoCap</h1>
+		<h1 class="whitespace-nowrap text-5xl md:text-6xl lg:text-7xl font-bold">Facial MoCap</h1>
 		<GradientHeading
 			tag="h1"
 			direction="bg-gradient-to-r"

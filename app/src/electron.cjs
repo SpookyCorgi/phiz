@@ -123,14 +123,17 @@ ipcMain.on('set-blendshapes', (event, content) => {
 })
 
 ipcMain.on('set-eye-rotation', (event, content) => {
-	let [[leftX, leftY], [rightX, rightY]] = content;
-	let message = new OSC.Message('/phiz/eyeRotation', leftX, leftY, rightX, rightY);
+	let [[leftX, leftY, leftZ, leftW], [rightX, rightY, rightZ, rightW]] = content;
+	let message = new OSC.Message('/phiz/leftEyeRotation', leftX, leftY, leftZ, leftW);
+	oscServer.send(message);
+
+	message = new OSC.Message('/phiz/rightEyeRotation', rightX, rightY, rightZ, rightW);
 	oscServer.send(message);
 });
 
 ipcMain.on('set-quaternion', (event, content) => {
 	let [x, y, z, w] = content;
-	let message = new OSC.Message('/phiz/quaternion', x, y, z, w);
+	let message = new OSC.Message('/phiz/headRotation', x, y, z, w);
 	oscServer.send(message);
 });
 

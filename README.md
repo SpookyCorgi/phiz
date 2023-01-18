@@ -31,7 +31,7 @@ Phiz consists of a **website**, a **desktop app**, and **custom plugins** for co
 - [Unreal Engine without app (experimental)](https://github.com/SpookyCorgi/phiz/wiki/Unreal-Engine-without-additional-app)
 
 ## OSC format
-There are currently 3 channels of data
+There are currently 4 channels of data
 - **/phiz/blendshapes**
   
   A float array [52 blendshape values] ranging from 0.0~1.0. **Check [here](/lib/blendshapes.ts) for the order of blendshapes**. 
@@ -41,15 +41,20 @@ There are currently 3 channels of data
 - **/phiz/headQuaternion**
     
    A float array [x,y,z,w] ranging from -1.0 ~ 1.0. 
+
+These are extra eye rotation roughly estimated from the eyeLookAt blendshapes. It's usually not needed since common avatar has eye rotation build in their blendshapes.
+- **/phiz/leftEyeRotation**
+
+   A float array [x,y,z,w] ranging from -1.0 ~ 1.0.
    
-   Rotation of the head in quaternion in left-handed, Y-Up coordinate system.
+- **/phiz/rightEyeRotation**
 
-- **/phiz/eyeRotation**
-   A float array [leftZ, leftY, rightZ, rightY] in degrees in left-handed, Y-Up coordinate system.
-   
-   Extra eye rotation value derived from the eye blendshapes. CW is postive CCW is negative.
+    A float array [x,y,z,w] ranging from -1.0 ~ 1.0.
 
+All rotations are **quaternions in right-handed, Y-Up, Z-Forward** coordinate system.
 
+![Coordinate axis](./assets/coordinate-axes-light.png#gh-light-mode-only)
+![Coordinate axis](./assets/coordinate-axes-dark.png#gh-dark-mode-only)
 
 ## Features
 - Website:
@@ -72,6 +77,7 @@ There are currently 3 channels of data
     - [x] OSC data output
     - [ ] Livelink data output
     - [ ] Dynamic port selection
+    - [ ] Support for multiple mocap input
 
 - 3rd party:
     - Unreal Engine:

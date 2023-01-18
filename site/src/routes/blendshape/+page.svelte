@@ -38,7 +38,7 @@
 	let storedData: ShapeFrame[] = [];
 
 	let eyeSensitivity: number = 0.8;
-	let eyeRotateLimit: { [key: string]: number } = { up: 42.0, down: 48.0, in: 50.0, out: 50.0 };
+	let eyeRotateLimit: { [key: string]: number } = { up: 28.0, down: 47.0, in: 45.0, out: 45.0 };
 
 	function setFaceRectangle(result: FaceTrackerResult) {
 		const rect = result.faceRectangle;
@@ -128,20 +128,37 @@
 		return average;
 	}
 
-	function getEyeRotation(current: Map<string, number>): [[number, number], [number, number]] {
+	function getEyeRotation(
+		current: Map<string, number>
+	): [[number, number, number, number], [number, number, number, number]] {
 		let directions = ['up', 'down', 'in', 'out'];
 		let rightRotation: number[] = [];
 		let leftRotation: number[] = [];
+		//turning eye look value into rotation
 		for (const direction of directions) {
 			let shape = 'eyeLook' + direction.charAt(0).toUpperCase() + direction.slice(1);
 			rightRotation.push(current.get(shape + '_R')! * eyeRotateLimit[direction] * eyeSensitivity);
 			leftRotation.push(current.get(shape + '_L')! * eyeRotateLimit[direction] * eyeSensitivity);
 		}
-		//rotation left x(up-down) and y(in-out)
-		//rotation right x(up-down) and y(out-in)
+		//left eye rotation in radians x(down-up) and y(out-in)
+		let leftRotY = ((leftRotation[3] - leftRotation[2]) / 180) * Math.PI;
+		let leftRotX = ((leftRotation[1] - leftRotation[0] + 90) / 180) * Math.PI;
+		//right eye rotation in radians x(up-down) and y(in-out)
+		let rightRotY = ((rightRotation[2] - rightRotation[3]) / 180) * Math.PI;
+		let rightRotX = ((rightRotation[1] - rightRotation[0] + 90) / 180) * Math.PI;
+
+		//get the spherical coordinates of the eye rotation
+		let leftY = Math.cos(leftRotX);
+		let leftX = Math.sin(leftRotX) * Math.sin(leftRotY);
+		let leftZ = Math.sin(leftRotX) * Math.cos(leftRotY);
+
+		let rightY = Math.cos(rightRotX);
+		let rightX = Math.sin(rightRotX) * Math.sin(rightRotY);
+		let rightZ = Math.sin(rightRotX) * Math.cos(rightRotY);
+
 		return [
-			[leftRotation[0] - leftRotation[1], leftRotation[2] - leftRotation[3]],
-			[rightRotation[0] - rightRotation[1], rightRotation[3] - rightRotation[2]]
+			[leftX, leftY, leftZ, 0],
+			[rightX, rightY, rightZ, 0]
 		];
 	}
 
@@ -278,7 +295,7 @@
 	});
 </script>
 
-<main class="p-4 w-full flex flex-col items-center">
+<main class="p-4 w-full h-full flex flex-col items-center">
 	<div class="flex w-full max-w-[640px] lg:max-w-[896px] pl-2">
 		<label for="videoSource"><p>Source:&nbsp;</p></label>
 		<select bind:this={videoSelect} class="w-[240px] mb-2">
