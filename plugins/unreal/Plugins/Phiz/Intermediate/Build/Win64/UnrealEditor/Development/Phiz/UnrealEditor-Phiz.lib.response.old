@@ -1,0 +1,14 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-Phiz.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\James\Documents\Unreal Projects\PhizPluginProject\Intermediate\Build\Win64\PhizPluginProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"C:\Users\James\Documents\Unreal Projects\PhizPluginProject\Plugins\Phiz\Intermediate\Build\Win64\UnrealEditor\Development\Phiz\Phiz.cpp.obj"
+"C:\Users\James\Documents\Unreal Projects\PhizPluginProject\Plugins\Phiz\Intermediate\Build\Win64\UnrealEditor\Development\Phiz\Phiz.init.gen.cpp.obj"
+"C:\Users\James\Documents\Unreal Projects\PhizPluginProject\Plugins\Phiz\Intermediate\Build\Win64\UnrealEditor\Development\Phiz\PhizTypes.gen.cpp.obj"
+"C:\Users\James\Documents\Unreal Projects\PhizPluginProject\Plugins\Phiz\Intermediate\Build\Win64\UnrealEditor\Development\Phiz\Default.rc2.res"
+/OUT:"C:\Users\James\Documents\Unreal Projects\PhizPluginProject\Plugins\Phiz\Intermediate\Build\Win64\UnrealEditor\Development\Phiz\UnrealEditor-Phiz.lib"

@@ -1,0 +1,15 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "c:\\users\\james\\documents\\unreal projects\\phizpluginproject\\plugins\\phiz\\intermediate\\build\\win64\\unrealeditor\\inc\\phiz\\phiztypes.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\james\\documents\\unreal projects\\phizpluginproject\\intermediate\\build\\win64\\phizpluginprojecteditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
+        "Includes": [
+            "c:\\users\\james\\documents\\unreal projects\\phizpluginproject\\plugins\\phiz\\intermediate\\build\\win64\\unrealeditor\\development\\phiz\\definitions.phiz.h",
+            "c:\\users\\james\\documents\\unreal projects\\phizpluginproject\\plugins\\phiz\\source\\phiz\\public\\phiztypes.h",
+            "c:\\users\\james\\documents\\unreal projects\\phizpluginproject\\plugins\\phiz\\intermediate\\build\\win64\\unrealeditor\\inc\\phiz\\phiztypes.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

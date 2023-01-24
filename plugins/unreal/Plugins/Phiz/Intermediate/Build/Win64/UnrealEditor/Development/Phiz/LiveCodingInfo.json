@@ -1,0 +1,14 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.Phiz.cpp.obj": [
+			"Phiz.cpp.obj",
+			"PhizFunctionLibrary.cpp.obj"
+		],
+		"Module.Phiz.gen.cpp.obj": [
+			"Phiz.init.gen.cpp.obj",
+			"PhizFunctionLibrary.gen.cpp.obj",
+			"PhizTypes.gen.cpp.obj"
+		]
+	}
+}

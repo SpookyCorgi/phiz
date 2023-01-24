@@ -84,7 +84,7 @@
 		}
 
 		conn = peer.connect(id, {
-			metadata: {},
+			metadata: metadata,
 			serialization: 'json',
 		});
 		// on open will be launch when you successfully connect to PeerServer

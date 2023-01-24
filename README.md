@@ -20,7 +20,7 @@ Phiz consists of a **website**, a **desktop app**, and **custom plugins** for co
 
 ### General use
 
-1. Download and install the windows/macOS/linux executable files from release page.
+1. Download and install the windows/macOS/linux executable files from release page (still in development).
 2. Go to the [website](https://phizmocap.dev) on your device you planned to record your face with.
 3. Copy the 9 character code (eg, p-AwCodE) from the website and paste it into the desktop app. If the connection is successful, you should see live data showing up in the app.
 4. Now the data is available in localhost(127.0.0.1) on **port 41235** in [OSC format](#osc-format). 
@@ -28,13 +28,13 @@ Phiz consists of a **website**, a **desktop app**, and **custom plugins** for co
 ### Unreal, Unity, Godot, and much more...
 [**Check the wiki**](https://github.com/SpookyCorgi/phiz/wiki) for tutorials for 3rd parties software.
 - [Unreal Engine](https://github.com/SpookyCorgi/phiz)
-- [Unreal Engine without app (experimental)](https://github.com/SpookyCorgi/phiz/wiki/Unreal-Engine-without-additional-app)
+- [Unreal Engine without app (experimental!!)](https://github.com/SpookyCorgi/phiz/wiki/Unreal-Engine-without-additional-app)
 
 ## OSC format
 There are currently 4 channels of data
 - **/phiz/blendshapes**
   
-  A float array [52 blendshape values] ranging from 0.0~1.0. **Check [here](/lib/blendshapes.ts) for the order of blendshapes**. 
+  A float array [52 blendshape values] ranging from 0.0~1.0. **Check [here](https://github.com/SpookyCorgi/phiz/wiki/Blendshapes-Format) for the order of blendshapes**. 
   
   Currently the website only supports detecting 41/52 blendshapes. However the array still have a length of 52 with non-detecting blendshapes being 0.0.
   
@@ -71,11 +71,11 @@ All rotations are **quaternions in right-handed, Y-Up, Z-Forward** coordinate sy
     - Advanced:
         - [ ] Upload custom avatar to preview
         - [ ] Min, max and curve slider for custom blendshape control
-        - [ ] User profile for saving control settings.
+        - [ ] User profile for saving control settings
+        - [ ] User-upload-avatar streaming page for obs browser source
 
 - Desktop app:
     - [x] OSC data output
-    - [ ] Livelink data output
     - [ ] Dynamic port selection
     - [ ] Support for multiple mocap input
 
@@ -83,14 +83,14 @@ All rotations are **quaternions in right-handed, Y-Up, Z-Forward** coordinate sy
     - Unreal Engine:
         - [x] Example project for ready player me
         - [x] Example project for metahuman
-        - [ ] Live link plugin for Unreal Engine 4
-        - [ ] Embedded web server (replacing the desktop app)
+        - [x] Embedded web server (replacing the desktop app)
     - Unity:
         - [x] Example project for ready player me
         - [ ] Embedded web server (replacing the desktop app)
     - VRChat:
         - [ ] Output support for VRChat
         - [ ] Example project for VRChat  
+    - VtuberStudio
 
 
 ## License
