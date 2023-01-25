@@ -19,8 +19,8 @@ let oscServer;
 
 function createWindow () {
 	let windowState = windowStateManager({
-		defaultWidth: 800,
-		defaultHeight: 600,
+		defaultWidth: 480,
+		defaultHeight: 640,
 	});
 
 	const mainWindow = new BrowserWindow({
@@ -31,8 +31,8 @@ function createWindow () {
 			x: 17,
 			y: 32,
 		},
-		minHeight: 450,
-		minWidth: 500,
+		minHeight: 640,
+		minWidth: 480,
 		webPreferences: {
 			enableRemoteModule: true,
 			contextIsolation: true,

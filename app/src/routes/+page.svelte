@@ -5,16 +5,8 @@
 	import { customAlphabet } from 'nanoid';
 	import { alphanumeric } from 'nanoid-dictionary';
 	import { metadata } from '../../../lib/metadata';
-
-	let url: string;
-	let status: string = 'Not connected';
-	let conn: DataConnection | null = null;
-	let blendshapeName: string[] = Array.from(arkitBlendshapeNames.keys());
-	let blendshapesValue: number[] = [];
-	let latency: number = 0;
-	let packageCount: number = 0;
-	let checkVersion: boolean = false;
-	//const valueLength: number = 58; //52 blendshapes, 4 for rotation, 2 for time
+	import logo from '$lib/images/logo.svg';
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
 
 	type Data = {
 		connection: boolean;
@@ -24,6 +16,22 @@
 		headRotation: { [key: string]: number };
 		time: { [key: string]: number };
 	};
+
+	type Status = {
+		text: string;
+		loadingNeeded: boolean;
+		loadingStatus: string;
+	};
+
+	let url: string;
+	let status: Status[] = [];
+	let conn: DataConnection | null = null;
+	let blendshapeName: string[] = Array.from(arkitBlendshapeNames.keys());
+	let blendshapesValue: number[] = [];
+	let latency: number = 0;
+	let packageCount: number = 0;
+	let checkVersion: boolean = false;
+	//const valueLength: number = 58; //52 blendshapes, 4 for rotation, 2 for time
 
 	// function getTime() {
 	// 	const date = new Date();
@@ -37,12 +45,23 @@
 	// 	return [second, hundredth];
 	// }
 
-	function setStatus(statusText: string) {
-		status += statusText;
+	function setStatus(input: Status) {
+		let update = false;
+		status.forEach((item) => {
+			if (item.text === input.text) {
+				item.loadingNeeded = input.loadingNeeded;
+				item.loadingStatus = input.loadingStatus;
+				update = true;
+			}
+		});
+		if (!update) {
+			status.push(input);
+		}
+		status = status;
 	}
 
 	function clearStatus() {
-		status = '';
+		status = [];
 	}
 
 	function connect() {
@@ -54,12 +73,20 @@
 		packageCount = 0;
 		clearStatus();
 		if (id == null) {
-			setStatus('No id provided');
+			setStatus({
+				text: 'No id provided',
+				loadingNeeded: false,
+				loadingStatus: '',
+			});
 			return;
 		}
 		//setStatus(`Connecting to server: ${host}\r\n`);
 		//createPeer(host, id);
-		setStatus(`Connecting to server\r\n`);
+		setStatus({
+			text: 'Connecting to server',
+			loadingNeeded: true,
+			loadingStatus: 'loading',
+		});
 		createPeer('', id);
 	}
 	function generateID(): string {
@@ -73,7 +100,16 @@
 		let peer = new Peer(generateID());
 		peer.on('open', function (id) {
 			connectPeer(peer, peerId);
-			setStatus(`Connected to signalling server.\nMy id : ${id}\r\n`);
+			setStatus({
+				text: 'Connecting to server',
+				loadingNeeded: true,
+				loadingStatus: 'success',
+			});
+			setStatus({
+				text: `My id : ${id}`,
+				loadingNeeded: false,
+				loadingStatus: '',
+			});
 		});
 		peer.on('connection', function (conn) {});
 	}
@@ -90,7 +126,17 @@
 		// on open will be launch when you successfully connect to PeerServer
 		conn.on('open', function () {
 			// here you have conn.id
-			setStatus(`Connected to peer id : ${id}. Checking version...\r\n`);
+			setStatus({
+				text: `Connected to peer id : ${id}.`,
+				loadingNeeded: false,
+				loadingStatus: '',
+			});
+			setStatus({
+				text: `Checking version`,
+				loadingNeeded: true,
+				loadingStatus: 'loading',
+			});
+
 			if (window.electron) {
 				window.electron.send('open-osc-server');
 			}
@@ -98,12 +144,17 @@
 
 		conn.on('close', function () {
 			if (!checkVersion) {
-				setStatus(
-					`Your version ${metadata.version} is outdated. Please go to https://github.com/SpookyCorgi/phiz to download the latest version.\r\n`,
-				);
+				setStatus({
+					text: `Checking version`,
+					loadingNeeded: true,
+					loadingStatus: 'failed',
+				});
+				setStatus({
+					text: `Your version ${metadata.version} is outdated. Please go to https://github.com/SpookyCorgi/phiz to download the latest version.`,
+					loadingNeeded: false,
+					loadingStatus: '',
+				});
 			}
-
-			setStatus(`Peer closed connection.\r\n`);
 			checkVersion = false;
 		});
 
@@ -113,7 +164,11 @@
 
 				if (decodedData.connection) {
 					if (!checkVersion) {
-						setStatus(`Version check passed.\r\n`);
+						setStatus({
+							text: `Checking version`,
+							loadingNeeded: true,
+							loadingStatus: 'success',
+						});
 						checkVersion = true;
 					}
 				}
@@ -159,96 +214,47 @@
 	}
 </script>
 
-<main>
-	<div id="url-slot">
-		<input type="text" bind:value={url} id="input-slot" />
-		<button type="button" on:click={connect}>Connect</button>
+<main class="p-4">
+	<div id="url-slot" class="flex gap-2">
+		<img src={logo} alt="Logo" />
+		<input type="text" bind:value={url} />
+		<button type="button" class="btn variant-filled-primary btn-base" on:click={connect}>
+			Connect
+		</button>
 	</div>
 
-	<div id="status">
-		<p>Status</p>
-		<p id="status-content">{status}</p>
+	<div class="card mt-4 p-2 h-36 overflow-hidden flex flex-col">
+		<p class="font-bold">Status</p>
+		<hr />
+		<div class="h-full overflow-y-scroll">
+			{#each status as s}
+				<div class="flex gap-2 items-center">
+					<p>{s.text}</p>
+					{#if s.loadingNeeded}
+						{#if s.loadingStatus === 'loading'}
+							<div class="h-4 w-4"><ProgressRadial stroke={40} /></div>
+						{:else if s.loadingStatus === 'success'}
+							<p class="text-primary-500">&#x2713;</p>
+						{:else if s.loadingStatus === 'failed'}
+							<p class="text-error-500">&#x2715;</p>
+						{/if}
+					{/if}
+				</div>
+			{/each}
+		</div>
 	</div>
-	<p id="latency">Latency: {latency} millisecond</p>
-	<p id="package-count">Package count: {packageCount}</p>
-	<ul id="blendshapes">
-		{#each blendshapeName as blendshape, i}
-			<li>
-				<p id="blendshape-name">{blendshape}:</p>
-				<p id="{i}-shape">{blendshapesValue[i]?.toFixed(2)}</p>
-			</li>
-		{/each}
-	</ul>
+	<p class="mt-2">Latency: {latency} millisecond</p>
+	<p>Package count: {packageCount}</p>
+	<div class="mt-2 h-72 overflow-hidden card p-2 flex flex-col">
+		<p class="font-bold">Blendshapes</p>
+		<hr />
+		<ul class="h-full overflow-y-scroll">
+			{#each blendshapeName as blendshape, i}
+				<li class="flex">
+					<p class="w-48">{blendshape}:</p>
+					<p id="{i}-shape">{blendshapesValue[i]?.toFixed(2)}</p>
+				</li>
+			{/each}
+		</ul>
+	</div>
 </main>
-
-<style>
-	main {
-		position: relative;
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		padding-left: 32px;
-		padding-right: 32px;
-	}
-	#status {
-		width: 456px;
-		max-width: 100%;
-	}
-
-	#status p {
-		margin: 0;
-		padding: 0;
-		white-space: pre-wrap;
-	}
-
-	#status-content {
-		color: var(--font-color-hover);
-	}
-
-	#latency {
-		width: 456px;
-		max-width: 100%;
-	}
-
-	#package-count {
-		width: 456px;
-		max-width: 100%;
-	}
-
-	#url-slot {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-		gap: 16px;
-		margin-top: 16px;
-	}
-
-	#input-slot {
-		width: 320px;
-		height: 32px;
-	}
-
-	#blendshapes {
-		width: 456px;
-		max-width: 100%;
-		height: 100%;
-		overflow-y: scroll;
-		list-style: none;
-		padding-left: 0;
-
-		background-color: var(--secondary-background);
-		padding: 16px;
-	}
-
-	li {
-		display: flex;
-	}
-
-	#blendshape-name {
-		width: 200px;
-	}
-</style>
