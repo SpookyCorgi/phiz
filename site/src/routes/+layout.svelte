@@ -5,9 +5,9 @@
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import { AppBar } from '@skeletonlabs/skeleton';
 	import { Divider } from '@skeletonlabs/skeleton';
-	import { Toast, toastStore } from '@skeletonlabs/skeleton';
+	import { Toast } from '@skeletonlabs/skeleton';
 
-	import LightSwitch from '$lib/utilities/LightSwitch/LightSwitch.svelte';
+	import LightSwitch from '../../../lib/ui/LightSwitch/LightSwitch.svelte';
 	import logo from '$lib/images/logo.svg';
 </script>
 

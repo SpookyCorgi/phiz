@@ -9,6 +9,7 @@
 	import { setupCamera, getDeviceInfos } from './camera';
 	import { createPeer } from './peer';
 	import { arkitBlendshapeNames } from '../../../../lib/blendshapes';
+	import { startTracking } from './tracking';
 
 	import { Toast, toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
@@ -254,7 +255,7 @@
 
 	onMount(async () => {
 		//mocap4face is not side effect free, so we need to import it dynamically
-		const { startTracking } = await import('./tracking');
+		//const { startTracking } = await import('./tracking');
 		//get available device first in case all devices are occupied and return error later
 		getDeviceInfos().then((d) => (deviceInfos = d));
 

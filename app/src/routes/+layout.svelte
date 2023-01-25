@@ -1,5 +1,7 @@
 <script lang="ts">
-	import './styles.css';
+	import '../theme.postcss';
+	import '@skeletonlabs/skeleton/styles/all.css';
+	import '../app.postcss';
 
 	import { onMount } from 'svelte';
 
