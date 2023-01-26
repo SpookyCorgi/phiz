@@ -5,6 +5,10 @@
 	"type": "module",
 	"description": "Phiz is a tool that allows you to perform facial motion capture from any device and location.",
 	"author": "SpookyCorgi",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/SpookyCorgi/phiz.git"
+	},
 	"scripts": {
 		"dev": "cross-env NODE_ENV=dev npm run dev:all",
 		"dev:all": "concurrently -n=svelte,electron -c='#ff3e00',blue \"npm run dev:svelte\" \"npm run dev:electron\"",
