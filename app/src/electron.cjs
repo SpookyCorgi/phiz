@@ -15,7 +15,7 @@ const serveURL = serve({ directory: '.' });
 const port = process.env.PORT || 5000;
 const dev = !app.isPackaged;
 let mainWindow;
-let oscServer;
+let oscServer = null;
 
 function createWindow () {
 	let windowState = windowStateManager({
@@ -145,5 +145,19 @@ ipcMain.on('open-osc-server', (event, title) => {
 			}
 		})
 	});
-	oscServer.open(); // connect by default to ws://localhost:8080
+	oscServer.open();
 });
+
+ipcMain.on('change-port', (event, port) => {
+	if (oscServer) {
+		oscServer.close();
+	}
+	oscServer = new OSC({
+		plugin: new OSC.DatagramPlugin({
+			send: {
+				port: port,
+			}
+		})
+	});
+	oscServer.open(); // connect by default to ws://localhost:8080
+})

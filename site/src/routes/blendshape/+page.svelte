@@ -31,6 +31,7 @@
 	let overlay: HTMLDivElement;
 	let rectangle: HTMLDivElement;
 	let fps: string = '';
+	let packageCount: number = 0;
 
 	let smoothBin: number = 0.1;
 	const smoothQueueSize: number = 60;
@@ -221,10 +222,13 @@
 			leftEyeRotation: dataLeftEye,
 			rightEyeRotation: dataRightEye,
 			headRotation: dataHead,
-			time: dataTime
+			time: dataTime,
+			packageCount: packageCount
 		};
 		//send data
 		if (dataConnection != null) {
+			packageCount++;
+			data.packageCount = packageCount;
 			dataConnection.send(data);
 		}
 	}
@@ -276,6 +280,7 @@
 					connectionLink = id;
 				},
 				(conn: DataConnection) => {
+					packageCount = 0;
 					dataConnection = conn;
 				}
 			);

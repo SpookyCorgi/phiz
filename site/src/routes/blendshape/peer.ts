@@ -1,10 +1,10 @@
 //modules
 import { Peer } from 'peerjs';
 import { customAlphabet } from 'nanoid'
-import { alphanumeric } from 'nanoid-dictionary';
+import { nolookalikes } from 'nanoid-dictionary';
 import { metadata } from '../../../../lib/metadata'
 function generateID (): string {
-    const nanoid = customAlphabet(alphanumeric, 6);
+    const nanoid = customAlphabet(nolookalikes, 6);
     let id: string = nanoid();
     return "p-" + id;
 }
