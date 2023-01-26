@@ -300,15 +300,15 @@
 </script>
 
 <main class="p-4 w-full h-full flex flex-col items-center">
-	<div class="flex w-full max-w-[640px] lg:max-w-[896px] pl-2">
+	<div class="flex w-full max-w-[640px] lg:max-w-[896px] pl-2 items-center mb-2">
 		<label for="videoSource"><p>Source:&nbsp;</p></label>
-		<select bind:this={videoSelect} class="w-[240px] mb-2">
+		<select bind:this={videoSelect} class="w-[240px]">
 			{#each deviceInfos as device}
 				<option value={device.deviceId} class="text-sm">{device.label}</option>
 			{/each}
 		</select>
 	</div>
-	<div class="w-full flex justify-center gap-4 mb-2">
+	<div class="w-full flex justify-center gap-2 mb-2">
 		<div
 			id="videoContainer"
 			class="relative card rounded-container-token aspect-square w-full h-full max-w-[640px] max-h-[640px] overflow-hidden flex items-center justify-center"

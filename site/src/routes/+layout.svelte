@@ -4,7 +4,6 @@
 	import '../app.postcss';
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import { AppBar } from '@skeletonlabs/skeleton';
-	import { Divider } from '@skeletonlabs/skeleton';
 	import { Toast } from '@skeletonlabs/skeleton';
 
 	import LightSwitch from '../../../lib/ui/LightSwitch/LightSwitch.svelte';
@@ -28,8 +27,8 @@
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
 				<a href="/blendshape"> Blendshapes </a>
-				<a href="/blendshape"> Facemesh</a>
-				<Divider vertical={true} borderWidth="border-l" />
+				<!-- <a href="/blendshape"> Facemesh</a> -->
+				<span class="divider-vertical h-6" />
 				<LightSwitch />
 			</svelte:fragment>
 		</AppBar>
