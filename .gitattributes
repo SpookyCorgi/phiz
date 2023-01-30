@@ -1,5 +1,5 @@
 # mocap4face
-site/src/lib/@0xalter/mocap4face/* linguist-vendored
+site/src/lib/@0xalter/mocap4face/** linguist-vendored
 # unreal generated
-plugins/unreal/Plugins/Phiz/Binaries/* linguist-vendored
-plugins/unreal/Plugins/Phiz/Intermediate/* linguist-vendored
+plugins/unreal/Plugins/Phiz/Binaries/** linguist-vendored
+plugins/unreal/Plugins/Phiz/Intermediate/** linguist-vendored
