@@ -21,6 +21,7 @@
 		"@types/cookie": "^0.5.1",
 		"@types/node": "^18.11.18",
 		"@types/nanoid-dictionary": "^4.2.0",
+		"@types/ua-parser-js": "^0.7.36",
 		"@typescript-eslint/eslint-plugin": "^5.49.0",
 		"@typescript-eslint/parser": "^5.49.0",
 		"autoprefixer": "^10.4.13",
@@ -46,6 +47,7 @@
 		"nanoid-dictionary": "^5.0.0-beta.1",
 		"osc-js": "^2.4.0",
 		"peer": "^0.6.1",
-		"peerjs": "^1.4.7"
+		"peerjs": "^1.4.7",
+		"ua-parser-js": "^1.0.33"
 	}
 }

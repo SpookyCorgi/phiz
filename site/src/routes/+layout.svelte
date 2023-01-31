@@ -26,7 +26,8 @@
 				</a>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
-				<a href="/blendshape"> Blendshapes </a>
+				<a href="/blendshape"> Record </a>
+				<a href="/data"> Receive </a>
 				<!-- <a href="/blendshape"> Facemesh</a> -->
 				<span class="divider-vertical h-6" />
 				<LightSwitch />

@@ -28,7 +28,8 @@
 	</div>
 	<div class="flex flex-wrap justify-center gap-2">
 		<a class="btn variant-filled-primary btn-base" href="/blendshape">Record</a>
-		<a class="btn variant-filled-secondary btn-base" href="https://github.com/SpookyCorgi/phiz">
+		<a class="btn variant-filled-secondary btn-base" href="/data">Receive data</a>
+		<a class="btn variant-filled-tertiary btn-base" href="https://github.com/SpookyCorgi/phiz">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				x="0px"

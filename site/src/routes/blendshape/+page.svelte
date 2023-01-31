@@ -2,18 +2,24 @@
 	//types
 	import type { FaceTrackerResult, Nullable } from '$lib/@0xalter/mocap4face/advanced';
 	import type { DataConnection } from 'peerjs';
+
 	//svelte
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import { writable, type Writable } from 'svelte/store';
 	//code
 	import { setupCamera, getDeviceInfos } from './camera';
 	import { createPeer } from './peer';
 	import { arkitBlendshapeNames } from '../../../../lib/blendshapes';
 	import { startTracking } from './tracking';
+	import { connectWebsocket } from '$lib/websocket';
 
 	import { Toast, toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { RangeSlider } from '@skeletonlabs/skeleton';
+	import { RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
+
+	import UAParser from 'ua-parser-js';
 
 	//types
 	interface ShapeFrame {
@@ -32,6 +38,8 @@
 	let rectangle: HTMLDivElement;
 	let fps: string = '';
 	let packageCount: number = 0;
+	let dataOutputMode: Writable<string> = writable('webrtc');
+	let dataOutputModeValue: string = 'webrtc';
 
 	let smoothBin: number = 0.1;
 	const smoothQueueSize: number = 60;
@@ -257,7 +265,28 @@
 		fps = receivedFps.toFixed(0);
 	}
 
-	onMount(async () => {
+	function setupWebsocket(host: string, port: number) {
+		connectWebsocket(host, port, () => {});
+	}
+
+	onMount(() => {
+		//detect mode
+		dataOutputMode.subscribe((mode) => {
+			dataOutputModeValue = mode;
+		});
+
+		//detect device!
+		const uaParser = new UAParser();
+		let detectedBrowser = uaParser.getBrowser();
+		let detectedDevice = uaParser.getDevice();
+		let detectedOs = uaParser.getOS();
+		if (!detectedDevice.type) {
+			//detect type desktop
+			dataOutputMode.set('websocket');
+		} else {
+			dataOutputMode.set('webrtc');
+		}
+
 		//mocap4face is not side effect free, so we need to import it dynamically
 		//const { startTracking } = await import('./tracking');
 		//get available device first in case all devices are occupied and return error later
@@ -300,32 +329,34 @@
 </script>
 
 <main class="p-4 w-full h-full flex flex-col items-center">
-	<div class="flex w-full max-w-[640px] lg:max-w-[896px] pl-2 items-center mb-2">
-		<label for="videoSource"><p>Source:&nbsp;</p></label>
-		<select bind:this={videoSelect} class="w-[240px]">
-			{#each deviceInfos as device}
-				<option value={device.deviceId} class="text-sm">{device.label}</option>
-			{/each}
-		</select>
-	</div>
 	<div class="w-full flex justify-center gap-2 mb-2">
-		<div
-			id="videoContainer"
-			class="relative card rounded-container-token aspect-square w-full h-full max-w-[640px] max-h-[640px] overflow-hidden flex items-center justify-center"
-		>
-			<video autoplay playsinline bind:this={videoElement} class="z-0">
-				<track kind="captions" />
-			</video>
-			<div id="overlay" bind:this={overlay} class="absolute z-10">
-				<div
-					id="rectangle"
-					bind:this={rectangle}
-					class="rounded-container-token border-token border-primary-500"
-					style="display: none;"
-				/>
+		<div class="card w-full max-w-[640px] max-h-[640px] flex flex-col">
+			<div class="flex w-full p-2 items-center">
+				<label for="videoSource"><p>Source:&nbsp;</p></label>
+				<select bind:this={videoSelect} class="w-[240px]">
+					{#each deviceInfos as device}
+						<option value={device.deviceId} class="text-sm">{device.label}</option>
+					{/each}
+				</select>
 			</div>
-			<div id="fps" class="absolute top-2 left-2">
-				<h3>{fps}</h3>
+			<div
+				id="videoContainer"
+				class="relative rounded-container-token aspect-square h-full overflow-hidden flex items-center justify-center m-2"
+			>
+				<video autoplay playsinline bind:this={videoElement} class="z-0 object-cover h-full w-full">
+					<track kind="captions" />
+				</video>
+				<div id="overlay" bind:this={overlay} class="absolute z-10">
+					<div
+						id="rectangle"
+						bind:this={rectangle}
+						class="rounded-container-token border-token border-primary-500"
+						style="display: none;"
+					/>
+				</div>
+				<div id="fps" class="absolute top-2 left-2">
+					<h3>{fps}</h3>
+				</div>
 			</div>
 		</div>
 
@@ -355,17 +386,45 @@
 		</div>
 	</div>
 
-	<div id="link-info" class="w-full max-w-[640px] lg:max-w-[896px]">
-		<h3 id="link-description" class="">Copy your code to the app. Click to copy.</h3>
-		<h3
-			class="link bg-primary-backdrop-token rounded-container-token p-2"
-			on:click={copyLink}
-			on:keypress={copyLink}
-		>
-			{connectionLink}
-		</h3>
+	<div class="card p-2 gap-2 flex flex-col w-full max-w-[640px] lg:max-w-[896px] items-start">
+		<RadioGroup selected={dataOutputMode}>
+			<RadioItem value="webrtc"><span>Remote</span></RadioItem>
+			<RadioItem value="websocket"><span>Local</span></RadioItem>
+		</RadioGroup>
+
+		{#if dataOutputModeValue === 'websocket'}
+			<h3>WebSocket Mode</h3>
+			<p id="link-description" class="">
+				Connect to your local websocket server (in Unity, Unreal, etc.) Please enter the host url
+				and port.
+			</p>
+			<div class="flex gap-2 flex-wrap lg:flex-nowrap">
+				<input type="text" placeholder="host url" class="!w-min-56" />
+				<input type="number" placeholder="port" class="" />
+				<button class="btn variant-filled-primary btn-base">Connect</button>
+			</div>
+		{:else if dataOutputModeValue === 'webrtc'}
+			<div id="link-info" class="w-full">
+				<h3>WebRTC Mode</h3>
+				<p id="link-description" class="">
+					Share this code with the person you want to connect to. Click to copy.
+				</p>
+				<h3
+					class="link bg-primary-backdrop-token rounded-container-token p-2"
+					on:click={copyLink}
+					on:keypress={copyLink}
+				>
+					{connectionLink}
+				</h3>
+			</div>
+		{/if}
 	</div>
 </main>
 
 <style>
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
 </style>
