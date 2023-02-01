@@ -7,12 +7,12 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { writable, type Writable } from 'svelte/store';
+	import Websocket from '$lib/websocket.svelte';
 	//code
 	import { setupCamera, getDeviceInfos } from './camera';
 	import { createPeer } from './peer';
 	import { arkitBlendshapeNames } from '../../../../lib/blendshapes';
 	import { startTracking } from './tracking';
-	import { connectWebsocket } from '$lib/websocket';
 
 	import { Toast, toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
@@ -49,6 +49,9 @@
 
 	let eyeSensitivity: number = 0.8;
 	let eyeRotateLimit: { [key: string]: number } = { up: 28.0, down: 47.0, in: 45.0, out: 45.0 };
+
+	let websocket: any;
+	let websocketOpen: boolean;
 
 	function setFaceRectangle(result: FaceTrackerResult) {
 		const rect = result.faceRectangle;
@@ -239,6 +242,13 @@
 			data.packageCount = packageCount;
 			dataConnection.send(data);
 		}
+
+		if (websocketOpen) {
+			websocket.sendWebsocketMessage('/phiz/blendshapes', ...dataBlendshapes);
+			websocket.sendWebsocketMessage('/phiz/headRotation', ...dataHead);
+			websocket.sendWebsocketMessage('/phiz/leftEyeRotation', ...dataLeftEye);
+			websocket.sendWebsocketMessage('/phiz/rightEyeRotation', ...dataRightEye);
+		}
 	}
 	function triggerToast(): void {
 		const t: ToastSettings = {
@@ -263,10 +273,6 @@
 
 	function getFPS(receivedFps: number) {
 		fps = receivedFps.toFixed(0);
-	}
-
-	function setupWebsocket(host: string, port: number) {
-		connectWebsocket(host, port, () => {});
 	}
 
 	onMount(() => {
@@ -394,15 +400,7 @@
 
 		{#if dataOutputModeValue === 'websocket'}
 			<h3>WebSocket Mode</h3>
-			<p id="link-description" class="">
-				Connect to your local websocket server (in Unity, Unreal, etc.) Please enter the host url
-				and port.
-			</p>
-			<div class="flex gap-2 flex-wrap lg:flex-nowrap">
-				<input type="text" placeholder="host url" class="!w-min-56" />
-				<input type="number" placeholder="port" class="" />
-				<button class="btn variant-filled-primary btn-base">Connect</button>
-			</div>
+			<Websocket bind:websocket bind:websocketOpen />
 		{:else if dataOutputModeValue === 'webrtc'}
 			<div id="link-info" class="w-full">
 				<h3>WebRTC Mode</h3>

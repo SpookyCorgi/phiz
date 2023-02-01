@@ -10,8 +10,10 @@ function generateID (): string {
     return "p-" + id;
 }
 
+let osc: any = null;
+
 export function connectWebsocket (host: string, port: number, openCallback: Function, errorCallback: Function, closeCallback: Function) {
-    let osc = new OSC();
+    osc = new OSC();
 
     osc.open({ host: host, port: port })
 
@@ -28,4 +30,14 @@ export function connectWebsocket (host: string, port: number, openCallback: Func
     osc.on('close', function () {
         closeCallback();
     })
+}
+
+
+export function sendWebsocketMessage (address: string, ...input: any[]) {
+    let message = new OSC.Message(address);
+    input.forEach((arg: any) => {
+        message.add(arg);
+    })
+
+    osc.send(message);
 }
