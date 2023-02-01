@@ -55,9 +55,7 @@
 	};
 </script>
 
-<div class="card p-2 mt-2">
-	<p class="font-bold">Connect to websocket</p>
-	<hr />
+<div>
 	<p id="link-description" class="">
 		To connect to your local websocket server (in Unity, Unreal, etc.) Please enter the host url and
 		port.

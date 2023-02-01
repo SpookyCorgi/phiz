@@ -255,8 +255,12 @@
 				{/each}
 			</div>
 		</div>
+		<div class="card p-2 mt-2">
+			<p class="font-bold">Connect to websocket</p>
+			<hr />
+			<Websocket bind:websocket bind:websocketOpen />
+		</div>
 
-		<Websocket bind:websocket bind:websocketOpen />
 		<AccordionGroup spacing={''} class="card mt-2">
 			<!-- Open -->
 			<AccordionItem>

@@ -392,23 +392,23 @@
 		</div>
 	</div>
 
-	<div class="card p-2 gap-2 flex flex-col w-full max-w-[640px] lg:max-w-[896px] items-start">
+	<div class="card p-2 flex flex-col w-full max-w-[640px] lg:max-w-[896px] items-start">
 		<RadioGroup selected={dataOutputMode}>
 			<RadioItem value="webrtc"><span>Remote</span></RadioItem>
 			<RadioItem value="websocket"><span>Local</span></RadioItem>
 		</RadioGroup>
 
 		{#if dataOutputModeValue === 'websocket'}
-			<h3>WebSocket Mode</h3>
+			<h3 class="mt-2">WebSocket Mode</h3>
 			<Websocket bind:websocket bind:websocketOpen />
 		{:else if dataOutputModeValue === 'webrtc'}
-			<div id="link-info" class="w-full">
+			<div id="link-info" class="w-full mt-2">
 				<h3>WebRTC Mode</h3>
 				<p id="link-description" class="">
-					Share this code with the person you want to connect to. Click to copy.
+					Paste this code on the device with the receive page open to receive data. Click to copy.
 				</p>
 				<h3
-					class="link bg-primary-backdrop-token rounded-container-token p-2"
+					class="link bg-primary-backdrop-token rounded-container-token p-2 mt-2"
 					on:click={copyLink}
 					on:keypress={copyLink}
 				>
