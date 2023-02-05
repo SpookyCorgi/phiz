@@ -16,7 +16,7 @@ const config = {
 	],
 	optimizeDeps: {
 		include: [
-			"src/lib/@0xalter/mocap4face"
+			"src/lib/@0xalter/mocap4face", "osc"
 		]
 	},
 	build: {

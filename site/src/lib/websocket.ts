@@ -11,33 +11,71 @@ function generateID (): string {
 }
 
 let osc: any = null;
+let ws: WebSocket;
 
-export function connectWebsocket (host: string, port: number, openCallback: Function, errorCallback: Function, closeCallback: Function) {
-    osc = new OSC();
+export function connectWebsocket (app: string, host: string, port: number, openCallback: Function, errorCallback: Function, closeCallback: Function) {
+    switch (app) {
+        case "unreal": {
+            ws = new WebSocket("ws://" + host + ":" + port);
+            // Connection opened
+            ws.addEventListener('open', (event) => {
+                openCallback();
+            });
 
-    osc.open({ host: host, port: port })
+            // Listen for messages
+            ws.addEventListener('message', (event) => {
+                console.log('Message from server ', event.data);
+            });
 
-    osc.on('error', function (error: any) { errorCallback(error) });
+            ws.addEventListener('error', (event) => {
+                errorCallback(event);
+            });
 
-    osc.on('open', function () {
-        openCallback();
-    });
+            break;
+        }
 
-    osc.on('/phiz', function (message: any) {
-        console.log(message.args)
-    });
+        case "unity": {
+            osc = new OSC();
 
-    osc.on('close', function () {
-        closeCallback();
-    })
+            osc.open({ host: host, port: port })
+
+            osc.on('error', function (error: any) { errorCallback(error) });
+
+            osc.on('open', function () {
+                openCallback();
+            });
+
+            osc.on('/phiz', function (message: any) {
+                console.log(message.args)
+            });
+
+            osc.on('close', function () {
+                closeCallback();
+            })
+            break;
+        }
+
+    }
 }
 
 
-export function sendWebsocketMessage (address: string, ...input: any[]) {
-    let message = new OSC.Message(address);
-    input.forEach((arg: any) => {
-        message.add(arg);
-    })
+export function sendWebsocketMessage (app: string, address: string, ...input: any[]) {
+    switch (app) {
+        case "unreal": {
+            //unreal experimental websocket doesn't support binary data          
+            let array = [address, ...input];
+            ws.send(array.toString())
+            break;
+        }
+        case "unity": {
+            let message = new OSC.Message(address);
+            input.forEach((arg: any) => {
+                message.add(arg);
+            })
 
-    osc.send(message);
+            osc.send(message);
+            break;
+        }
+    }
+
 }

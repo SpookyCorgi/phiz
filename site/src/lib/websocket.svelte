@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { connectWebsocket, sendWebsocketMessage as websocketMessage } from '$lib/websocket';
 	let websocketURL: string = 'localhost';
 	let websocketPort: number = 9912;
@@ -7,6 +8,10 @@
 	let websocketError: string = '';
 	let websocketStatus: string = '';
 	let websocketStatusClass: string = '';
+
+	let appSelect: HTMLSelectElement;
+	let appList: string[] = ['unreal', 'unity'];
+	let app: string = 'unreal';
 	export let websocketOpen: boolean = false;
 
 	function setWebsocket() {
@@ -27,6 +32,7 @@
 
 		if (valid) {
 			connectWebsocket(
+				app,
 				websocketURL,
 				websocketPort,
 				() => {
@@ -50,9 +56,16 @@
 
 	export const websocket: any = {
 		sendWebsocketMessage(address: string, ...input: any[]) {
-			websocketMessage(address, ...input);
+			websocketMessage(app, address, ...input);
 		}
 	};
+
+	onMount(() => {
+		//change source when select changes
+		appSelect.addEventListener('change', () => {
+			app = appSelect.value;
+		});
+	});
 </script>
 
 <div>
@@ -60,6 +73,15 @@
 		To connect to your local websocket server (in Unity, Unreal, etc.) Please enter the host url and
 		port.
 	</p>
+	<div class="w-64 flex items-center">
+		<p class="whitespace-nowrap mr-2">App connecting:</p>
+		<select bind:this={appSelect}>
+			{#each appList as app}
+				<option value={app} class="text-sm">{app}</option>
+			{/each}
+		</select>
+	</div>
+
 	<div class="flex gap-2 flex-wrap lg:flex-nowrap mt-2">
 		<input
 			type="text"

@@ -201,6 +201,7 @@
 					let date = new Date();
 					latency =
 						(date.getSeconds() - dataSecond) * 1000 + date.getMilliseconds() - dataMillisecond;
+					console.log(date.getSeconds(), dataSecond, date.getMilliseconds(), dataMillisecond);
 				}
 
 				//packageCount
