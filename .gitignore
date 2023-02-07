@@ -1,6 +1,5 @@
 .DS_Store
 node_modules
-pnpm-lock.yaml
 
 plugins/unreal/Phiz/Binaries/
 plugins/unreal/Phiz/DerivedDataCache/
