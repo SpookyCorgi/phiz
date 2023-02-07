@@ -62,9 +62,17 @@ export function connectWebsocket (app: string, host: string, port: number, openC
 export function sendWebsocketMessage (app: string, address: string, ...input: any[]) {
     switch (app) {
         case "unreal": {
-            //unreal experimental websocket doesn't support binary data          
+            //unreal experimental websocket doesn't support binary data
+            //trim all number in input to 5 decimal places
+            input.forEach((arg: any, index: number) => {
+                if (typeof arg === "number") {
+                    input[index] = arg.toFixed(5);
+                }
+            })
             let array = [address, ...input];
-            ws.send(array.toString())
+            if (ws) {
+                ws.send(array.toString())
+            }
             break;
         }
         case "unity": {
@@ -72,8 +80,9 @@ export function sendWebsocketMessage (app: string, address: string, ...input: an
             input.forEach((arg: any) => {
                 message.add(arg);
             })
-
-            osc.send(message);
+            if (osc) {
+                osc.send(message);
+            }
             break;
         }
     }

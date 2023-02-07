@@ -4,6 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+
+#include "INetworkingWebSocket.h"
+#include "IWebSocketServer.h"
+#include "UObject/StrongObjectPtr.h"
+#include "WebSocketNetDriver.h"
+
 #include "PhizTypes.h"
 #include "PhizFunctionLibrary.generated.h"
 

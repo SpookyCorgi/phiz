@@ -5,4 +5,3 @@ Please check the latest [release](https://github.com/SpookyCorgi/phiz/releases) 
 
 - Plugins/Phiz: The source code of the plugin. This plugin contains helper graph nodes and structs to decode mocap data.
 - Content/PhizAssets: This folder contains all the unreal assets use in the tutorial
-- Content/Scripts: This folder contains the javascript scripts used in the "non-app example".

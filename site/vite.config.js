@@ -1,12 +1,12 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 //import { PeerServer } from 'peer'
-import basicSsl from '@vitejs/plugin-basic-ssl'
+//import basicSsl from '@vitejs/plugin-basic-ssl'
 
 /** @type {import('vite').UserConfig} */
 const config = {
 	plugins: [
 		sveltekit(),
-		basicSsl()
+		//basicSsl()
 		//https://github.com/sveltejs/kit/issues/1491#issuecomment-955205323
 		// {
 		// 	name: "multiplayer",

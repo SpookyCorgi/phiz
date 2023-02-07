@@ -6,8 +6,9 @@ public class Phiz : ModuleRules
 {
 	public Phiz(ReadOnlyTargetRules Target) : base(Target)
 	{
+		bEnableUndefinedIdentifierWarnings = false;
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-		
+			
 		PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...
@@ -26,6 +27,8 @@ public class Phiz : ModuleRules
 			new string[]
 			{
 				"Core",
+				"WebSocketNetworking",
+				"OSC"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
