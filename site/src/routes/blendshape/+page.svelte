@@ -30,6 +30,7 @@
 	//public variables for svelte
 	let videoElement: HTMLVideoElement;
 	let videoSelect: HTMLSelectElement;
+	let videoContainer: HTMLDivElement;
 	let deviceInfos: MediaDeviceInfo[] = [];
 	let connectionLink: string;
 	let dataConnection: DataConnection | null = null;
@@ -91,7 +92,6 @@
 		rectangle.style.top =
 			(videoElement.clientHeight - rect.y * scale - rect.height * scale + offsetTop).toString() +
 			'px';
-
 		rectangle.style.width = (rect.width * scale).toString() + 'px';
 		rectangle.style.height = (rect.height * scale).toString() + 'px';
 	}
@@ -293,18 +293,26 @@
 			dataOutputMode.set('webrtc');
 		}
 
+		//set video container aspect ratio cuz safari is stupid
+		if (detectedBrowser.name == 'Mobile Safari') {
+			videoContainer.style.height = `${videoContainer.clientWidth}px`;
+			window.addEventListener('resize', () => {
+				videoContainer.style.height = `${videoContainer.clientWidth}px`;
+			});
+		}
 		//mocap4face is not side effect free, so we need to import it dynamically
 		//const { startTracking } = await import('./tracking');
 		//get available device first in case all devices are occupied and return error later
-		getDeviceInfos().then((d) => (deviceInfos = d));
+		//getDeviceInfos().then((d) => (deviceInfos = d));
 
 		//setup webcam with video source constraints
-		setupCamera(videoElement, videoSelect).then((camAvailable) => {
-			if (!camAvailable) {
+		setupCamera(videoElement, videoSelect).then((infos) => {
+			if (infos.length == 0) {
 				console.log('No camera available');
 				return;
 			}
-
+			//get device list here because ios safari sucks and only show info after get user media
+			deviceInfos = infos;
 			startTracking(videoElement, onBlendshapeResult, getFPS);
 			createPeer(
 				(id: string) => {
@@ -323,8 +331,8 @@
 
 		//change source when select changes
 		videoSelect.onchange = () => {
-			setupCamera(videoElement, videoSelect).then((camAvailable) => {
-				if (!camAvailable) {
+			setupCamera(videoElement, videoSelect).then((infos) => {
+				if (infos.length == 0) {
 					console.log('No camera available');
 					return;
 				}
@@ -336,7 +344,7 @@
 
 <main class="p-4 w-full h-full flex flex-col items-center">
 	<div class="w-full flex justify-center gap-2 mb-2">
-		<div class="card w-full max-w-[640px] max-h-[640px] flex flex-col">
+		<div class="card w-full max-w-[640px] max-h-[720px] flex flex-col">
 			<div class="flex w-full p-2 items-center">
 				<label for="videoSource"><p>Source:&nbsp;</p></label>
 				<select bind:this={videoSelect} class="w-[240px]">
@@ -346,13 +354,19 @@
 				</select>
 			</div>
 			<div
-				id="videoContainer"
-				class="relative rounded-container-token aspect-square h-full overflow-hidden flex items-center justify-center m-2"
+				bind:this={videoContainer}
+				class="relative rounded-container-token aspect-square w-full overflow-hidden flex items-center justify-center p-2"
 			>
-				<video autoplay playsinline bind:this={videoElement} class="z-0 object-cover h-full w-full">
-					<track kind="captions" />
+				<video
+					autoplay
+					playsinline
+					muted
+					bind:this={videoElement}
+					class="z-0 object-cover h-full w-full"
+				>
+					<!-- <track kind="captions" /> -->
 				</video>
-				<div id="overlay" bind:this={overlay} class="absolute z-10">
+				<div id="overlay" bind:this={overlay} class="absolute z-10 overflow-hidden">
 					<div
 						id="rectangle"
 						bind:this={rectangle}
@@ -368,7 +382,7 @@
 
 		<div
 			id="result"
-			class="w-[240px] p-4 card overflow-y-scroll max-h-[640px] hidden lg:flex flex-col"
+			class="w-[240px] p-4 card overflow-y-scroll max-h-[720px] hidden lg:flex flex-col"
 		>
 			{#each [...blendshapes] as [key, value]}
 				<div class="flex gap-2 justify-end">

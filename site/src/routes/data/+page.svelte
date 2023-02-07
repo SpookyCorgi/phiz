@@ -12,8 +12,6 @@
 	import { AccordionGroup, AccordionItem } from '@skeletonlabs/skeleton';
 	import Websocket from '$lib/websocket.svelte';
 
-	export let data: PageData;
-
 	type Data = {
 		connection: boolean;
 		blendshapes: { [key: string]: number };

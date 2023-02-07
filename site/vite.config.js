@@ -1,10 +1,12 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { PeerServer } from 'peer'
+//import { PeerServer } from 'peer'
+import basicSsl from '@vitejs/plugin-basic-ssl'
 
 /** @type {import('vite').UserConfig} */
 const config = {
 	plugins: [
 		sveltekit(),
+		basicSsl()
 		//https://github.com/sveltejs/kit/issues/1491#issuecomment-955205323
 		// {
 		// 	name: "multiplayer",
@@ -16,7 +18,7 @@ const config = {
 	],
 	optimizeDeps: {
 		include: [
-			"src/lib/@0xalter/mocap4face", "osc"
+			"src/lib/@0xalter/mocap4face"
 		]
 	},
 	build: {

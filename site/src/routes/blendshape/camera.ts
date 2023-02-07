@@ -27,6 +27,7 @@ function gotStream (stream: MediaStream, videoSelect: HTMLSelectElement, videoEl
         (option) => option.text === stream.getVideoTracks()[0].label
     );
     videoElement.srcObject = stream;
+    // AFAICT in Safari this only gets default devices until gUM is called :/
     return navigator.mediaDevices.enumerateDevices();
 }
 
@@ -35,20 +36,21 @@ function gotDevices (mediaDeviceInfos: MediaDeviceInfo[]) {
     return deviceInfos;
 }
 
-export function setupCamera (videoElement: HTMLVideoElement, videoSelect: HTMLSelectElement): Promise<boolean> {
+export function setupCamera (videoElement: HTMLVideoElement, videoSelect: HTMLSelectElement): Promise<MediaDeviceInfo[]> {
     return getStream(videoSelect)
         .then(constraints => gotStream(constraints, videoSelect, videoElement))
         .then(gotDevices)
         .then(infos => {
-            if (infos.length === 0) {
-                return false;
-            } else {
-                return true;
-            }
+            // if (infos.length === 0) {
+            //     return false;
+            // } else {
+            //     return true;
+            // }
+            return infos;
         })
         .catch((e) => {
             console.log('Error:', e.name, 'Message:', e.message);
-            return false;
+            return [];
         });
 }
 
