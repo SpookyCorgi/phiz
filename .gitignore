@@ -2,8 +2,8 @@
 node_modules
 pnpm-lock.yaml
 
-plugins/unreal/Plugins/Phiz/Binaries/
-plugins/unreal/Plugins/Phiz/DerivedDataCache/
-plugins/unreal/Plugins/Phiz/Intermediate/
-plugins/unreal/Plugins/Phiz/Saved/
-plugins/unreal/Plugins/Phiz/Build/
+plugins/unreal/Phiz/Binaries/
+plugins/unreal/Phiz/DerivedDataCache/
+plugins/unreal/Phiz/Intermediate/
+plugins/unreal/Phiz/Saved/
+plugins/unreal/Phiz/Build/

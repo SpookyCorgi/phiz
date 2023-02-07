@@ -1,7 +1,14 @@
 {
 	"name": "phiz-site",
-	"version": "0.0.1",
+	"version": "0.2.0",
 	"type": "module",
+	"description": "Phiz is a tool that allows you to perform facial motion capture from any device and location.",
+	"author": "SpookyCorgi",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/SpookyCorgi/phiz.git"
+	},
+	"license": "GPL-3.0",
 	"scripts": {
 		"dev": "vite dev --host",
 		"build": "vite build",
