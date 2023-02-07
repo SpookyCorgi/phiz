@@ -23,7 +23,7 @@ const config = {
 	},
 	build: {
 		commonjsOptions: {
-			include: [/@0xalter/, /node_modules/],
+			include: [/@0xalter/],
 		},
 	},
 };
