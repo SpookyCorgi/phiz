@@ -29,6 +29,7 @@
 		"@types/nanoid-dictionary": "^4.2.0",
 		"@types/node": "^18.11.18",
 		"@types/ua-parser-js": "^0.7.36",
+		"@types/three": "^0.149.0",
 		"@typescript-eslint/eslint-plugin": "^5.49.0",
 		"@typescript-eslint/parser": "^5.49.0",
 		"@vitejs/plugin-basic-ssl": "^1.0.1",
@@ -56,6 +57,7 @@
 		"osc-js": "^2.4.0",
 		"peer": "^0.6.1",
 		"peerjs": "^1.4.7",
+		"three": "^0.150.1",
 		"ua-parser-js": "^1.0.33"
 	}
 }

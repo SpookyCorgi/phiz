@@ -9,10 +9,11 @@
 	import { writable, type Writable } from 'svelte/store';
 	import Websocket from '$lib/websocket.svelte';
 	//code
-	import { setupCamera, getDeviceInfos } from './camera';
+	import { setupCamera, getDeviceInfos } from '$lib/camera';
 	import { createPeer } from './peer';
 	import { arkitBlendshapeNames } from '../../../../lib/blendshapes';
-	import { startTracking } from './tracking';
+	import { startTracking } from '$lib/tracking';
+	import { dataSmoother, type ShapeFrame } from '$lib/utils';
 
 	import { Toast, toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
@@ -20,12 +21,6 @@
 	import { RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
 
 	import UAParser from 'ua-parser-js';
-
-	//types
-	interface ShapeFrame {
-		shapes: Map<string, number>;
-		time: number;
-	}
 
 	//public variables for svelte
 	let videoElement: HTMLVideoElement;
@@ -43,7 +38,7 @@
 	let dataOutputModeValue: string = 'webrtc';
 
 	let smoothBin: number = 0.1;
-	const smoothQueueSize: number = 60;
+
 	let smoothFrames: number = 0;
 
 	let storedData: ShapeFrame[] = [];
@@ -108,39 +103,6 @@
 	// 	return [second, hundredth];
 	// }
 
-	function dataSmoother(current: ShapeFrame): ShapeFrame {
-		//add current data to storedData
-		storedData.push(current);
-		//remove oldest data if storedData is longer than queue size
-		if (storedData.length > smoothQueueSize) {
-			storedData.shift();
-		}
-		//calculate average
-		let average: ShapeFrame = {
-			shapes: new Map<string, number>(),
-			time: current.time
-		};
-		for (let [name, value] of current.shapes.entries()) {
-			let sum = 0;
-			let j = storedData.length - 1;
-			//go through all data within the time frame
-			while (j >= 0 && current.time - storedData[j].time < 1000 * smoothBin) {
-				sum += storedData[j].shapes.get(name) ?? 0;
-				j--;
-			}
-			let count = storedData.length - j - 1;
-			//if no data is available, use the current value
-			if (count === 0) {
-				sum = value;
-				count = 1;
-			}
-			smoothFrames = count;
-			//average.shapes.set(name, Math.round((sum / count) * 100));
-			average.shapes.set(name, sum / count);
-		}
-		return average;
-	}
-
 	function getEyeRotation(
 		current: Map<string, number>
 	): [[number, number, number, number], [number, number, number, number]] {
@@ -192,7 +154,13 @@
 			values.set(name, Math.max(0, Math.min(1, value)));
 		}
 		//apply smoothing
-		let smoothedResult = dataSmoother({ shapes: values, time: Date.now() });
+		let smoothedResult;
+		[smoothedResult, smoothFrames] = dataSmoother(
+			{ shapes: values, time: Date.now() },
+			storedData,
+			smoothBin
+		);
+
 		//map result to arkit names
 		let arkitBlendshapes = [];
 		for (let [arkitName, mocapName] of arkitBlendshapeNames) {
