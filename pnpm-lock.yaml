@@ -111,6 +111,7 @@ importers:
       '@types/cookie': ^0.5.1
       '@types/nanoid-dictionary': ^4.2.0
       '@types/node': ^18.11.18
+      '@types/three': ^0.149.0
       '@types/ua-parser-js': ^0.7.36
       '@typescript-eslint/eslint-plugin': ^5.49.0
       '@typescript-eslint/parser': ^5.49.0
@@ -132,6 +133,7 @@ importers:
       svelte-check: ^3.0.3
       svelte-preprocess: ^5.0.1
       tailwindcss: ^3.2.4
+      three: ^0.150.1
       tslib: ^2.4.1
       typescript: ^4.9.4
       ua-parser-js: ^1.0.33
@@ -144,6 +146,7 @@ importers:
       osc-js: 2.4.0
       peer: 0.6.1
       peerjs: 1.4.7
+      three: 0.150.1
       ua-parser-js: 1.0.33
     devDependencies:
       '@neoconfetti/svelte': 1.0.0
@@ -155,6 +158,7 @@ importers:
       '@types/cookie': 0.5.1
       '@types/nanoid-dictionary': 4.2.0
       '@types/node': 18.13.0
+      '@types/three': 0.149.0
       '@types/ua-parser-js': 0.7.36
       '@typescript-eslint/eslint-plugin': 5.51.0_b635kmla6dsb4frxfihkw4m47e
       '@typescript-eslint/parser': 5.51.0_4vsywjlpuriuw3tl5oq6zy5a64
@@ -958,6 +962,12 @@ packages:
       '@types/node': 18.13.0
     dev: false
 
+  /@types/three/0.149.0:
+    resolution: {integrity: sha512-fgNBm9LWc65ER/W0cvoXdC0iMy7Ke9e2CONmEr6Jt8sDSY3sw4DgOubZfmdZ747dkPhbQrgRQAWwDEr2S/7IEg==}
+    dependencies:
+      '@types/webxr': 0.5.1
+    dev: true
+
   /@types/ua-parser-js/0.7.36:
     resolution: {integrity: sha512-N1rW+njavs70y2cApeIw1vLMYXRwfBy+7trgavGuuTfOd7j1Yh7QTRc/yqsPl6ncokt72ZXuxEU0PiCp9bSwNQ==}
     dev: true
@@ -975,6 +985,10 @@ packages:
   /@types/webgl2/0.0.6:
     resolution: {integrity: sha512-50GQhDVTq/herLMiqSQkdtRu+d5q/cWHn4VvKJtrj4DJAjo1MNkWYa2MA41BaBO1q1HgsUjuQvEOk0QHvlnAaQ==}
     dev: false
+
+  /@types/webxr/0.5.1:
+    resolution: {integrity: sha512-xlFXPfgJR5vIuDefhaHuUM9uUgvPaXB6GKdXy2gdEh8gBWQZ2ul24AJz3foUd8NNKlSTQuWYJpCb1/pL81m1KQ==}
+    dev: true
 
   /@types/ws/7.4.7:
     resolution: {integrity: sha512-JQbbmxZTZehdc2iszGKs5oC3NFnjeay7mtAWrdt7qNtAVK0g19muApzAy4bm9byz79xa2ZnO/BOBC2R8RC5Lww==}
@@ -5127,6 +5141,10 @@ packages:
   /text-table/0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
     dev: true
+
+  /three/0.150.1:
+    resolution: {integrity: sha512-5C1MqKUWaHYo13BX0Q64qcdwImgnnjSOFgBscOzAo8MYCzEtqfQqorEKMcajnA3FHy1yVlIe9AmaMQ0OQracNA==}
+    dev: false
 
   /time-zone/1.0.0:
     resolution: {integrity: sha512-TIsDdtKo6+XrPtiTm1ssmMngN1sAhyKnTO2kunQWqNPWIVvCm15Wmw4SWInwTVgJ5u/Tr04+8Ei9TNcw4x4ONA==}
