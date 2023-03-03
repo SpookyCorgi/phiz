@@ -9,7 +9,7 @@
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 	import { setStatus, clearStatus, type Status } from './status';
-	import { AccordionGroup, AccordionItem } from '@skeletonlabs/skeleton';
+	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import Websocket from '$lib/websocket.svelte';
 
 	type Data = {
@@ -221,7 +221,7 @@
 <main class="p-4 h-full w-full flex justify-center">
 	<div class="flex flex-col h-full w-full max-w-2xl">
 		<div id="url-slot" class="flex gap-2">
-			<input type="text" bind:value={peerId} placeholder="Paste ID from website" />
+			<input type="text" bind:value={peerId} placeholder="Paste ID from website" class="input" />
 			<button type="button" class="btn variant-filled-primary btn-base" on:click={connect}>
 				Connect
 			</button>
@@ -260,7 +260,7 @@
 			<Websocket bind:websocket bind:websocketOpen />
 		</div>
 
-		<AccordionGroup spacing={''} class="card mt-2">
+		<Accordion autocollapse spacing={''} class="card mt-2">
 			<!-- Open -->
 			<AccordionItem>
 				<svelte:fragment slot="lead"><p class="font-bold">Data</p></svelte:fragment>
@@ -284,7 +284,7 @@
 					</div>
 				</svelte:fragment>
 			</AccordionItem>
-		</AccordionGroup>
+		</Accordion>
 	</div>
 </main>
 

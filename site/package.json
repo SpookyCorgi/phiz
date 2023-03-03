@@ -20,7 +20,7 @@
 	},
 	"devDependencies": {
 		"@neoconfetti/svelte": "^1.0.0",
-		"@skeletonlabs/skeleton": "^0.99.5",
+		"@skeletonlabs/skeleton": "^0.132.5",
 		"@sveltejs/adapter-auto": "^1.0.2",
 		"@sveltejs/adapter-vercel": "^1.0.5",
 		"@sveltejs/kit": "^1.2.10",

@@ -6,7 +6,6 @@
 	//svelte
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { writable, type Writable } from 'svelte/store';
 	import Websocket from '$lib/websocket.svelte';
 	//code
 	import { setupCamera, getDeviceInfos } from '$lib/camera';
@@ -34,8 +33,7 @@
 	let rectangle: HTMLDivElement;
 	let fps: string = '';
 	let packageCount: number = 0;
-	let dataOutputMode: Writable<string> = writable('webrtc');
-	let dataOutputModeValue: string = 'webrtc';
+	let dataOutputMode: string = 'webrtc';
 
 	let smoothBin: number = 0.1;
 
@@ -218,6 +216,7 @@
 			websocket.sendWebsocketMessage('/phiz/rightEyeRotation', ...dataRightEye);
 		}
 	}
+
 	function triggerToast(): void {
 		const t: ToastSettings = {
 			message: 'Link copied to clipboard',
@@ -244,11 +243,6 @@
 	}
 
 	onMount(() => {
-		//detect mode
-		dataOutputMode.subscribe((mode) => {
-			dataOutputModeValue = mode;
-		});
-
 		//detect device!
 		const uaParser = new UAParser();
 		let detectedBrowser = uaParser.getBrowser();
@@ -256,9 +250,9 @@
 		let detectedOs = uaParser.getOS();
 		if (!detectedDevice.type) {
 			//detect type desktop
-			dataOutputMode.set('websocket');
+			dataOutputMode = 'websocket';
 		} else {
-			dataOutputMode.set('webrtc');
+			dataOutputMode = 'webrtc';
 		}
 
 		//set video container aspect ratio cuz safari is stupid
@@ -315,7 +309,7 @@
 		<div class="card w-full max-w-[640px] max-h-[720px] flex flex-col">
 			<div class="flex w-full p-2 items-center">
 				<label for="videoSource"><p>Source:&nbsp;</p></label>
-				<select bind:this={videoSelect} class="w-[240px]">
+				<select bind:this={videoSelect} class="w-[240px] select">
 					{#each deviceInfos as device}
 						<option value={device.deviceId} class="text-sm">{device.label}</option>
 					{/each}
@@ -363,7 +357,7 @@
 	<div class="w-full max-w-[640px] lg:max-w-[896px] mb-2 card p-2">
 		<div class="flex gap-2">
 			<span>Smoothing:</span>
-			<RangeSlider bind:value={smoothBin} min={0} max={0.5} step={0.01} />
+			<RangeSlider name="range-slider" bind:value={smoothBin} min={0} max={0.5} step={0.01} />
 			<span class="text-secondary-500"> {smoothBin.toFixed(2)}</span>
 			<span> second</span>
 		</div>
@@ -375,15 +369,19 @@
 	</div>
 
 	<div class="card p-2 flex flex-col w-full max-w-[640px] lg:max-w-[896px] items-start">
-		<RadioGroup selected={dataOutputMode}>
-			<RadioItem value="webrtc"><span>Remote</span></RadioItem>
-			<RadioItem value="websocket"><span>Local</span></RadioItem>
+		<RadioGroup active="variant-filled-primary">
+			<RadioItem bind:group={dataOutputMode} name="webrtc" value="webrtc"
+				><span>Remote</span></RadioItem
+			>
+			<RadioItem bind:group={dataOutputMode} name="webrtc" value="websocket"
+				><span>Local</span></RadioItem
+			>
 		</RadioGroup>
 
-		{#if dataOutputModeValue === 'websocket'}
+		{#if dataOutputMode === 'websocket'}
 			<h3 class="mt-2">WebSocket Mode</h3>
 			<Websocket bind:websocket bind:websocketOpen />
-		{:else if dataOutputModeValue === 'webrtc'}
+		{:else if dataOutputMode === 'webrtc'}
 			<div id="link-info" class="w-full mt-2">
 				<h3>WebRTC Mode</h3>
 				<p id="link-description" class="">

@@ -75,7 +75,7 @@
 	</p>
 	<div class="w-64 flex items-center">
 		<p class="whitespace-nowrap mr-2">App connecting:</p>
-		<select bind:this={appSelect}>
+		<select bind:this={appSelect} class="select">
 			{#each appList as app}
 				<option value={app} class="text-sm">{app}</option>
 			{/each}
@@ -86,13 +86,13 @@
 		<input
 			type="text"
 			placeholder="host url"
-			class="!w-min-56 {websocketURLValidation}"
+			class="input !w-min-56 {websocketURLValidation}"
 			bind:value={websocketURL}
 		/>
 		<input
 			type="number"
 			placeholder="port"
-			class={websocketPortValidation}
+			class="input {websocketPortValidation}"
 			bind:value={websocketPort}
 		/>
 		<button class="btn variant-filled-secondary btn-base" on:click={setWebsocket}>Connect</button>
