@@ -10,7 +10,7 @@
 	},
 	"license": "GPL-3.0",
 	"scripts": {
-		"dev": "vite dev --host",
+		"dev": "vite dev --host --force",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

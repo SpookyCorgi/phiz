@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { connectWebsocket, sendWebsocketMessage as websocketMessage } from '$lib/websocket';
+	import { connectWebsocket, sendWebsocketMessage as websocketMessage } from './websocket';
 	let websocketURL: string = 'localhost';
 	let websocketPort: number = 9912;
 	let websocketURLValidation: string = '';

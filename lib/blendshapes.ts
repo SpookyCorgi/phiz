@@ -1,4 +1,4 @@
-export const arkitBlendshapeNames = new Map<string, string | ''>([
+export const arkitBlendshapeMap = new Map<string, string | ''>([
     //brow
     ['browInnerUp', ''],
     ['browDownLeft', 'browDown_L'],
@@ -59,6 +59,61 @@ export const arkitBlendshapeNames = new Map<string, string | ''>([
     //tongue
     ['tongueOut', 'tongueOut'],
 ]);
+
+export const arkitBlendshapeName = [
+    "browInnerUp",
+    "browDownLeft",
+    "browDownRight",
+    "browOuterUpLeft",
+    "browOuterUpRight",
+    "eyeLookUpLeft",
+    "eyeLookUpRight",
+    "eyeLookDownLeft",
+    "eyeLookDownRight",
+    "eyeLookInLeft",
+    "eyeLookInRight",
+    "eyeLookOutLeft",
+    "eyeLookOutRight",
+    "eyeBlinkLeft",
+    "eyeBlinkRight",
+    "eyeSquintLeft",
+    "eyeSquintRight",
+    "eyeWideLeft",
+    "eyeWideRight",
+    "cheekPuff",
+    "cheekSquintLeft",
+    "cheekSquintRight",
+    "noseSneerLeft",
+    "noseSneerRight",
+    "mouthFunnel",
+    "mouthPucker",
+    "mouthRollUpper",
+    "mouthRollLower",
+    "mouthShrugUpper",
+    "mouthShrugLower",
+    "mouthClose",
+    "mouthSmileLeft",
+    "mouthSmileRight",
+    "mouthFrownLeft",
+    "mouthFrownRight",
+    "mouthDimpleLeft",
+    "mouthDimpleRight",
+    "mouthUpperUpLeft",
+    "mouthUpperUpRight",
+    "mouthLowerDownLeft",
+    "mouthLowerDownRight",
+    "mouthPressLeft",
+    "mouthPressRight",
+    "mouthStretchLeft",
+    "mouthStretchRight",
+    "mouthLeft",
+    "mouthRight",
+    "jawOpen",
+    "jawForward",
+    "jawLeft",
+    "jawRight",
+    "tongueOut"
+]
 
 export const mocapBlendshapeNames = [
     'browOuterUp_L',

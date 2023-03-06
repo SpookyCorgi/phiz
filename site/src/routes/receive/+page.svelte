@@ -1,16 +1,14 @@
 <script lang="ts">
 	import type { DataConnection } from 'peerjs';
 	import Peer from 'peerjs';
-	import { arkitBlendshapeNames } from '../../../../lib/blendshapes';
+	import { arkitBlendshapeMap } from '../../../../lib/blendshapes';
 	import { customAlphabet } from 'nanoid';
 	import { nolookalikes } from 'nanoid-dictionary';
 	import { metadata } from '../../../../lib/metadata';
-	import logo from '$lib/images/logo.svg';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
-	import type { PageData } from './$types';
 	import { setStatus, clearStatus, type Status } from './status';
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
-	import Websocket from '$lib/websocket.svelte';
+	import Websocket from '$lib/websocket/websocket.svelte';
 
 	type Data = {
 		connection: boolean;
@@ -30,7 +28,7 @@
 	let latency: number = 0;
 	let packageSuccessRate: number = 0;
 	let status: Status = { message: [] };
-	let blendshapeName: string[] = Array.from(arkitBlendshapeNames.keys());
+	let blendshapeName: string[] = Array.from(arkitBlendshapeMap.keys());
 	let blendshapesValue: number[] = [];
 
 	let websocket: any;

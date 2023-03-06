@@ -5,16 +5,17 @@
 	import { RangeSlider } from '@skeletonlabs/skeleton';
 	import FileDropzone from '../../../../lib/ui/FileDropzone/FileDropzone.svelte';
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
 
 	import { setupCamera, getDeviceInfos } from '$lib/camera';
-	import { arkitBlendshapeNames } from '../../../../lib/blendshapes';
+	import { arkitBlendshapeMap, arkitBlendshapeName } from '../../../../lib/blendshapes';
 	import { startTracking } from '$lib/tracking';
 	import { dataSmoother, type ShapeFrame } from '$lib/utils';
 
 	import * as THREE from 'three';
 	import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 	import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+	import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 	import type { File } from '@0xalter/mocap4face';
 
 	let canvas: HTMLCanvasElement;
@@ -24,10 +25,14 @@
 	let deviceInfos: MediaDeviceInfo[] = [];
 	let smoothBin: number = 0.1;
 	let smoothFrames: number = 0;
+	let blendshapesClamp: number[] = new Array(52).fill(1.0);
 
 	let blendshapes: Map<string, number> = new Map();
 	let storedData: ShapeFrame[] = [];
 	let activeAnimation: string = 'idle';
+	let bgColor: string = '#000000';
+	let drawerState: string = 'hidden';
+	let trackerLoading: boolean = true;
 
 	//three js components
 	let scene: THREE.Scene;
@@ -153,7 +158,6 @@
 			// const helper = new THREE.SkeletonHelper(model);
 			// scene.add(helper);
 
-			console.log(model);
 			scene.add(model);
 
 			if (mixer) {
@@ -193,7 +197,7 @@
 		);
 		//map result to arkit names
 		let arkitBlendshapes = [];
-		for (let [arkitName, mocapName] of arkitBlendshapeNames) {
+		for (let [arkitName, mocapName] of arkitBlendshapeMap) {
 			let value = 0;
 			if (arkitName === 'browInnerUp') {
 				let left = smoothedResult.shapes.get('browInnerUp_L') ?? 0;
@@ -236,10 +240,22 @@
 					rightEye.morphTargetInfluences &&
 					rightEye.morphTargetDictionary[name] != undefined
 				) {
-					head.morphTargetInfluences[head.morphTargetDictionary[name]] = value;
-					teeth.morphTargetInfluences[teeth.morphTargetDictionary[name]] = value;
-					leftEye.morphTargetInfluences[leftEye.morphTargetDictionary[name]] = value;
-					rightEye.morphTargetInfluences[rightEye.morphTargetDictionary[name]] = value;
+					head.morphTargetInfluences[head.morphTargetDictionary[name]] = Math.min(
+						value,
+						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
+					);
+					teeth.morphTargetInfluences[teeth.morphTargetDictionary[name]] = Math.min(
+						value,
+						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
+					);
+					leftEye.morphTargetInfluences[leftEye.morphTargetDictionary[name]] = Math.min(
+						value,
+						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
+					);
+					rightEye.morphTargetInfluences[rightEye.morphTargetDictionary[name]] = Math.min(
+						value,
+						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
+					);
 				}
 			}
 			headBone.setRotationFromQuaternion(
@@ -258,12 +274,21 @@
 			const loader = new FBXLoader();
 			loader.load(url, function (object) {
 				let animation = object.animations[0];
+
 				animation.tracks.forEach((track) => {
 					track.name = track.name.replace('mixamorig', '');
-					if (track.name === 'Hips.position') {
+					track.name = track.name.replace('Calar_', '');
+
+					if (track.name.includes('position')) {
 						track.values = track.values.map((value) => value * 0.01);
 					}
+
+					// if (track.name.includes('quaternion')) {
+					// 	//track.values = track.values.map((d) => 0);
+					// }
 				});
+				//animation.tracks = animation.tracks.filter((d) => !d.name.includes('position'));
+				console.log(animation);
 				animation.name = name.replace('.fbx', '');
 				resolve(animation);
 			});
@@ -303,6 +328,22 @@
 		}
 	}
 
+	function updateBgColor() {
+		renderer.setClearColor(bgColor, 1);
+	}
+
+	function drawerOpen() {
+		if (drawerState === 'block') {
+			drawerState = 'hidden';
+		} else if (drawerState === 'hidden') {
+			drawerState = 'block';
+		}
+	}
+
+	function trackerLoaded() {
+		trackerLoading = false;
+	}
+
 	onMount(() => {
 		//setup webcam with video source constraints
 		setupCamera(videoElement, videoSelect).then((infos) => {
@@ -312,7 +353,8 @@
 			}
 			//get device list here because ios safari sucks and only show info after get user media
 			deviceInfos = infos;
-			startTracking(videoElement, onBlendshapeResult, getFPS);
+			trackerLoading = true;
+			startTracking(videoElement, onBlendshapeResult, getFPS, trackerLoaded);
 		});
 
 		//change source when select changes
@@ -322,7 +364,8 @@
 					console.log('No camera available');
 					return;
 				}
-				startTracking(videoElement, onBlendshapeResult, getFPS);
+				trackerLoading = true;
+				startTracking(videoElement, onBlendshapeResult, getFPS, trackerLoaded);
 			});
 		};
 
@@ -335,9 +378,43 @@
 	<video bind:this={videoElement} class="absolute" autoplay muted playsinline />
 	<canvas bind:this={canvas} class="w-full h-full absolute" />
 
-	<div class="absolute right-2 top-2 gap-2 flex flex-col max-w-[640px] lg:max-w-[896px]">
-		<div>
-			<p>Ready Player Me URL</p>
+	<button
+		on:click={drawerOpen}
+		class="btn h-10 w-10 p-0 absolute right-2 top-2 z-30 variant-glass-primary"
+	>
+		{#if drawerState === 'hidden'}
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				x="0px"
+				y="0px"
+				viewBox="0 0 20 20"
+				class="svg-icon inline-block stroke-current stroke-2 w-5 h-5"
+				data-testid="svg-icon"
+			>
+				<line x1="1" y1="4" x2="19" y2="4" />
+				<line x1="1" y1="10" x2="19" y2="10" />
+				<line x1="1" y1="16" x2="19" y2="16" />
+			</svg>
+		{:else}
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				x="0px"
+				y="0px"
+				viewBox="0 0 20 20"
+				class="svg-icon inline-block stroke-current stroke-2 w-5 h-5"
+				data-testid="svg-icon"
+			>
+				<line x1="2" y1="4" x2="18" y2="16" />
+				<line x1="2" y1="16" x2="18" y2="4" />
+			</svg>
+		{/if}
+	</button>
+	<div
+		class="absolute {drawerState} right-0 gap-4 flex flex-col w-[480px] overflow-y-scroll h-full p-2 bg-surface-900"
+	>
+		<h2>Settings</h2>
+		<div class="card p-2">
+			<p class="font-semibold">Ready Player Me URL</p>
 			<div class="flex w-full gap-2">
 				<input
 					type="text"
@@ -349,9 +426,9 @@
 			</div>
 		</div>
 
-		<div>
-			<p>Animations</p>
-			<div class="card p-2 gap-2 flex flex-col">
+		<div class="card p-2 ">
+			<p class="font-semibold">Animations</p>
+			<div class="gap-2 flex flex-col">
 				<FileDropzone name="files" accept=".fbx" on:change={animationUpload} bind:files>
 					<svelte:fragment slot="meta">FBX files from mixamo.com</svelte:fragment>
 				</FileDropzone>
@@ -367,9 +444,21 @@
 				</ListBox>
 			</div>
 		</div>
-
-		<div class="w-full">
-			<label for="videoSource"><p>Webcam source:&nbsp;</p></label>
+		<div class="card p-2">
+			<p class="font-semibold">Background color picker</p>
+			<div class="grid grid-cols-[auto_1fr] gap-2">
+				<input
+					type="color"
+					bind:value={bgColor}
+					placeholder="Color picker"
+					class="input w-10 h-10"
+					on:change={updateBgColor}
+				/>
+				<input class="input" type="text" readonly tabindex="-1" placeholder={bgColor} />
+			</div>
+		</div>
+		<div class="w-full card p-2">
+			<label for="videoSource"><p class="font-semibold">Webcam source:&nbsp;</p></label>
 			<select bind:this={videoSelect} class="select">
 				{#each deviceInfos as device}
 					<option value={device.deviceId} class="text-sm">{device.label}</option>
@@ -378,6 +467,7 @@
 		</div>
 
 		<div class="w-full mb-2 card p-2">
+			<p class="font-semibold">Blendshapes</p>
 			<div class="flex gap-2">
 				<span>Smoothing:</span>
 				<RangeSlider name="range-slider" bind:value={smoothBin} min={0} max={0.5} step={0.01} />
@@ -390,14 +480,35 @@
 				<span>frames</span>
 			</div>
 
-			<div id="result" class="p-4 card overflow-y-scroll max-h-[640px] hiddenflex flex-col">
-				{#each [...blendshapes] as [key, value]}
+			<div id="result" class="p-4 card overflow-y-scroll hiddenflex flex-col">
+				{#each [...blendshapes] as [key, value], i}
 					<div class="flex gap-2 justify-end">
 						<p>{key}:</p>
 						<p class="w-8">{value.toFixed(2)}</p>
+						<RangeSlider
+							name="range-slider"
+							bind:value={blendshapesClamp[arkitBlendshapeName.indexOf(key)]}
+							min={0}
+							max={1.0}
+							step={0.05}
+						/>
 					</div>
 				{/each}
 			</div>
 		</div>
 	</div>
+
+	{#if trackerLoading}
+		<div
+			class="w-full h-full z-50  bg-surface-900/50 absolute flex flex-col items-center justify-center"
+		>
+			<ProgressRadial
+				stroke={48}
+				meter="stroke-primary-500"
+				track="stroke-primary-500/30"
+				class="w-48 h-48"
+			/>
+			<p>Loading face tracker...</p>
+		</div>
+	{/if}
 </main>

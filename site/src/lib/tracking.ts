@@ -5,7 +5,7 @@ import {
     ResourceFileSystem,
 } from "@0xalter/mocap4face";
 
-export function startTracking (videoElement: HTMLVideoElement, callback: Function, fpsCallback: Function) {
+export function startTracking (videoElement: HTMLVideoElement, callback: Function, fpsCallback: Function, loadCallback: Function = Function) {
     const context = new ApplicationContext(window.location.origin)
     const fs = new ResourceFileSystem(context)
     const fps = new FPS(1)
@@ -16,6 +16,7 @@ export function startTracking (videoElement: HTMLVideoElement, callback: Functio
     const asyncTracker = FaceTracker.createVideoTracker(fs)
         .then(tracker => {
             requestAnimationFrame(track);
+            loadCallback()
             return tracker;
         })
         .logError('Could not start tracking')

@@ -2,7 +2,7 @@
 import OSC from 'osc-js';
 import { customAlphabet } from 'nanoid'
 import { nolookalikes } from 'nanoid-dictionary';
-import { metadata } from '../../../lib/metadata'
+// import { metadata } from '../../../lib/metadata'
 
 function generateID (): string {
     const nanoid = customAlphabet(nolookalikes, 6);

@@ -5,6 +5,7 @@
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import { AppBar } from '@skeletonlabs/skeleton';
 	import { Toast } from '@skeletonlabs/skeleton';
+	import { Drawer } from '@skeletonlabs/skeleton';
 
 	import LightSwitch from '../../../lib/ui/LightSwitch/LightSwitch.svelte';
 	import logo from '$lib/images/logo.svg';
@@ -26,9 +27,9 @@
 				</a>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
-				<a href="/blendshape"> Record </a>
-				<a href="/data"> Receive </a>
-				<a href="/mocap">Mocap</a>
+				<a href="/capture" class="text-sm lg:text-base"> Capture </a>
+				<a href="/receive" class="text-sm lg:text-base"> Receive </a>
+				<a href="/playground" class="text-sm lg:text-base">Playground</a>
 				<!-- <a href="/blendshape"> Facemesh</a> -->
 				<span class="divider-vertical h-6" />
 				<LightSwitch />

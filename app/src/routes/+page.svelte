@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { DataConnection } from 'peerjs';
 	import Peer from 'peerjs';
-	import { arkitBlendshapeNames } from '../../../lib/blendshapes';
+	import { arkitBlendshapeMap } from '../../../lib/blendshapes';
 	import { customAlphabet } from 'nanoid';
 	import { nolookalikes } from 'nanoid-dictionary';
 	import { metadata } from '../../../lib/metadata';
@@ -38,7 +38,7 @@
 	let portValidation: string = '';
 	let status: Status[] = [];
 	let conn: DataConnection | null = null;
-	let blendshapeName: string[] = Array.from(arkitBlendshapeNames.keys());
+	let blendshapeName: string[] = Array.from(arkitBlendshapeMap.keys());
 	let blendshapesValue: number[] = [];
 	let latency: number = 0;
 	let packageCount: number = 0;
