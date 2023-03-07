@@ -302,7 +302,7 @@
 	});
 </script>
 
-<main class="p-4 w-full h-full flex flex-col items-center">
+<main class="p-4 w-full h-full flex flex-col items-center overflow-y-auto">
 	<div class="w-full flex justify-center gap-2 mb-2">
 		<div class="card w-full max-w-[640px] max-h-[720px] flex flex-col">
 			<div class="flex w-full p-2 items-center">

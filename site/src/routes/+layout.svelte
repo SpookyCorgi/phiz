@@ -11,7 +11,7 @@
 	import logo from '$lib/images/logo.svg';
 </script>
 
-<AppShell>
+<AppShell slotPageContent="overflow-y-hidden">
 	<svelte:fragment slot="header">
 		<AppBar>
 			<svelte:fragment slot="lead">

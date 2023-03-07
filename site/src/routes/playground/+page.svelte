@@ -1,68 +1,64 @@
 <script lang="ts">
-	import type { FaceTrackerResult, Nullable } from '$lib/@0xalter/mocap4face/advanced';
-
 	import { onMount } from 'svelte';
 	import { RangeSlider } from '@skeletonlabs/skeleton';
-	import FileDropzone from '../../../../lib/ui/FileDropzone/FileDropzone.svelte';
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
+	import FileDropzone from '../../../../lib/ui/FileDropzone/FileDropzone.svelte';
 
-	import { setupCamera, getDeviceInfos } from '$lib/camera';
-	import { arkitBlendshapeMap, arkitBlendshapeName } from '../../../../lib/blendshapes';
+	import type { FaceTrackerResult, Nullable } from '$lib/@0xalter/mocap4face/advanced';
+	import { setupCamera } from '$lib/camera';
 	import { startTracking } from '$lib/tracking';
 	import { dataSmoother, type ShapeFrame } from '$lib/utils';
+	import { arkitBlendshapeMap, arkitBlendshapeName } from '../../../../lib/blendshapes';
 
 	import * as THREE from 'three';
 	import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 	import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 	import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-	import type { File } from '@0xalter/mocap4face';
 
+	//html elements
 	let canvas: HTMLCanvasElement;
 	let urlValidation: string = '';
 	let videoElement: HTMLVideoElement;
 	let videoSelect: HTMLSelectElement;
+	//binded values
 	let deviceInfos: MediaDeviceInfo[] = [];
 	let smoothBin: number = 0.1;
 	let smoothFrames: number = 0;
 	let blendshapesClamp: number[] = new Array(52).fill(1.0);
-
-	let blendshapes: Map<string, number> = new Map();
-	let storedData: ShapeFrame[] = [];
 	let activeAnimation: string = 'idle';
 	let bgColor: string = '#000000';
 	let drawerState: string = 'hidden';
 	let trackerLoading: boolean = true;
-
+	let files: FileList;
 	//three js components
 	let scene: THREE.Scene;
 	let camera: THREE.PerspectiveCamera;
 	let renderer: THREE.WebGLRenderer;
 	let clock: THREE.Clock;
 	let mixer: THREE.AnimationMixer;
-	let clips: THREE.AnimationClip[];
 	let cameraPosition = new THREE.Vector3(0, 1, 5);
 	let control: OrbitControls;
 	let model: THREE.Object3D;
+	//data
+	let storedData: ShapeFrame[] = [];
+	let blendshapes: Map<string, number> = new Map();
 	let rdmUrl: string = 'https://models.readyplayer.me/63fe80ed9dc8b8dcb3b4f133.glb';
-	let modelExist: boolean = false;
 	let head: THREE.SkinnedMesh;
 	let leftEye: THREE.SkinnedMesh;
 	let rightEye: THREE.SkinnedMesh;
 	let teeth: THREE.SkinnedMesh;
 	let headBone: THREE.Bone;
 	let headBoneRotation: THREE.Quaternion;
-
 	let animations: THREE.AnimationClip[] = [];
-	let files: FileList;
 
 	function init() {
-		//clock
+		//three js essentials
 		clock = new THREE.Clock();
-
 		scene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera(25, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
 		camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+
 		//set up renderer
 		renderer = new THREE.WebGLRenderer({
 			canvas: canvas,
@@ -168,15 +164,6 @@
 		});
 	}
 
-	function animate() {
-		requestAnimationFrame(animate);
-
-		if (mixer) {
-			mixer.update(clock.getDelta());
-		}
-		renderer.render(scene, camera);
-	}
-
 	function onBlendshapeResult(result: Nullable<FaceTrackerResult>) {
 		if (result == null) {
 			return;
@@ -258,12 +245,12 @@
 					);
 				}
 			}
-			headBone.setRotationFromQuaternion(
-				new THREE.Quaternion().multiplyQuaternions(
-					headBoneRotation,
-					new THREE.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w)
-				)
-			);
+			// headBone.setRotationFromQuaternion(
+			// 	new THREE.Quaternion().multiplyQuaternions(
+			// 		headBoneRotation,
+			// 		new THREE.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w)
+			// 	)
+			// );
 		}
 	}
 
@@ -288,7 +275,6 @@
 					// }
 				});
 				//animation.tracks = animation.tracks.filter((d) => !d.name.includes('position'));
-				console.log(animation);
 				animation.name = name.replace('.fbx', '');
 				resolve(animation);
 			});
@@ -317,7 +303,6 @@
 	}
 
 	function animationChanged() {
-		console.log(activeAnimation);
 		if (mixer) {
 			mixer.stopAllAction();
 		}
@@ -342,6 +327,15 @@
 
 	function trackerLoaded() {
 		trackerLoading = false;
+	}
+
+	function animate() {
+		requestAnimationFrame(animate);
+
+		if (mixer) {
+			mixer.update(clock.getDelta());
+		}
+		renderer.render(scene, camera);
 	}
 
 	onMount(() => {
@@ -374,13 +368,13 @@
 	});
 </script>
 
-<main class="relative w-full h-[calc(100vh_-_80px)] overflow-x-hidden overflow-y-hidden">
+<main class="relative w-full h-full">
 	<video bind:this={videoElement} class="absolute" autoplay muted playsinline />
 	<canvas bind:this={canvas} class="w-full h-full absolute" />
 
 	<button
 		on:click={drawerOpen}
-		class="btn h-10 w-10 p-0 absolute right-2 top-2 z-30 variant-glass-primary"
+		class="btn h-10 w-10 p-0 absolute right-2 top-2 z-30 variant-filled-primary"
 	>
 		{#if drawerState === 'hidden'}
 			<svg
@@ -410,7 +404,7 @@
 		{/if}
 	</button>
 	<div
-		class="absolute {drawerState} right-0 gap-4 flex flex-col w-[480px] overflow-y-scroll h-full p-2 bg-surface-900"
+		class="absolute {drawerState} right-0 gap-4 flex flex-col w-[480px] max-w-full overflow-y-scroll h-full p-2 bg-surface-50-900-token"
 	>
 		<h2>Settings</h2>
 		<div class="card p-2">
@@ -432,7 +426,7 @@
 				<FileDropzone name="files" accept=".fbx" on:change={animationUpload} bind:files>
 					<svelte:fragment slot="meta">FBX files from mixamo.com</svelte:fragment>
 				</FileDropzone>
-				<ListBox>
+				<ListBox active="variant-filled-primary">
 					{#each animations as animation}
 						<ListBoxItem
 							on:change={animationChanged}
@@ -491,6 +485,7 @@
 							min={0}
 							max={1.0}
 							step={0.05}
+							class="w-16 sm:w-36"
 						/>
 					</div>
 				{/each}

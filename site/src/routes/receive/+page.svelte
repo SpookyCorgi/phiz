@@ -216,7 +216,7 @@
 	}
 </script>
 
-<main class="p-4 h-full w-full flex justify-center">
+<main class="p-4 h-full w-full flex justify-center overflow-y-auto">
 	<div class="flex flex-col h-full w-full max-w-2xl">
 		<div id="url-slot" class="flex gap-2">
 			<input type="text" bind:value={peerId} placeholder="Paste ID from website" class="input" />
