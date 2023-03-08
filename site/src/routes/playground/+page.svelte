@@ -227,22 +227,10 @@
 					rightEye.morphTargetInfluences &&
 					rightEye.morphTargetDictionary[name] != undefined
 				) {
-					head.morphTargetInfluences[head.morphTargetDictionary[name]] = Math.min(
-						value,
-						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
-					);
-					teeth.morphTargetInfluences[teeth.morphTargetDictionary[name]] = Math.min(
-						value,
-						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
-					);
-					leftEye.morphTargetInfluences[leftEye.morphTargetDictionary[name]] = Math.min(
-						value,
-						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
-					);
-					rightEye.morphTargetInfluences[rightEye.morphTargetDictionary[name]] = Math.min(
-						value,
-						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
-					);
+					head.morphTargetInfluences[head.morphTargetDictionary[name]] = value*blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+					teeth.morphTargetInfluences[teeth.morphTargetDictionary[name]] = value*blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+					leftEye.morphTargetInfluences[leftEye.morphTargetDictionary[name]] =value*blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+					rightEye.morphTargetInfluences[rightEye.morphTargetDictionary[name]] = value*blendshapesClamp[arkitBlendshapeName.indexOf(name)];
 				}
 			}
 			// headBone.setRotationFromQuaternion(
@@ -482,8 +470,8 @@
 						<RangeSlider
 							name="range-slider"
 							bind:value={blendshapesClamp[arkitBlendshapeName.indexOf(key)]}
-							min={0}
-							max={1.0}
+							min={0.5}
+							max={2.0}
 							step={0.05}
 							class="w-16 sm:w-36"
 						/>
