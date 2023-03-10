@@ -15,7 +15,8 @@
 	import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 	import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 	import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
+	//import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
+	import * as SkeletonUtils from '$lib/SkeletonUtils.js';
 	//html elements
 	let canvas: HTMLCanvasElement;
 	let urlValidation: string = '';
@@ -36,10 +37,14 @@
 	let camera: THREE.PerspectiveCamera;
 	let renderer: THREE.WebGLRenderer;
 	let clock: THREE.Clock;
-	let mixer: THREE.AnimationMixer;
 	let cameraPosition = new THREE.Vector3(0, 1, 5);
 	let control: OrbitControls;
 	let model: THREE.Object3D;
+	let mixers: Map<string, THREE.AnimationMixer> = new Map();
+	let skeletonHelpers: Map<string, THREE.SkeletonHelper> = new Map();
+	let boneContainers: Map<string, THREE.Object3D> = new Map();
+	let animationRetargetOptions: Map<string, string> = new Map();
+	let modelSkeletonHelper: THREE.SkeletonHelper;
 	//data
 	let storedData: ShapeFrame[] = [];
 	let blendshapes: Map<string, number> = new Map();
@@ -86,12 +91,15 @@
 			renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
 		};
 
-		//load default animation
-		loadAnimation('./idle.fbx', 'idle').then((animation: THREE.AnimationClip) => {
-			animations.push(animation);
-			animations = animations;
-			//load default character
-			loadRDM();
+		loadRDM().then((success) => {
+			if (success) {
+				loadAnimation('./idle.fbx', 'idle').then((animation) => {
+					animations.push(animation);
+					animations = animations;
+					activeAnimation = animation.name;
+					applyAnimation(animation.name);
+				});
+			}
 		});
 	}
 
@@ -103,64 +111,86 @@
 	}
 
 	function loadRDM() {
-		if (
-			rdmUrl == undefined ||
-			rdmUrl == '' ||
-			rdmUrl == null ||
-			!rdmUrl.endsWith('.glb') ||
-			!rdmUrl.startsWith('https://models.readyplayer.me/')
-		) {
-			urlValidation = 'input-error';
-			return;
-		}
-		//dispose previous
-		if (model) {
-			model.traverse(function (obj) {
-				if (obj instanceof THREE.Mesh) {
-					obj.geometry.dispose();
-					obj.material.dispose();
-				}
-			});
-			scene.remove(model);
-		}
-
-		urlValidation = 'input-success';
-		let url = rdmUrl + '?pose=A&&morphTargets=ARKit';
-
-		loadGLTF(url).then((gltf: any) => {
-			model = gltf.scene.children[0];
-			//make mesh global for mocap
-			model.traverse(function (obj: any) {
-				switch (obj.name) {
-					case 'Wolf3D_Head':
-						head = obj;
-						break;
-					case 'Head':
-						headBone = obj;
-						headBoneRotation = obj.quaternion.clone();
-						break;
-					case 'EyeLeft':
-						leftEye = obj;
-						break;
-					case 'EyeRight':
-						rightEye = obj;
-						break;
-					case 'Wolf3D_Teeth':
-						teeth = obj;
-						break;
-				}
-			});
-
-			// const helper = new THREE.SkeletonHelper(model);
-			// scene.add(helper);
-
-			scene.add(model);
-
-			if (mixer) {
-				mixer.stopAllAction();
+		return new Promise<boolean>((resolve) => {
+			if (
+				rdmUrl == undefined ||
+				rdmUrl == '' ||
+				rdmUrl == null ||
+				!rdmUrl.endsWith('.glb') ||
+				!rdmUrl.startsWith('https://models.readyplayer.me/')
+			) {
+				urlValidation = 'input-error';
+				return resolve(false);
 			}
-			mixer = new THREE.AnimationMixer(model);
-			applyAnimation();
+			//dispose previous
+			if (model) {
+				model.traverse(function (obj) {
+					if (obj instanceof THREE.Mesh) {
+						obj.geometry.dispose();
+						obj.material.dispose();
+					}
+				});
+				scene.remove(model);
+			}
+
+			urlValidation = 'input-success';
+			let url = rdmUrl + '?pose=T&&morphTargets=ARKit';
+
+			loadGLTF(url).then((gltf: any) => {
+				model = gltf.scene.children[0];
+				//make mesh global for mocap
+				model.traverse(function (obj: any) {
+					switch (obj.name) {
+						case 'Wolf3D_Head':
+							head = obj;
+							break;
+						case 'Head':
+							headBone = obj;
+							headBoneRotation = obj.quaternion.clone();
+							break;
+						case 'EyeLeft':
+							leftEye = obj;
+							break;
+						case 'EyeRight':
+							rightEye = obj;
+							break;
+						case 'Wolf3D_Teeth':
+							teeth = obj;
+							break;
+						case 'LeftShoulder':
+						//obj.scale.y = 0.5;
+					}
+					//console.log(obj.name);
+				});
+				let bones: THREE.Bone[] = [];
+				model.traverse((child) => {
+					if (child.type === 'Bone' && child instanceof THREE.Bone) {
+						bones.push(child);
+					}
+				});
+				let skeleton = new THREE.Skeleton(bones);
+				bones.forEach((bone) => {
+					bone.updateMatrixWorld(true);
+					//bone.updateMatrix();
+					//bone.applyMatrix4(bone.matrix);
+
+					//bone.position.set(0, 0, 0);
+					//bone.rotation.set(0, 0, 0);
+					//bone.scale.set(1, 1, 1);
+					//bone.updateMatrix();
+					let boneIndex = skeleton.bones.indexOf(bone);
+					skeleton.boneInverses[boneIndex].copy(bone.matrixWorld).invert();
+				});
+				model.skeleton = skeleton;
+				modelSkeletonHelper = new THREE.SkeletonHelper(skeleton.bones[0]);
+				modelSkeletonHelper.skeleton = skeleton;
+				console.log(skeleton);
+
+				scene.add(model);
+				scene.add(modelSkeletonHelper);
+
+				resolve(true);
+			});
 		});
 	}
 
@@ -227,22 +257,14 @@
 					rightEye.morphTargetInfluences &&
 					rightEye.morphTargetDictionary[name] != undefined
 				) {
-					head.morphTargetInfluences[head.morphTargetDictionary[name]] = Math.min(
-						value,
-						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
-					);
-					teeth.morphTargetInfluences[teeth.morphTargetDictionary[name]] = Math.min(
-						value,
-						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
-					);
-					leftEye.morphTargetInfluences[leftEye.morphTargetDictionary[name]] = Math.min(
-						value,
-						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
-					);
-					rightEye.morphTargetInfluences[rightEye.morphTargetDictionary[name]] = Math.min(
-						value,
-						blendshapesClamp[arkitBlendshapeName.indexOf(name)]
-					);
+					head.morphTargetInfluences[head.morphTargetDictionary[name]] =
+						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+					teeth.morphTargetInfluences[teeth.morphTargetDictionary[name]] =
+						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+					leftEye.morphTargetInfluences[leftEye.morphTargetDictionary[name]] =
+						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+					rightEye.morphTargetInfluences[rightEye.morphTargetDictionary[name]] =
+						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
 				}
 			}
 			// headBone.setRotationFromQuaternion(
@@ -260,22 +282,57 @@
 		return new Promise<THREE.AnimationClip>((resolve) => {
 			const loader = new FBXLoader();
 			loader.load(url, function (object) {
+				object.scale.set(0.01, 0.01, 0.01);
+
 				let animation = object.animations[0];
-
-				animation.tracks.forEach((track) => {
-					track.name = track.name.replace('mixamorig', '');
-					track.name = track.name.replace('Calar_', '');
-
-					if (track.name.includes('position')) {
-						track.values = track.values.map((value) => value * 0.01);
-					}
-
-					// if (track.name.includes('quaternion')) {
-					// 	//track.values = track.values.map((d) => 0);
-					// }
-				});
-				//animation.tracks = animation.tracks.filter((d) => !d.name.includes('position'));
 				animation.name = name.replace('.fbx', '');
+
+				let bones: THREE.Bone[] = [];
+				let option: any = {
+					hip: '',
+					names: {}
+					//preservePosition: true
+					//useTargetMatrix: true,
+					//preserveHipPosition: true
+					//preserveMatrix: true
+				};
+				let keyword: string;
+				//identify skeleton type
+				object.traverse((child) => {
+					if (child.name.includes('Hips')) {
+						option.hip = child.name;
+						keyword = child.name.replace('Hips', '');
+					}
+				});
+				//gather bones and names
+				object.traverse((child) => {
+					if (child.type === 'Bone' && child instanceof THREE.Bone) {
+						bones.push(child);
+						option.names[child.name.replace(keyword, '')] = child.name;
+					}
+				});
+				let skeleton = new THREE.Skeleton(bones);
+				const helper = new THREE.SkeletonHelper(skeleton.bones[0]);
+				helper.skeleton = skeleton;
+				object.skeleton = skeleton;
+				skeletonHelpers.set(name, helper);
+
+				scene.add(object);
+				object.visible = false;
+				scene.add(helper);
+
+				//option.offsets = SkeletonUtils.getSkeletonOffsets(modelSkeletonHelper, helper, option);
+				animationRetargetOptions.set(name, option);
+
+				// skeletonHelpers.forEach((helper) => {
+				// 	scene.remove(helper);
+				// });
+				// boneContainers.forEach((boneContainer) => {
+				// 	scene.remove(boneContainer);
+				// });
+
+				const mixer = new THREE.AnimationMixer(helper);
+				mixers.set(name, mixer);
 				resolve(animation);
 			});
 		});
@@ -287,29 +344,24 @@
 			animations.push(animation);
 			animations = animations;
 			activeAnimation = animation.name;
-			applyAnimation();
+			applyAnimation(animation.name);
 		});
 	}
 
-	function applyAnimation() {
+	function applyAnimation(animationName: string) {
 		if (model) {
-			model.animations = animations;
-			if (mixer) {
-				mixer.stopAllAction();
+			let sAnimation = animations.find((animation) => animation.name === activeAnimation);
+			if (sAnimation) {
+				const action = mixers.get(animationName)?.clipAction(sAnimation)?.play();
 			}
-			const action = mixer.clipAction(model.animations[model.animations.length - 1]);
-			action.play();
 		}
 	}
 
 	function animationChanged() {
-		if (mixer) {
-			mixer.stopAllAction();
-		}
+		mixers.forEach((mixer) => mixer.stopAllAction());
 		let sAnimation = animations.find((animation) => animation.name === activeAnimation);
 		if (sAnimation) {
-			const action = mixer.clipAction(sAnimation);
-			action.play();
+			const action = mixers.get(activeAnimation)?.clipAction(sAnimation)?.play();
 		}
 	}
 
@@ -332,8 +384,16 @@
 	function animate() {
 		requestAnimationFrame(animate);
 
+		let mixer = mixers.get(activeAnimation);
 		if (mixer) {
 			mixer.update(clock.getDelta());
+			if (skeletonHelpers.get(activeAnimation) && animationRetargetOptions.get(activeAnimation)) {
+				SkeletonUtils.retarget(
+					modelSkeletonHelper,
+					skeletonHelpers.get(activeAnimation),
+					animationRetargetOptions.get(activeAnimation)
+				);
+			}
 		}
 		renderer.render(scene, camera);
 	}
@@ -482,8 +542,8 @@
 						<RangeSlider
 							name="range-slider"
 							bind:value={blendshapesClamp[arkitBlendshapeName.indexOf(key)]}
-							min={0}
-							max={1.0}
+							min={0.5}
+							max={2.0}
 							step={0.05}
 							class="w-16 sm:w-36"
 						/>
