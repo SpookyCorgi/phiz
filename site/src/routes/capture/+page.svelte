@@ -1,8 +1,7 @@
 <script lang="ts">
 	//types
-	import type { FaceTrackerResult, Nullable } from '$lib/@0xalter/mocap4face/advanced';
 	import type { DataConnection } from 'peerjs';
-
+	import { mediapipeState, type TrackingResult } from '$lib/tracking';
 	//svelte
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
@@ -11,7 +10,7 @@
 	import { setupCamera, getDeviceInfos } from '$lib/camera';
 	import { createPeer } from './peer';
 	import { arkitBlendshapeMap } from '../../../../lib/blendshapes';
-	import { startTracking } from '$lib/tracking';
+	//import { startTracking } from '$lib/tracking';
 	import { dataSmoother, type ShapeFrame } from '$lib/utils';
 
 	import { toastStore } from '@skeletonlabs/skeleton';
@@ -35,7 +34,7 @@
 	let packageCount: number = 0;
 	let dataOutputMode: string = 'webrtc';
 
-	let smoothBin: number = 0.1;
+	let smoothBin: number = 0.05;
 
 	let smoothFrames: number = 0;
 
@@ -47,24 +46,32 @@
 	let websocket: any;
 	let websocketOpen: boolean;
 
-	function setFaceRectangle(result: FaceTrackerResult) {
-		const rect = result.faceRectangle;
+	let enableMediapipe: boolean = false;
+
+	function mediapipeStateChanged() {
+		mediapipeState(enableMediapipe);
+	}
+
+	function setFaceRectangle(
+		rect: { x: number; y: number; width: number; height: number },
+		inputImageSize: { x: number; y: number }
+	) {
 		if (rect == null) {
 			rectangle.style.display = 'none';
 			return;
 		}
 
-		let imageRatio = result.inputImageSize.x / result.inputImageSize.x;
+		let imageRatio = inputImageSize.x / inputImageSize.x;
 		let clientRatio = videoElement.clientWidth / videoElement.clientHeight;
 		let scale: number,
 			offsetLeft: number = 0,
 			offsetTop: number = 0;
 		if (imageRatio > clientRatio) {
-			scale = videoElement.clientWidth / result.inputImageSize.x;
-			offsetTop = (videoElement.clientHeight - result.inputImageSize.y * scale) / 2;
+			scale = videoElement.clientWidth / inputImageSize.x;
+			offsetTop = (videoElement.clientHeight - inputImageSize.y * scale) / 2;
 		} else {
-			scale = videoElement.clientHeight / result.inputImageSize.y;
-			offsetLeft = (videoElement.clientWidth - result.inputImageSize.x * scale) / 2;
+			scale = videoElement.clientHeight / inputImageSize.y;
+			offsetLeft = (videoElement.clientWidth - inputImageSize.x * scale) / 2;
 		}
 
 		overlay.style.left = videoElement.offsetLeft + 'px';
@@ -73,11 +80,13 @@
 		overlay.style.height = videoElement.clientHeight + 'px';
 
 		//set face rect
-		rect
-			.flipY(result.inputImageSize.y)
-			.normalizeBy(result.inputImageSize)
-			.scale(videoElement.clientWidth, videoElement.clientHeight)
-			.scaleAroundCenter(0.8, 0.8);
+		// rect
+		// 	.scale(videoElement.clientWidth, videoElement.clientHeight)
+		// 	.scaleAroundCenter(0.8, 0.8);
+		rect.width *= 0.8;
+		rect.height *= 0.8;
+		rect.x += ((1 - 0.8) / 2) * rect.width;
+		rect.y += ((1 - 0.8) / 2) * rect.height;
 
 		rectangle.style.display = 'block';
 		rectangle.style.position = 'relative';
@@ -136,48 +145,51 @@
 	}
 
 	//callback for face tracking
-	function onBlendshapeResult(result: Nullable<FaceTrackerResult>) {
+	function onBlendshapeResult(result: TrackingResult) {
 		if (result == null) {
 			if (rectangle != null) {
 				rectangle.style.display = 'none';
 			}
 			return;
 		}
-		setFaceRectangle(result);
+		setFaceRectangle(result.rect, result.inputImageSize);
 
 		//get blendshape values
-		let values = new Map<string, number>();
-		for (const [name, value] of result.blendshapes) {
-			//clamp value to 0.0~1.0
-			values.set(name, Math.max(0, Math.min(1, value)));
+		let values = result.blendshapes;
+
+		//map result to arkit names
+		let arkitBlendshapes: Map<string, number> = new Map();
+		for (let [arkitName, mocapName] of arkitBlendshapeMap) {
+			let value = 0;
+			if (arkitName === 'browInnerUp') {
+				let left = values.get('browInnerUp_L') ?? 0;
+				let right = values.get('browInnerUp_R') ?? 0;
+				value = (left + right) / 2;
+			}
+			value = values.get(mocapName) ?? 0;
+			if (result.mediaPipeData) {
+				if (result.mediaPipeData.get(arkitName) != undefined) {
+					value = value * 0.35 + result.mediaPipeData.get(arkitName)! * 0.65;
+					//value = result.mediaPipeData.get(arkitName)!;
+				}
+			}
+			arkitBlendshapes.set(arkitName, value);
 		}
+
 		//apply smoothing
 		let smoothedResult;
 		[smoothedResult, smoothFrames] = dataSmoother(
-			{ shapes: values, time: Date.now() },
+			{ shapes: arkitBlendshapes, time: Date.now() },
 			storedData,
 			smoothBin
 		);
 
-		//map result to arkit names
-		let arkitBlendshapes = [];
-		for (let [arkitName, mocapName] of arkitBlendshapeMap) {
-			let value = 0;
-			if (arkitName === 'browInnerUp') {
-				let left = smoothedResult.shapes.get('browInnerUp_L') ?? 0;
-				let right = smoothedResult.shapes.get('browInnerUp_R') ?? 0;
-				value = (left + right) / 2;
-			}
-			value = smoothedResult.shapes.get(mocapName) ?? 0;
-			arkitBlendshapes.push(value);
+		//set web display values
+		blendshapes = smoothedResult.shapes;
 
-			if (mocapName) {
-				blendshapes.set(arkitName, value);
-			}
-		}
 		//display
 		blendshapes = blendshapes;
-		let dataBlendshapes = new Float32Array(arkitBlendshapes);
+		let dataBlendshapes = new Float32Array(Array.from(smoothedResult.shapes.values()));
 
 		//estimate eye rotation based on not smoothed eye blendshapes
 		let [leftEye, rightEye] = getEyeRotation(values);
@@ -185,8 +197,12 @@
 		let dataRightEye = new Float32Array(rightEye);
 
 		//get head rotation in quaternion
-		let rotation = result.rotationQuaternion.xyzw;
-		let dataHead = new Float32Array([rotation.x, rotation.y, rotation.z, rotation.w]);
+		let dataHead = new Float32Array([
+			result.rotation.x,
+			result.rotation.y,
+			result.rotation.z,
+			result.rotation.w
+		]);
 
 		//get time
 		let date = new Date();
@@ -240,7 +256,10 @@
 		fps = receivedFps.toFixed(0);
 	}
 
-	onMount(() => {
+	onMount(async () => {
+		//tfjslite has side effects, so we need to import it dynamically
+		const { startTracking } = await import('$lib/tracking');
+
 		//detect device!
 		const uaParser = new UAParser();
 		let detectedBrowser = uaParser.getBrowser();
@@ -363,6 +382,18 @@
 			<span>Output value is the average of the past</span>
 			<span class="text-secondary-500">{smoothFrames} </span>
 			<span>frames</span>
+		</div>
+		<label class="flex items-center space-x-2 mt-2">
+			<input
+				class="checkbox"
+				type="checkbox"
+				bind:checked={enableMediapipe}
+				on:change={mediapipeStateChanged}
+			/>
+			<p>Enhanced sensitive motion capture</p>
+		</label>
+		<div>
+			(Warning: Unstable during head turning and might have poor performance on mobile devices.)
 		</div>
 	</div>
 
