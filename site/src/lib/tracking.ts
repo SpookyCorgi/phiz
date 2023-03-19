@@ -60,7 +60,6 @@ function onResults (results: any) {
                 values.set(mediapipeBlendshapes[i], output[i]);
             }
             result.mediaPipeData = values;
-            console.log(values)
         }
     }
 }
@@ -68,7 +67,7 @@ function onResults (results: any) {
 async function setupMediaPipe () {
     faceMesh = new FaceMesh({
         locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+            return `./face_mesh/${file}`;
         }
     });
     faceMesh.setOptions({

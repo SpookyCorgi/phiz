@@ -186,15 +186,19 @@
 		let arkitBlendshapes: Map<string, number> = new Map();
 		for (let [arkitName, mocapName] of arkitBlendshapeMap) {
 			let value = 0;
+			value = values.get(mocapName) ?? 0;
 			if (arkitName === 'browInnerUp') {
 				let left = values.get('browInnerUp_L') ?? 0;
 				let right = values.get('browInnerUp_R') ?? 0;
 				value = (left + right) / 2;
 			}
-			value = values.get(mocapName) ?? 0;
 			if (result.mediaPipeData) {
 				if (result.mediaPipeData.get(arkitName) != undefined) {
-					value = value * 0.35 + result.mediaPipeData.get(arkitName)! * 0.65;
+					if (value == 0) {
+						value = result.mediaPipeData.get(arkitName)!;
+					} else {
+						value = value * 0.35 + result.mediaPipeData.get(arkitName)! * 0.65;
+					}
 				}
 			}
 			arkitBlendshapes.set(arkitName, value);
@@ -210,6 +214,7 @@
 
 		//set web display values
 		blendshapes = smoothedResult.shapes;
+		blendshapes = blendshapes;
 
 		//get head rotation in quaternion
 		let dataHead = new Float32Array([
