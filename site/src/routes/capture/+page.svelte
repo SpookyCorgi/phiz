@@ -173,7 +173,6 @@
 			if (result.mediaPipeData) {
 				if (result.mediaPipeData.get(arkitName) != undefined) {
 					value = value * 0.35 + result.mediaPipeData.get(arkitName)! * 0.65;
-					//value = result.mediaPipeData.get(arkitName)!;
 				}
 			}
 			arkitBlendshapes.set(arkitName, value);
@@ -190,8 +189,7 @@
 		//set web display values
 		blendshapes = smoothedResult.shapes;
 
-		//display
-		blendshapes = blendshapes;
+		//set blendshape data for sending
 		let dataBlendshapes = new Float32Array(Array.from(smoothedResult.shapes.values()));
 
 		//estimate eye rotation based on not smoothed eye blendshapes

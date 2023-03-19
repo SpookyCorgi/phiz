@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { TrackingResult } from '$lib/tracking';
+
 	import { onMount } from 'svelte';
 	import { RangeSlider } from '@skeletonlabs/skeleton';
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
@@ -7,7 +9,6 @@
 
 	import type { FaceTrackerResult, Nullable } from '$lib/@0xalter/mocap4face/advanced';
 	import { setupCamera } from '$lib/camera';
-	import { startTracking } from '$lib/tracking';
 	import { dataSmoother, type ShapeFrame } from '$lib/utils';
 	import { arkitBlendshapeMap, arkitBlendshapeName } from '../../../../lib/blendshapes';
 
@@ -23,7 +24,7 @@
 	let videoSelect: HTMLSelectElement;
 	//binded values
 	let deviceInfos: MediaDeviceInfo[] = [];
-	let smoothBin: number = 0.1;
+	let smoothBin: number = 0.05;
 	let smoothFrames: number = 0;
 	let blendshapesClamp: number[] = new Array(52).fill(1.0);
 	let activeAnimation: string = 'idle';
@@ -51,6 +52,15 @@
 	let headBone: THREE.Bone;
 	let headBoneRotation: THREE.Quaternion;
 	let animations: THREE.AnimationClip[] = [];
+
+	let enableMediapipe: boolean = false;
+
+	let setMediapipeState: Function | null = null;
+	function mediapipeStateChanged() {
+		if (setMediapipeState) {
+			setMediapipeState(enableMediapipe);
+		}
+	}
 
 	function init() {
 		//three js essentials
@@ -164,48 +174,50 @@
 		});
 	}
 
-	function onBlendshapeResult(result: Nullable<FaceTrackerResult>) {
+	function onBlendshapeResult(result: TrackingResult) {
 		if (result == null) {
 			return;
 		}
 
 		//get blendshape values
-		let values = new Map<string, number>();
-		for (const [name, value] of result.blendshapes) {
-			//clamp value to 0.0~1.0
-			values.set(name, Math.max(0, Math.min(1, value)));
-		}
-		//apply smoothing
-		let smoothedResult;
-		[smoothedResult, smoothFrames] = dataSmoother(
-			{ shapes: values, time: Date.now() },
-			storedData,
-			smoothBin
-		);
+		let values = result.blendshapes;
+
 		//map result to arkit names
-		let arkitBlendshapes = [];
+		let arkitBlendshapes: Map<string, number> = new Map();
 		for (let [arkitName, mocapName] of arkitBlendshapeMap) {
 			let value = 0;
 			if (arkitName === 'browInnerUp') {
-				let left = smoothedResult.shapes.get('browInnerUp_L') ?? 0;
-				let right = smoothedResult.shapes.get('browInnerUp_R') ?? 0;
+				let left = values.get('browInnerUp_L') ?? 0;
+				let right = values.get('browInnerUp_R') ?? 0;
 				value = (left + right) / 2;
 			}
-			value = smoothedResult.shapes.get(mocapName) ?? 0;
-			arkitBlendshapes.push(value);
-
-			if (mocapName) {
-				blendshapes.set(arkitName, value);
+			value = values.get(mocapName) ?? 0;
+			if (result.mediaPipeData) {
+				if (result.mediaPipeData.get(arkitName) != undefined) {
+					value = value * 0.35 + result.mediaPipeData.get(arkitName)! * 0.65;
+				}
 			}
+			arkitBlendshapes.set(arkitName, value);
 		}
 
-		//display
-		blendshapes = blendshapes;
-		let dataBlendshapes = new Float32Array(arkitBlendshapes);
+		//apply smoothing
+		let smoothedResult;
+		[smoothedResult, smoothFrames] = dataSmoother(
+			{ shapes: arkitBlendshapes, time: Date.now() },
+			storedData,
+			smoothBin
+		);
+
+		//set web display values
+		blendshapes = smoothedResult.shapes;
 
 		//get head rotation in quaternion
-		let rotation = result.rotationQuaternion.xyzw;
-		let dataHead = new Float32Array([rotation.x, rotation.y, rotation.z, rotation.w]);
+		let dataHead = new Float32Array([
+			result.rotation.x,
+			result.rotation.y,
+			result.rotation.z,
+			result.rotation.w
+		]);
 
 		//get time
 		let date = new Date();
@@ -227,10 +239,14 @@
 					rightEye.morphTargetInfluences &&
 					rightEye.morphTargetDictionary[name] != undefined
 				) {
-					head.morphTargetInfluences[head.morphTargetDictionary[name]] = value*blendshapesClamp[arkitBlendshapeName.indexOf(name)];
-					teeth.morphTargetInfluences[teeth.morphTargetDictionary[name]] = value*blendshapesClamp[arkitBlendshapeName.indexOf(name)];
-					leftEye.morphTargetInfluences[leftEye.morphTargetDictionary[name]] =value*blendshapesClamp[arkitBlendshapeName.indexOf(name)];
-					rightEye.morphTargetInfluences[rightEye.morphTargetDictionary[name]] = value*blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+					head.morphTargetInfluences[head.morphTargetDictionary[name]] =
+						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+					teeth.morphTargetInfluences[teeth.morphTargetDictionary[name]] =
+						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+					leftEye.morphTargetInfluences[leftEye.morphTargetDictionary[name]] =
+						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+					rightEye.morphTargetInfluences[rightEye.morphTargetDictionary[name]] =
+						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
 				}
 			}
 			// headBone.setRotationFromQuaternion(
@@ -326,7 +342,10 @@
 		renderer.render(scene, camera);
 	}
 
-	onMount(() => {
+	onMount(async () => {
+		//tfjslite and mediapipe has side effects, so we need to import it dynamically
+		const { startTracking, mediapipeState } = await import('$lib/tracking');
+
 		//setup webcam with video source constraints
 		setupCamera(videoElement, videoSelect).then((infos) => {
 			if (infos.length == 0) {
@@ -460,6 +479,18 @@
 				<span>Output value is the average of the past</span>
 				<span class="text-secondary-500">{smoothFrames} </span>
 				<span>frames</span>
+			</div>
+			<label class="flex items-center space-x-2 mt-2">
+				<input
+					class="checkbox"
+					type="checkbox"
+					bind:checked={enableMediapipe}
+					on:change={mediapipeStateChanged}
+				/>
+				<p>Enhanced sensitive motion capture</p>
+			</label>
+			<div>
+				(Warning: Unstable during head turning and might have poor performance on mobile devices.)
 			</div>
 
 			<div id="result" class="p-4 card overflow-y-scroll hiddenflex flex-col">
