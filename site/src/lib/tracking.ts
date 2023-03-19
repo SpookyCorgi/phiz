@@ -60,6 +60,7 @@ function onResults (results: any) {
                 values.set(mediapipeBlendshapes[i], output[i]);
             }
             result.mediaPipeData = values;
+            console.log(values)
         }
     }
 }
@@ -78,9 +79,11 @@ async function setupMediaPipe () {
     });
     faceMesh.onResults(onResults);
 
+    tflite.setWasmPath('./mediapipe/')
     tfliteModel = await tflite.loadTFLiteModel(
         'https://storage.googleapis.com/mediapipe-assets/face_blendshapes.tflite'
-    );
+    )
+
     mediapipeProcessed = true;
 }
 

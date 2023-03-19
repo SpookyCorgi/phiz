@@ -1,7 +1,7 @@
 <script lang="ts">
 	//types
 	import type { DataConnection } from 'peerjs';
-	import { mediapipeState, type TrackingResult } from '$lib/tracking';
+	import type { TrackingResult } from '$lib/tracking';
 	//svelte
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
@@ -48,8 +48,11 @@
 
 	let enableMediapipe: boolean = false;
 
+	let setMediapipeState: Function | null = null;
 	function mediapipeStateChanged() {
-		mediapipeState(enableMediapipe);
+		if (setMediapipeState) {
+			setMediapipeState(enableMediapipe);
+		}
 	}
 
 	function setFaceRectangle(
@@ -258,8 +261,8 @@
 
 	onMount(async () => {
 		//tfjslite has side effects, so we need to import it dynamically
-		const { startTracking } = await import('$lib/tracking');
-
+		const { startTracking, mediapipeState } = await import('$lib/tracking');
+		setMediapipeState = mediapipeState;
 		//detect device!
 		const uaParser = new UAParser();
 		let detectedBrowser = uaParser.getBrowser();
