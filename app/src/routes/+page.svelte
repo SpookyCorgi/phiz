@@ -5,7 +5,7 @@
 	import { customAlphabet } from 'nanoid';
 	import { nolookalikes } from 'nanoid-dictionary';
 	import { metadata } from '../../../lib/metadata';
-	import logo from '$lib/images/logo.svg';
+	import logo from '$lib/assets/logo.svg';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 
 	type Data = {
@@ -281,7 +281,9 @@
 						</div>
 						{#if s.loading}
 							{#if s.loading.state === 'loading'}
-								<div class="h-4 w-4"><ProgressRadial stroke={40} class="h-4 w-4"/></div>
+								<div class="h-4 w-4">
+									<ProgressRadial stroke={40} class="h-4 w-4" />
+								</div>
 							{:else if s.loading.state === 'success'}
 								<p class="text-primary-500">&#x2713;</p>
 							{:else if s.loading.state === 'failed'}

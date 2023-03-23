@@ -16,6 +16,7 @@
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { RangeSlider } from '@skeletonlabs/skeleton';
 	import { RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
+	import { ProgressRadial, FileDropzone } from '@skeletonlabs/skeleton';
 
 	import UAParser from 'ua-parser-js';
 
@@ -33,6 +34,7 @@
 	let fps: string = '';
 	let packageCount: number = 0;
 	let dataOutputMode: string = 'webrtc';
+	let trackerLoading: boolean = true;
 
 	let smoothBin: number = 0.05;
 
@@ -280,6 +282,10 @@
 		fps = receivedFps.toFixed(0);
 	}
 
+	function trackerLoaded() {
+		trackerLoading = false;
+	}
+
 	onMount(async () => {
 		//tfjslite has side effects, so we need to import it dynamically
 		const { startTracking, mediapipeState } = await import('$lib/tracking');
@@ -317,7 +323,9 @@
 			}
 			//get device list here because ios safari sucks and only show info after get user media
 			deviceInfos = infos;
-			startTracking(videoElement, onBlendshapeResult, getFPS);
+			trackerLoading = true;
+
+			startTracking(videoElement, onBlendshapeResult, getFPS, trackerLoaded);
 			createPeer(
 				(id: string) => {
 					let url = new URL($page.url.origin);
@@ -340,7 +348,8 @@
 					console.log('No camera available');
 					return;
 				}
-				startTracking(videoElement, onBlendshapeResult, getFPS);
+				trackerLoading = true;
+				startTracking(videoElement, onBlendshapeResult, getFPS, trackerLoaded);
 			});
 		};
 	});
@@ -383,8 +392,21 @@
 					</div>
 				</div>
 				<div id="fps" class="absolute top-2 left-2">
-					<h3>{fps}</h3>
+					<h3>FPS: {fps}</h3>
 				</div>
+				{#if trackerLoading}
+					<div
+						class="w-full h-full z-50 bg-surface-900/80 absolute flex flex-col items-center justify-center"
+					>
+						<ProgressRadial
+							stroke={48}
+							meter="stroke-primary-500"
+							track="stroke-primary-500/30"
+							class="w-48 h-48"
+						/>
+						<p>Loading face tracker...</p>
+					</div>
+				{/if}
 			</div>
 		</div>
 

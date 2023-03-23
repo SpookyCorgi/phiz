@@ -6,7 +6,7 @@
 	import LightSwitch from '../../../lib/ui/LightSwitch/LightSwitch.svelte';
 	import { page } from '$app/stores';
 
-	import logo from '$lib/images/logo.svg';
+	import logo from '$lib/assets/logo.svg';
 
 	import DocsNav from '$lib/navigation/DocsNav.svelte';
 

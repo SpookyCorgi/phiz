@@ -6,7 +6,6 @@
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
 	import { ProgressRadial, FileDropzone } from '@skeletonlabs/skeleton';
 
-	import type { FaceTrackerResult, Nullable } from '$lib/@0xalter/mocap4face/advanced';
 	import { setupCamera } from '$lib/camera';
 	import { dataSmoother, type ShapeFrame } from '$lib/utils';
 	import { arkitBlendshapeMap, arkitBlendshapeName } from '../../../../lib/blendshapes';
