@@ -2,13 +2,10 @@
 	import '../theme.postcss';
 	import '@skeletonlabs/skeleton/styles/all.css';
 	import '../app.postcss';
-	import { AppShell } from '@skeletonlabs/skeleton';
-	import { AppBar } from '@skeletonlabs/skeleton';
-	import { Toast } from '@skeletonlabs/skeleton';
-	import { Drawer, drawerStore } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Toast, Drawer, drawerStore } from '@skeletonlabs/skeleton';
+	import LightSwitch from '../../../lib/ui/LightSwitch/LightSwitch.svelte';
 	import { page } from '$app/stores';
 
-	import LightSwitch from '../../../lib/ui/LightSwitch/LightSwitch.svelte';
 	import logo from '$lib/images/logo.svg';
 
 	import DocsNav from '$lib/navigation/DocsNav.svelte';

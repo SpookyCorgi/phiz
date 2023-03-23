@@ -4,8 +4,7 @@
 	import { onMount } from 'svelte';
 	import { RangeSlider } from '@skeletonlabs/skeleton';
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
-	import { ProgressRadial } from '@skeletonlabs/skeleton';
-	import FileDropzone from '../../../../lib/ui/FileDropzone/FileDropzone.svelte';
+	import { ProgressRadial, FileDropzone } from '@skeletonlabs/skeleton';
 
 	import type { FaceTrackerResult, Nullable } from '$lib/@0xalter/mocap4face/advanced';
 	import { setupCamera } from '$lib/camera';

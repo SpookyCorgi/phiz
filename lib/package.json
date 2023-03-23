@@ -12,6 +12,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@skeletonlabs/skeleton": "^0.99.5"
+    "@skeletonlabs/skeleton": "^1.0.0"
   }
 }

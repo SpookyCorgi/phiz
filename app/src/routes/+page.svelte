@@ -258,7 +258,7 @@
 	<div class="flex flex-col h-full w-full max-w-2xl">
 		<div id="url-slot" class="flex gap-2">
 			<img src={logo} alt="Logo" />
-			<input type="text" bind:value={url} placeholder="Paste ID from website" />
+			<input type="text" class="input" bind:value={url} placeholder="Paste ID from website" />
 			<button type="button" class="btn variant-filled-primary btn-base" on:click={connect}>
 				Connect
 			</button>
@@ -281,7 +281,7 @@
 						</div>
 						{#if s.loading}
 							{#if s.loading.state === 'loading'}
-								<div class="h-4 w-4"><ProgressRadial stroke={40} /></div>
+								<div class="h-4 w-4"><ProgressRadial stroke={40} class="h-4 w-4"/></div>
 							{:else if s.loading.state === 'success'}
 								<p class="text-primary-500">&#x2713;</p>
 							{:else if s.loading.state === 'failed'}
@@ -309,7 +309,7 @@
 		</div>
 		<div class="flex gap-2 items-center mt-4">
 			<p class="whitespace-nowrap">OSC port number:</p>
-			<input type="number" bind:value={port} class={portValidation} />
+			<input type="number" bind:value={port} class="{portValidation}input" />
 			<button type="button" class="btn variant-filled-primary btn-base" on:click={changePort}>
 				Set
 			</button>

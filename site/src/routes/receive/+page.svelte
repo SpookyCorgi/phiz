@@ -241,7 +241,7 @@
 						</div>
 						{#if s.loading}
 							{#if s.loading.state === 'loading'}
-								<div class="h-4 w-4"><ProgressRadial stroke={40} /></div>
+								<div class="h-4 w-4"><ProgressRadial stroke={40} class="h-4 w-4" /></div>
 							{:else if s.loading.state === 'success'}
 								<p class="text-success-500">&#x2713;</p>
 							{:else if s.loading.state === 'failed'}
