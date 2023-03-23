@@ -8,7 +8,6 @@
 	import Websocket from '$lib/websocket/websocket.svelte';
 	//code
 	import { setupCamera, getDeviceInfos } from '$lib/camera';
-	import { createPeer } from './peer';
 	import { arkitBlendshapeMap } from '../../../../lib/blendshapes';
 	//import { startTracking } from '$lib/tracking';
 	import { dataSmoother, type ShapeFrame } from '$lib/utils';
@@ -30,6 +29,7 @@
 	let blendshapes: Map<string, number> = new Map();
 	let overlay: HTMLDivElement;
 	let rectangle: HTMLDivElement;
+	let rectangleText: HTMLSpanElement;
 	let fps: string = '';
 	let packageCount: number = 0;
 	let dataOutputMode: string = 'webrtc';
@@ -64,17 +64,17 @@
 			return;
 		}
 
-		let imageRatio = inputImageSize.x / inputImageSize.x;
+		let imageRatio = inputImageSize.x / inputImageSize.y;
 		let clientRatio = videoElement.clientWidth / videoElement.clientHeight;
 		let scale: number,
 			offsetLeft: number = 0,
 			offsetTop: number = 0;
 		if (imageRatio > clientRatio) {
-			scale = videoElement.clientWidth / inputImageSize.x;
-			offsetTop = (videoElement.clientHeight - inputImageSize.y * scale) / 2;
-		} else {
 			scale = videoElement.clientHeight / inputImageSize.y;
-			offsetLeft = (videoElement.clientWidth - inputImageSize.x * scale) / 2;
+			offsetLeft = (inputImageSize.x * scale - videoElement.clientWidth) / 2;
+		} else {
+			scale = videoElement.clientWidth / inputImageSize.x;
+			offsetTop = (inputImageSize.y * scale - videoElement.clientHeight) / 2;
 		}
 
 		overlay.style.left = videoElement.offsetLeft + 'px';
@@ -86,19 +86,37 @@
 		// rect
 		// 	.scale(videoElement.clientWidth, videoElement.clientHeight)
 		// 	.scaleAroundCenter(0.8, 0.8);
+		//flip y
+		let rectScale = 0.8;
+		rect.x += ((1 - rectScale) / 2) * rect.width;
+		rect.y += ((1 - rectScale) / 2) * rect.height;
 		rect.width *= 0.8;
 		rect.height *= 0.8;
-		rect.x += ((1 - 0.8) / 2) * rect.width;
-		rect.y += ((1 - 0.8) / 2) * rect.height;
-
+		//console.log(rect.y);
 		rectangle.style.display = 'block';
 		rectangle.style.position = 'relative';
-		rectangle.style.left = (rect.x * scale + offsetLeft).toString() + 'px';
+		rectangle.style.left = (rect.x * scale - offsetLeft).toString() + 'px';
 		rectangle.style.top =
 			(videoElement.clientHeight - rect.y * scale - rect.height * scale + offsetTop).toString() +
 			'px';
 		rectangle.style.width = (rect.width * scale).toString() + 'px';
 		rectangle.style.height = (rect.height * scale).toString() + 'px';
+		if (
+			(imageRatio > 1 && rect.height < inputImageSize.y / 2) ||
+			(imageRatio < 1 && rect.width < inputImageSize.x / 2)
+		) {
+			if (rectangle.classList.contains('border-success-500')) {
+				rectangle.classList.remove('border-success-500');
+			}
+			rectangle.classList.add('border-error-500');
+			rectangleText.style.display = 'block';
+		} else {
+			if (rectangle.classList.contains('border-error-500')) {
+				rectangle.classList.remove('border-error-500');
+			}
+			rectangle.classList.add('border-success-500');
+			rectangleText.style.display = 'none';
+		}
 	}
 
 	// function getTrimmedTime() {
@@ -265,6 +283,7 @@
 	onMount(async () => {
 		//tfjslite has side effects, so we need to import it dynamically
 		const { startTracking, mediapipeState } = await import('$lib/tracking');
+		const { createPeer } = await import('./peer');
 		setMediapipeState = mediapipeState;
 		//detect device!
 		const uaParser = new UAParser();
@@ -355,9 +374,13 @@
 					<div
 						id="rectangle"
 						bind:this={rectangle}
-						class="rounded-container-token border-token border-primary-500"
+						class="rounded-container-token border-token"
 						style="display: none;"
-					/>
+					>
+						<span bind:this={rectangleText} class="text-error-500 absolute -bottom-6"
+							>Please get closer</span
+						>
+					</div>
 				</div>
 				<div id="fps" class="absolute top-2 left-2">
 					<h3>{fps}</h3>
