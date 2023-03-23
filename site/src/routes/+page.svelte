@@ -38,9 +38,17 @@
 				>Getting Started</a
 			>
 		</div>
-		<div class="flex justify-center bg-surface-100-800-token mt-12 lg:mt-20 p-8 ">
-			<div class="flex flex-wrap-reverse max-w-[1280px] ">
-				<div class="w-full lg:w-4/12  flex flex-col justify-center lg:pr-8">
+		<div class="flex justify-center bg-surface-100-800-token mt-16 lg:mt-24 p-8 ">
+			<div class="flex flex-wrap max-w-[1280px] ">
+				<video
+					autoplay
+					playsinline
+					muted
+					loop
+					src={unrealVideo}
+					class="w-full mb-8 lg:p-0 lg:w-8/12 shadow-lg"
+				/>
+				<div class="w-full lg:w-4/12  flex flex-col justify-center lg:pl-8">
 					<h2 class="font-bold">Easy setup, Various support.</h2>
 					<p class="mt-2">
 						Facial mocap from your browser to directly inside Unreal Engine and Unity.
@@ -48,29 +56,29 @@
 					<p>Any OSC compatible software are also supported with extra Phiz App installed.</p>
 					<a class="mt-4 w-fit btn variant-outline-primary btn-base" href="/docs">Tutorials</a>
 				</div>
+			</div>
+		</div>
+		<div class="flex justify-center bg-surface-50-900-token p-8 ">
+			<div class="flex flex-wrap-reverse max-w-[1280px]">
+				<div class="w-full lg:w-4/12 lg:pr-8 flex flex-col justify-center">
+					<h2 class="font-bold">Have a camera and a browser? You're all set.</h2>
+					<p class="mt-2">Works on Windows, Mac, Linux, Android and iOS.</p>
+					<p>No lidar or fancy camera needed. Works with just your webcam.</p>
+				</div>
+				<img src={osImg} class="w-full mb-8 lg:p-0 lg:w-8/12 shadow-lg" alt="os" />
+			</div>
+		</div>
+		<div class="flex justify-center bg-surface-100-800-token p-8 ">
+			<div class="flex flex-wrap max-w-[1280px]">
 				<video
 					autoplay
 					playsinline
 					muted
 					loop
-					src={unrealVideo}
-					class="w-full pb-8 lg:p-0 lg:w-8/12"
+					src={webRTCVideo}
+					class="w-full mb-8 lg:p-0 lg:w-8/12 shadow-lg"
 				/>
-			</div>
-		</div>
-		<div class="flex justify-center bg-surface-50-900-token p-8 ">
-			<div class="flex flex-wrap max-w-[1280px]">
-				<img src={osImg} class="w-full pb-8 lg:p-0 lg:w-8/12 " alt="os" />
 				<div class="w-full lg:w-4/12 lg:pl-8 flex flex-col justify-center">
-					<h2 class="font-bold">Have a camera and a browser? You're all set.</h2>
-					<p class="mt-2">Works on Windows, Mac, Linux, Android and iOS.</p>
-					<p>No lidar or fancy camera needed. Works with just your webcam.</p>
-				</div>
-			</div>
-		</div>
-		<div class="flex justify-center bg-surface-100-800-token p-8 ">
-			<div class="flex flex-wrap-reverse max-w-[1280px]">
-				<div class="w-full lg:w-4/12 lg:pr-8 flex flex-col justify-center">
 					<h2 class="font-bold">Without limit</h2>
 					<p>
 						Recording with your phone and editing on your computer? Live stream your data with just
@@ -82,28 +90,11 @@
 						<a class="w-fit btn variant-outline-secondary btn-base" href="/receive">Receive Data</a>
 					</div>
 				</div>
-				<video
-					autoplay
-					playsinline
-					muted
-					loop
-					src={webRTCVideo}
-					class="w-full pb-8 lg:p-0 lg:w-8/12"
-				/>
 			</div>
 		</div>
 		<div class="flex justify-center bg-surface-50-900-token p-8 ">
-			<div class="flex flex-wrap max-w-[1280px] ">
-				<video
-					autoplay
-					playsinline
-					muted
-					loop
-					src={playgroundVideo}
-					class="w-full pb-8 lg:p-0 lg:w-8/12"
-				/>
-
-				<div class="w-full lg:w-4/12  flex flex-col justify-center lg:pl-8">
+			<div class="flex flex-wrap-reverse max-w-[1280px] ">
+				<div class="w-full lg:w-4/12 flex flex-col justify-center lg:pr-8">
 					<h2 class="font-bold">Face mocap + body animation in the browser?!</h2>
 					<p class="mt-2">
 						Web playground by drag-and-dropping readyplayme avatar and mixamo animation.
@@ -112,6 +103,14 @@
 						>Web Playground</a
 					>
 				</div>
+				<video
+					autoplay
+					playsinline
+					muted
+					loop
+					src={playgroundVideo}
+					class="w-full mb-8 lg:p-0 lg:w-8/12 shadow-lg"
+				/>
 			</div>
 		</div>
 		<div class="flex justify-center bg-surface-100-800-token p-8 h-72">
