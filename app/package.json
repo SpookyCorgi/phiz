@@ -17,7 +17,7 @@
 		"dev:electron": "electron src/electron.cjs",
 		"build": "cross-env NODE_ENV=production npm run build:svelte",
 		"build:svelte": "vite build",
-		"build:electron": "electron-builder -mw --config build.config.json"
+		"build:electron": "electron-builder -mwl --config build.config.json"
 	},
 	"devDependencies": {
 		"@skeletonlabs/skeleton": "^1.0.0",
