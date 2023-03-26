@@ -47,7 +47,7 @@
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
 				<a href="/capture" class="text-sm lg:text-base"> Capture </a>
-				<a href="/receive" class="text-sm lg:text-base  hidden lg:block"> Receive </a>
+				<a href="/receive" class="text-sm lg:text-base hidden lg:block"> Receive </a>
 				<a href="/playground" class="text-sm lg:text-base">Playground</a>
 				<a href="/docs" class="text-sm lg:text-base">Docs</a>
 

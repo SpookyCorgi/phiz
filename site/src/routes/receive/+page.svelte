@@ -9,6 +9,7 @@
 	import { setStatus, clearStatus, type Status } from './status';
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import Websocket from '$lib/websocket/websocket.svelte';
+	import Footer from '$lib/footer/footer.svelte';
 
 	type Data = {
 		connection: boolean;
@@ -216,61 +217,61 @@
 	}
 </script>
 
-<main class="p-4 h-full w-full flex justify-center overflow-y-auto">
-	<div class="flex flex-col h-full w-full max-w-2xl">
-		<div id="url-slot" class="flex gap-2">
-			<input type="text" bind:value={peerId} placeholder="Paste ID from website" class="input" />
-			<button type="button" class="btn variant-filled-primary btn-base" on:click={connect}>
-				Connect
-			</button>
-		</div>
-		<div class="card mt-2 p-2 h-36 min-h-36 overflow-hidden flex flex-col flex-none">
-			<p class="font-bold">Status</p>
-			<hr />
-			<div class="h-full overflow-y-scroll">
-				{#each status.message as s}
-					<div class="flex gap-2 items-center">
-						<div class="flex flex-wrap">
-							{#each s.text as text}
-								{#if text.color}
-									<p class={`text-${text.color}-500`}>{text.text}&nbsp;</p>
-								{:else}
-									<p>{text.text}&nbsp;</p>
-								{/if}
-							{/each}
-						</div>
-						{#if s.loading}
-							{#if s.loading.state === 'loading'}
-								<div class="h-4 w-4"><ProgressRadial stroke={40} class="h-4 w-4" /></div>
-							{:else if s.loading.state === 'success'}
-								<p class="text-success-500">&#x2713;</p>
-							{:else if s.loading.state === 'failed'}
-								<p class="text-error-500">&#x2715;</p>
+<main class="px-4 h-full w-full flex flex-col items-center overflow-y-auto">
+	<div id="url-slot" class="flex gap-2 w-full max-w-2xl mt-4">
+		<input type="text" bind:value={peerId} placeholder="Paste ID from website" class="input" />
+		<button type="button" class="btn variant-filled-primary btn-base" on:click={connect}>
+			Connect
+		</button>
+	</div>
+	<div class="card mt-2 p-2 h-36 min-h-36 w-full max-w-2xl overflow-hidden flex flex-col flex-none">
+		<p class="font-bold">Status</p>
+		<hr />
+		<div class="h-full overflow-y-scroll">
+			{#each status.message as s}
+				<div class="flex gap-2 items-center">
+					<div class="flex flex-wrap">
+						{#each s.text as text}
+							{#if text.color}
+								<p class={`text-${text.color}-500`}>{text.text}&nbsp;</p>
+							{:else}
+								<p>{text.text}&nbsp;</p>
 							{/if}
-						{/if}
+						{/each}
 					</div>
-				{/each}
-			</div>
+					{#if s.loading}
+						{#if s.loading.state === 'loading'}
+							<div class="h-4 w-4"><ProgressRadial stroke={40} class="h-4 w-4" /></div>
+						{:else if s.loading.state === 'success'}
+							<p class="text-success-500">&#x2713;</p>
+						{:else if s.loading.state === 'failed'}
+							<p class="text-error-500">&#x2715;</p>
+						{/if}
+					{/if}
+				</div>
+			{/each}
 		</div>
-		<div class="card p-2 mt-2">
-			<p class="font-bold">Connect to websocket</p>
-			<hr />
-			<Websocket bind:websocket bind:websocketOpen />
-		</div>
+	</div>
+	<div class="card p-2 mt-2 w-full max-w-2xl">
+		<p class="font-bold">Connect to websocket</p>
+		<hr />
+		<Websocket bind:websocket bind:websocketOpen />
+	</div>
 
-		<Accordion autocollapse spacing={''} class="card mt-2">
-			<!-- Open -->
-			<AccordionItem>
-				<svelte:fragment slot="lead"><p class="font-bold">Data</p></svelte:fragment>
-				<svelte:fragment slot="summary">
-					<div class="hidden" />
-				</svelte:fragment>
+	<Accordion spacing={''} class="card mt-2 w-full max-w-2xl">
+		<!-- Open -->
+		<AccordionItem>
+			<svelte:fragment slot="lead"><p class="font-bold">Data</p></svelte:fragment>
+			<svelte:fragment slot="summary">
+				<div class="hidden" />
+			</svelte:fragment>
 
-				<svelte:fragment slot="content">
-					<p class="">Latency: {latency} millisecond</p>
-					<p>Package received: {packageSuccessRate.toFixed(2)}%</p>
+			<svelte:fragment slot="content">
+				<div class="flex flex-col">
+					<span class="">Latency: {latency} millisecond</span>
+					<span class="mb-2">Package received: {packageSuccessRate.toFixed(2)}%</span>
 					<hr />
-					<div class="flex flex-col pt-2">
+					<div class="flex flex-col mt-2">
 						<ul class="h-full">
 							{#each blendshapeName as blendshape, i}
 								<li class="flex">
@@ -280,9 +281,13 @@
 							{/each}
 						</ul>
 					</div>
-				</svelte:fragment>
-			</AccordionItem>
-		</Accordion>
+				</div>
+			</svelte:fragment>
+		</AccordionItem>
+	</Accordion>
+
+	<div class="w-full mt-12">
+		<Footer className="w-full max-w-2xl" />
 	</div>
 </main>
 

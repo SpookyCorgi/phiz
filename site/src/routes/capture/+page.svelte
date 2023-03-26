@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import Websocket from '$lib/websocket/websocket.svelte';
+	import Footer from '$lib//footer/footer.svelte';
 	//code
 	import { setupCamera, getDeviceInfos } from '$lib/camera';
 	import { arkitBlendshapeMap } from '../../../../lib/blendshapes';
@@ -361,8 +362,8 @@
 	});
 </script>
 
-<main class="p-4 w-full h-full flex flex-col items-center overflow-y-auto">
-	<div class="w-full flex justify-center gap-2 mb-2">
+<main class="px-4 w-full h-full flex flex-col items-center overflow-y-auto">
+	<div class="w-full flex justify-center gap-2 mt-4">
 		<div class="card w-full max-w-[640px] max-h-[720px] flex flex-col">
 			<div class="flex w-full p-2 items-center">
 				<label for="videoSource"><p>Source:&nbsp;</p></label>
@@ -418,7 +419,7 @@
 
 		<div
 			id="result"
-			class="w-[240px] p-4 card overflow-y-scroll max-h-[720px] hidden lg:flex flex-col"
+			class="w-[252px] p-4 card overflow-y-scroll max-h-[720px] hidden lg:flex flex-col"
 		>
 			{#each [...blendshapes] as [key, value]}
 				<div class="flex gap-2 justify-end">
@@ -428,7 +429,7 @@
 			{/each}
 		</div>
 	</div>
-	<div class="w-full max-w-[640px] lg:max-w-[896px] mb-2 card p-2">
+	<div class="w-full max-w-[640px] lg:max-w-[900px] card p-2 mt-2">
 		<div class="flex gap-2">
 			<span>Smoothing:</span>
 			<RangeSlider name="range-slider" bind:value={smoothBin} min={0} max={0.5} step={0.01} />
@@ -454,7 +455,7 @@
 		</div>
 	</div>
 
-	<div class="card p-2 flex flex-col w-full max-w-[640px] lg:max-w-[896px] items-start">
+	<div class="card p-2 flex flex-col w-full max-w-[640px] lg:max-w-[900px] items-start mt-2">
 		<RadioGroup active="variant-filled-primary">
 			<RadioItem bind:group={dataOutputMode} name="webrtc" value="webrtc"
 				><span>Remote</span></RadioItem
@@ -482,6 +483,9 @@
 				</h3>
 			</div>
 		{/if}
+	</div>
+	<div class="w-full mt-12">
+		<Footer className="w-full max-w-[640px] lg:max-w-[900px]" />
 	</div>
 </main>
 

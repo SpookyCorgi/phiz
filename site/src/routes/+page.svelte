@@ -3,6 +3,7 @@
 	import playgroundVideo from '$lib/assets/playground.mp4';
 	import osImg from '$lib/assets/os.png';
 	import webRTCVideo from '$lib/assets/webrtc.mp4';
+	import Footer from '$lib//footer/footer.svelte';
 </script>
 
 <svelte:head>
@@ -38,8 +39,8 @@
 				>Getting Started</a
 			>
 		</div>
-		<div class="flex justify-center bg-surface-100-800-token mt-16 lg:mt-24 p-8 ">
-			<div class="flex flex-wrap max-w-[1280px] ">
+		<div class="flex justify-center bg-surface-100-800-token mt-16 lg:mt-24 p-8">
+			<div class="flex flex-wrap max-w-[1280px]">
 				<video
 					autoplay
 					playsinline
@@ -48,7 +49,7 @@
 					src={unrealVideo}
 					class="w-full mb-8 lg:p-0 lg:w-8/12 shadow-lg"
 				/>
-				<div class="w-full lg:w-4/12  flex flex-col justify-center lg:pl-8">
+				<div class="w-full lg:w-4/12 flex flex-col justify-center lg:pl-8">
 					<h2 class="font-bold">Easy setup, Various support.</h2>
 					<p class="mt-2">
 						Facial mocap from your browser to directly inside Unreal Engine and Unity.
@@ -58,7 +59,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="flex justify-center bg-surface-50-900-token p-8 ">
+		<div class="flex justify-center bg-surface-50-900-token p-8">
 			<div class="flex flex-wrap-reverse max-w-[1280px]">
 				<div class="w-full lg:w-4/12 lg:pr-8 flex flex-col justify-center">
 					<h2 class="font-bold">Have a camera and a browser? You're all set.</h2>
@@ -68,7 +69,7 @@
 				<img src={osImg} class="w-full mb-8 lg:p-0 lg:w-8/12 shadow-lg" alt="os" />
 			</div>
 		</div>
-		<div class="flex justify-center bg-surface-100-800-token p-8 ">
+		<div class="flex justify-center bg-surface-100-800-token p-8">
 			<div class="flex flex-wrap max-w-[1280px]">
 				<video
 					autoplay
@@ -85,15 +86,15 @@
 						a link!
 					</p>
 					<p>Secure connection with low latency from anywhere around the world.</p>
-					<div class="mt-4 ">
+					<div class="mt-4">
 						<a class="w-fit btn variant-outline-primary btn-base mr-2" href="/capture">Capture</a>
 						<a class="w-fit btn variant-outline-secondary btn-base" href="/receive">Receive Data</a>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="flex justify-center bg-surface-50-900-token p-8 ">
-			<div class="flex flex-wrap-reverse max-w-[1280px] ">
+		<div class="flex justify-center bg-surface-50-900-token p-8">
+			<div class="flex flex-wrap-reverse max-w-[1280px]">
 				<div class="w-full lg:w-4/12 flex flex-col justify-center lg:pr-8">
 					<h2 class="font-bold">Face mocap + body animation in the browser?!</h2>
 					<p class="mt-2">
@@ -121,7 +122,7 @@
 						The whole project is opensource! Checkout the github repo and help the project improve
 						:)
 					</p>
-					<div class="mt-4 ">
+					<div class="mt-4">
 						<a
 							class="btn variant-filled-tertiary btn-base"
 							href="https://github.com/SpookyCorgi/phiz"
@@ -144,6 +145,9 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		<div class="w-full px-8">
+			<Footer className="w-full max-w-[1280px]" />
 		</div>
 	</section>
 </main>
