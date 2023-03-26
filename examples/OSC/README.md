@@ -1,0 +1,1 @@
+This pure data example takes in the 52 blendshapes from the Phiz OSC app and controls oscillators.

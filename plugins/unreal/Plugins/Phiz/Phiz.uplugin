@@ -1,13 +1,13 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "0.1.0",
+	"VersionName": "0.3.0",
 	"FriendlyName": "Phiz",
-	"Description": "Helper code for mocap tool Phiz",
+	"Description": "Websocket server plugin and helper code for Phiz, a facial motion capture tool",
 	"Category": "Virtual Production",
 	"CreatedBy": "SpookyCorgi",
-	"CreatedByURL": "https://github.com/SpookyCorgi/phiz",
-	"DocsURL": "https://github.com/SpookyCorgi/phiz/wiki",
+	"CreatedByURL": "https://www.phizmocap.dev/",
+	"DocsURL": "https://www.phizmocap.dev/docs",
 	"MarketplaceURL": "",
 	"SupportURL": "https://github.com/SpookyCorgi/phiz/issues",
 	"CanContainContent": true,
@@ -18,16 +18,17 @@
 		{
 			"Name": "Phiz",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"WhitelistPlatforms": [
+				"Win64",
+				"Linux",
+				"Mac"
+			]
 		}
 	],
 	"Plugins": [
 		{
 			"Name": "WebSocketNetworking",
-			"Enabled": true
-		},
-		{
-			"Name": "OSC",
 			"Enabled": true
 		}
 	]

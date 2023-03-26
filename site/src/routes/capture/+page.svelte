@@ -195,7 +195,13 @@
 					if (value == 0) {
 						value = result.mediaPipeData.get(arkitName)!;
 					} else {
-						value = value * 0.35 + result.mediaPipeData.get(arkitName)! * 0.65;
+						//google mediapipe is too volatile for eyes
+						if (arkitName.includes('eye')) {
+							console.log(arkitName);
+							value = value * 0.65 + result.mediaPipeData.get(arkitName)! * 0.35;
+						} else {
+							value = value * 0.35 + result.mediaPipeData.get(arkitName)! * 0.65;
+						}
 					}
 				}
 			}
