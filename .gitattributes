@@ -1,7 +1,15 @@
 # mocap4face
 site/src/lib/@0xalter/mocap4face/** linguist-vendored
+site/static/2001161359.json linguist-vendored
+site/static/2207302248.json linguist-vendored
 # unreal generated
 plugins/unreal/Phiz/Binaries/** linguist-vendored
 plugins/unreal/Phiz/Intermediate/** linguist-vendored
 # unity
 plugins/unity/OSC/** linguist-vendored
+# tflite
+site/static/tflite_web_api_cc_simd.js linguist-vendored
+# mediapipe blendshape
+site/static/mediapipe/** linguist-vendored
+# mediapipe face mesh
+site/static/face_mesh/** linguist-vendored
