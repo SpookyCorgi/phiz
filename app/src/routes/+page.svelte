@@ -309,12 +309,16 @@
 				{/each}
 			</ul>
 		</div>
-		<div class="flex gap-2 items-center mt-4">
+		<div class="flex gap-2 items-center mt-4 mb-4">
 			<p class="whitespace-nowrap">OSC port number:</p>
 			<input type="number" bind:value={port} class="{portValidation}input" />
 			<button type="button" class="btn variant-filled-primary btn-base" on:click={changePort}>
 				Set
 			</button>
+		</div>
+		<hr />
+		<div class="flex justify-end">
+			<span class="text-on-surface-token opacity-50">version: {metadata.version}</span>
 		</div>
 	</div>
 </main>
