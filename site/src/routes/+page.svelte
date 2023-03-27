@@ -39,7 +39,7 @@
 				>Getting Started</a
 			>
 		</div>
-		<div class="flex justify-center bg-surface-100-800-token mt-16 lg:mt-24 p-8">
+		<div class="flex justify-center bg-surface-100-800-token mt-16 lg:mt-24 px-4 py-8">
 			<div class="flex flex-wrap max-w-[1280px]">
 				<video
 					autoplay
@@ -47,7 +47,7 @@
 					muted
 					loop
 					src={unrealVideo}
-					class="w-full mb-8 lg:p-0 lg:w-8/12 shadow-lg"
+					class="w-full mb-8 lg:m-0 lg:w-8/12 shadow-lg"
 				/>
 				<div class="w-full lg:w-4/12 flex flex-col justify-center lg:pl-8">
 					<h2 class="font-bold">Easy setup, Various support.</h2>
@@ -59,17 +59,17 @@
 				</div>
 			</div>
 		</div>
-		<div class="flex justify-center bg-surface-50-900-token p-8">
+		<div class="flex justify-center bg-surface-50-900-token px-4 py-8">
 			<div class="flex flex-wrap-reverse max-w-[1280px]">
 				<div class="w-full lg:w-4/12 lg:pr-8 flex flex-col justify-center">
 					<h2 class="font-bold">Have a camera and a browser? You're all set.</h2>
 					<p class="mt-2">Works on Windows, Mac, Linux, Android and iOS.</p>
 					<p>No lidar or fancy camera needed. Works with just your webcam.</p>
 				</div>
-				<img src={osImg} class="w-full mb-8 lg:p-0 lg:w-8/12 shadow-lg" alt="os" />
+				<img src={osImg} class="w-full mb-8 lg:m-0 lg:w-8/12 shadow-lg" alt="os" />
 			</div>
 		</div>
-		<div class="flex justify-center bg-surface-100-800-token p-8">
+		<div class="flex justify-center bg-surface-100-800-token px-4 py-8">
 			<div class="flex flex-wrap max-w-[1280px]">
 				<video
 					autoplay
@@ -77,7 +77,7 @@
 					muted
 					loop
 					src={webRTCVideo}
-					class="w-full mb-8 lg:p-0 lg:w-8/12 shadow-lg"
+					class="w-full mb-8 lg:m-0 lg:w-8/12 shadow-lg"
 				/>
 				<div class="w-full lg:w-4/12 lg:pl-8 flex flex-col justify-center">
 					<h2 class="font-bold">Without limit</h2>
@@ -93,7 +93,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="flex justify-center bg-surface-50-900-token p-8">
+		<div class="flex justify-center bg-surface-50-900-token px-4 py-8">
 			<div class="flex flex-wrap-reverse max-w-[1280px]">
 				<div class="w-full lg:w-4/12 flex flex-col justify-center lg:pr-8">
 					<h2 class="font-bold">Face mocap + body animation in the browser?!</h2>
@@ -110,14 +110,14 @@
 					muted
 					loop
 					src={playgroundVideo}
-					class="w-full mb-8 lg:p-0 lg:w-8/12 shadow-lg"
+					class="w-full mb-8 lg:m-0 lg:w-8/12 shadow-lg"
 				/>
 			</div>
 		</div>
-		<div class="flex justify-center bg-surface-100-800-token p-8 h-72">
+		<div class="flex justify-center bg-surface-100-800-token px-4 py-8 h-[480px]">
 			<div class="flex flex-wrap-reverse w-[1280px]">
 				<div class="w-full pb-8 flex flex-col justify-center">
-					<h2 class="font-bold">All for the community</h2>
+					<h2 class="font-bold">For the community</h2>
 					<p>
 						The whole project is opensource! Checkout the github repo and help the project improve
 						:)
@@ -146,7 +146,9 @@
 				</div>
 			</div>
 		</div>
-		<div class="w-full px-8">
+
+		<hr />
+		<div class="w-full px-4">
 			<Footer className="w-full max-w-[1280px]" />
 		</div>
 	</section>

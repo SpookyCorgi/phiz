@@ -362,129 +362,132 @@
 	});
 </script>
 
-<main class="px-4 w-full h-full flex flex-col items-center overflow-y-auto">
-	<div class="w-full flex justify-center gap-2 mt-4">
-		<div class="card w-full max-w-[640px] max-h-[720px] flex flex-col">
-			<div class="flex w-full p-2 items-center">
-				<label for="videoSource"><p>Source:&nbsp;</p></label>
-				<select bind:this={videoSelect} class="w-[240px] select">
-					{#each deviceInfos as device}
-						<option value={device.deviceId} class="text-sm">{device.label}</option>
-					{/each}
-				</select>
-			</div>
-			<div
-				bind:this={videoContainer}
-				class="relative rounded-container-token aspect-square w-full overflow-hidden flex items-center justify-center p-2"
-			>
-				<video
-					autoplay
-					playsinline
-					muted
-					bind:this={videoElement}
-					class="z-0 object-cover h-full w-full"
+<main class="w-full h-full flex flex-col items-center overflow-y-auto">
+	<div class="px-4">
+		<div class="w-full flex justify-center gap-2 mt-4">
+			<div class="card w-full max-w-[640px] max-h-[720px] flex flex-col">
+				<div class="flex w-full p-2 items-center">
+					<label for="videoSource"><p>Source:&nbsp;</p></label>
+					<select bind:this={videoSelect} class="w-[240px] select">
+						{#each deviceInfos as device}
+							<option value={device.deviceId} class="text-sm">{device.label}</option>
+						{/each}
+					</select>
+				</div>
+				<div
+					bind:this={videoContainer}
+					class="relative rounded-container-token aspect-square w-full overflow-hidden flex items-center justify-center p-2"
 				>
-					<!-- <track kind="captions" /> -->
-				</video>
-				<div id="overlay" bind:this={overlay} class="absolute z-10 overflow-hidden">
-					<div
-						id="rectangle"
-						bind:this={rectangle}
-						class="rounded-container-token border-token"
-						style="display: none;"
+					<video
+						autoplay
+						playsinline
+						muted
+						bind:this={videoElement}
+						class="z-0 object-cover h-full w-full"
 					>
-						<span bind:this={rectangleText} class="text-error-500 absolute -bottom-6"
-							>Please get closer</span
+						<!-- <track kind="captions" /> -->
+					</video>
+					<div id="overlay" bind:this={overlay} class="absolute z-10 overflow-hidden">
+						<div
+							id="rectangle"
+							bind:this={rectangle}
+							class="rounded-container-token border-token"
+							style="display: none;"
 						>
+							<span bind:this={rectangleText} class="text-error-500 absolute -bottom-6"
+								>Please get closer</span
+							>
+						</div>
 					</div>
-				</div>
-				<div id="fps" class="absolute top-2 left-2">
-					<h3>FPS: {fps}</h3>
-				</div>
-				{#if trackerLoading}
-					<div
-						class="w-full h-full z-50 bg-surface-900/80 absolute flex flex-col items-center justify-center"
-					>
-						<ProgressRadial
-							stroke={48}
-							meter="stroke-primary-500"
-							track="stroke-primary-500/30"
-							class="w-48 h-48"
-						/>
-						<p>Loading face tracker...</p>
+					<div id="fps" class="absolute top-2 left-2">
+						<h3>FPS: {fps}</h3>
 					</div>
-				{/if}
+					{#if trackerLoading}
+						<div
+							class="w-full h-full z-50 bg-surface-900/80 absolute flex flex-col items-center justify-center"
+						>
+							<ProgressRadial
+								stroke={48}
+								meter="stroke-primary-500"
+								track="stroke-primary-500/30"
+								class="w-48 h-48"
+							/>
+							<p>Loading face tracker...</p>
+						</div>
+					{/if}
+				</div>
+			</div>
+
+			<div
+				id="result"
+				class="w-[252px] p-4 card overflow-y-scroll max-h-[720px] hidden lg:flex flex-col"
+			>
+				{#each [...blendshapes] as [key, value]}
+					<div class="flex gap-2 justify-end">
+						<p>{key}:</p>
+						<p class="w-8">{value.toFixed(2)}</p>
+					</div>
+				{/each}
 			</div>
 		</div>
-
-		<div
-			id="result"
-			class="w-[252px] p-4 card overflow-y-scroll max-h-[720px] hidden lg:flex flex-col"
-		>
-			{#each [...blendshapes] as [key, value]}
-				<div class="flex gap-2 justify-end">
-					<p>{key}:</p>
-					<p class="w-8">{value.toFixed(2)}</p>
-				</div>
-			{/each}
+		<div class="w-full max-w-[640px] lg:max-w-[900px] card mt-2 p-2">
+			<div class="flex gap-2">
+				<span>Smoothing:</span>
+				<RangeSlider name="range-slider" bind:value={smoothBin} min={0} max={0.5} step={0.01} />
+				<span class="text-secondary-500"> {smoothBin.toFixed(2)}</span>
+				<span> second</span>
+			</div>
+			<div>
+				<span>Output value is the average of the past</span>
+				<span class="text-secondary-500">{smoothFrames} </span>
+				<span>frames</span>
+			</div>
+			<label class="flex items-center space-x-2 mt-2">
+				<input
+					class="checkbox"
+					type="checkbox"
+					bind:checked={enableMediapipe}
+					on:change={mediapipeStateChanged}
+				/>
+				<p>Enhanced sensitive motion capture</p>
+			</label>
+			<div>
+				(Warning: Unstable during head turning and might have poor performance on mobile devices.)
+			</div>
 		</div>
-	</div>
-	<div class="w-full max-w-[640px] lg:max-w-[900px] card p-2 mt-2">
-		<div class="flex gap-2">
-			<span>Smoothing:</span>
-			<RangeSlider name="range-slider" bind:value={smoothBin} min={0} max={0.5} step={0.01} />
-			<span class="text-secondary-500"> {smoothBin.toFixed(2)}</span>
-			<span> second</span>
-		</div>
-		<div>
-			<span>Output value is the average of the past</span>
-			<span class="text-secondary-500">{smoothFrames} </span>
-			<span>frames</span>
-		</div>
-		<label class="flex items-center space-x-2 mt-2">
-			<input
-				class="checkbox"
-				type="checkbox"
-				bind:checked={enableMediapipe}
-				on:change={mediapipeStateChanged}
-			/>
-			<p>Enhanced sensitive motion capture</p>
-		</label>
-		<div>
-			(Warning: Unstable during head turning and might have poor performance on mobile devices.)
-		</div>
-	</div>
-
-	<div class="card p-2 flex flex-col w-full max-w-[640px] lg:max-w-[900px] items-start mt-2">
-		<RadioGroup active="variant-filled-primary">
-			<RadioItem bind:group={dataOutputMode} name="webrtc" value="webrtc"
-				><span>Remote</span></RadioItem
-			>
-			<RadioItem bind:group={dataOutputMode} name="webrtc" value="websocket"
-				><span>Local</span></RadioItem
-			>
-		</RadioGroup>
-
-		{#if dataOutputMode === 'websocket'}
-			<h3 class="mt-2">WebSocket Mode</h3>
-			<Websocket bind:websocket bind:websocketOpen />
-		{:else if dataOutputMode === 'webrtc'}
-			<div id="link-info" class="w-full mt-2">
-				<h3>WebRTC Mode</h3>
-				<p id="link-description" class="">
-					Paste this code on the device with the receive page open to receive data. Click to copy.
-				</p>
-				<h3
-					class="link bg-primary-backdrop-token rounded-container-token p-2 mt-2"
-					on:click={copyLink}
-					on:keypress={copyLink}
+		<div class="card p-2 flex flex-col w-full max-w-[640px] lg:max-w-[900px] items-start mt-2">
+			<RadioGroup active="variant-filled-primary">
+				<RadioItem bind:group={dataOutputMode} name="webrtc" value="webrtc"
+					><span>Remote</span></RadioItem
 				>
-					{connectionLink}
-				</h3>
-			</div>
-		{/if}
+				<RadioItem bind:group={dataOutputMode} name="webrtc" value="websocket"
+					><span>Local</span></RadioItem
+				>
+			</RadioGroup>
+
+			{#if dataOutputMode === 'websocket'}
+				<h3 class="mt-2">WebSocket Mode</h3>
+				<Websocket bind:websocket bind:websocketOpen />
+			{:else if dataOutputMode === 'webrtc'}
+				<div id="link-info" class="w-full mt-2">
+					<h3>WebRTC Mode</h3>
+					<p id="link-description" class="">
+						Paste this code on the device with the receive page open to receive data. Click to copy.
+					</p>
+					<h3
+						class="link bg-primary-backdrop-token rounded-container-token p-2 mt-2"
+						on:click={copyLink}
+						on:keypress={copyLink}
+					>
+						{connectionLink}
+					</h3>
+				</div>
+			{/if}
+		</div>
 	</div>
+	<div class="flex-grow" />
 	<div class="w-full mt-12">
+		<hr />
 		<Footer className="w-full max-w-[640px] lg:max-w-[900px]" />
 	</div>
 </main>

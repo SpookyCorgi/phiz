@@ -5,7 +5,6 @@
 </script>
 
 <div class="w-full">
-	<hr />
 	<div class="flex justify-center mt-12 mb-12">
 		<div class="flex flex-col items-center lg:flex-row lg:items-start gap-2 {className}">
 			<img src={logo} alt="Logo" class="w-12 h-12 mt-1" />

@@ -50,7 +50,7 @@
 				<a href="/receive" class="text-sm lg:text-base hidden lg:block"> Receive </a>
 				<a href="/playground" class="text-sm lg:text-base">Playground</a>
 				<a href="/docs" class="text-sm lg:text-base">Docs</a>
-
+				<a href="/downloads" class="text-sm lg:text-base hidden lg:block">Downloads</a>
 				<!-- <a href="/blendshape"> Facemesh</a> -->
 				<span class="divider-vertical h-6" />
 				<LightSwitch />
