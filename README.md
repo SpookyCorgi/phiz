@@ -11,18 +11,18 @@ Phiz lets you do facial motion capture right in your browser using your webcam o
 
 
 ## How does it work?
-- Facial motion capture in your browser
+- **Facial motion capture in your browser**
 
-    Phiz uses a combination of [Mocap4face](https://github.com/facemoji/mocap4face) and [Google mediapipe](https://github.com/google/mediapipe) machine learning model for motion capture.**No iPhone lidar or RGBD camera needed!** This is also not fixed and will be updated whenever there is a better model.
-- Streaming data browser to browser & browser to OSC app
+    Phiz uses a combination of [Mocap4face](https://github.com/facemoji/mocap4face) and [Google mediapipe](https://github.com/google/mediapipe) machine learning model for motion capture. **No iPhone lidar or RGBD camera needed!** This is also not fixed and will be updated whenever there is a better model.
+- **Streaming data browser to browser & browser to OSC app**
 
     Phiz uses WebRTC (same protocal as you do video calling) to send data from browser to browser and browser to app. However, no image or video is sent at all. WebRTC also allow us to have peer-to-peer secure connection and low latency.
 
-- Unreal and Unity support
+- **Unreal and Unity support**
 
-    Phiz include custom plugins that fires up WebSocket servers within [Unreal engine](https://www.phizmocap.dev/docs/unreal/basic-usage) and [Unity](https://www.phizmocap.dev/docs/unity/basic-usage) to receive live data from your browser.
+    Phiz includes custom plugins that fires up WebSocket servers within [Unreal engine](https://www.phizmocap.dev/docs/unreal/basic-usage) and [Unity](https://www.phizmocap.dev/docs/unity/basic-usage) to receive live data from your browser. The plugins also include convinient presets for popular avatars such as Metahuman and ReadyPlayerMe.
 
-- ARKit support
+- **ARKit support**
 
     Phiz uses the same blendshapes as arkit. Checkout [the specs page](https://www.phizmocap.dev/docs/specs/blendshapes) for the blendshape names and orders.
 
@@ -30,9 +30,11 @@ Phiz lets you do facial motion capture right in your browser using your webcam o
 ## How do I use it?
 **Important! The browser page needs to be active when recording. If you closed your phone, refresh the page to generate a new code.**
 
+![smoothing and model](./assets/smoothing-and-model.png)
+
 Navigate to the [capture page](https://www.phizmocap.dev/capture) and allow the website to use your camera. You can then select the smoothing of the frame and select different types of motion capture ML model.
 
-![smoothing and model](./assets/smoothing-and-model.png)
+
 
 There are two ways to send the captured data.
 
@@ -40,7 +42,7 @@ There are two ways to send the captured data.
 
 ![capture data local](./assets/capture-data-local.png)
 
-In local mode, using Phiz's custom plugin you can send the data to directly inside [Unreal engine](https://www.phizmocap.dev/docs/unreal/basic-usage) or [Unity](https://www.phizmocap.dev/docs/unity/basic-usage) with your defined url and port. See the documents for more details.
+In local mode, using Phiz's custom plugin you can send the data to directly inside [Unreal engine](https://www.phizmocap.dev/docs/unreal/basic-usage) or [Unity](https://www.phizmocap.dev/docs/unity/basic-usage) with your defined url and port. See the [documents](https://www.phizmocap.dev/docs) for more details.
 
 ### Remote
 
