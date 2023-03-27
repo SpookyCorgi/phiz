@@ -2,13 +2,14 @@
 	//svelte
 	import { onMount } from 'svelte';
 	import Footer from '$lib/footer/footer.svelte';
+
 	onMount(() => {});
 </script>
 
 <main class="overflow-y-auto w-full h-full flex flex-col items-center">
 	<div class="pt-4 px-4 w-full flex justify-center">
 		<div class="w-full max-w-[1280px]">
-			<h1>Blendshapes :D</h1>
+			<h1>PureData Example :D</h1>
 			<hr />
 		</div>
 	</div>

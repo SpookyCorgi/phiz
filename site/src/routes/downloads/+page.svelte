@@ -117,6 +117,8 @@
 		</div>
 	</div>
 
+	<div class="flex-grow" />
+
 	<hr class="w-full" />
 	<div class="w-full px-4">
 		<Footer className="w-full max-w-[1280px]" />

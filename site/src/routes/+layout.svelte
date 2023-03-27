@@ -10,8 +10,8 @@
 
 	import DocsNav from '$lib/navigation/DocsNav.svelte';
 
-	$: classesSidebar = $page.url.pathname === '/docs' ? 'w-0 lg:w-72' : 'w-0';
-	$: classesHamburger = $page.url.pathname === '/docs' ? 'lg:hidden' : 'hidden';
+	$: classesSidebar = $page.url.pathname.includes('/docs') ? 'w-0 lg:w-72' : 'w-0';
+	$: classesHamburger = $page.url.pathname.includes('/docs') ? 'lg:hidden' : 'hidden';
 
 	function drawerOpen(): void {
 		drawerStore.open({});
