@@ -28,6 +28,7 @@
 	<hr class="m-4" />
 	<span class="px-4 font-bold text-primary-500">OSC App</span>
 	<a href="/docs/osc-app/app-installation" on:click={drawerClose}><span>App Installation</span></a>
+	<a href="/docs/osc-app/puredata-example" on:click={drawerClose}><span>PureData Example</span></a>
 
 	<hr class="m-4" />
 	<span class="px-4 font-bold text-primary-500">Web Playground</span>

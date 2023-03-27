@@ -19,7 +19,7 @@
 			<h2 class="mb-2">Chapter title</h2>
 			<p>The AI hasn't figure out the next word to generate yet.</p>
 			<p>
-				AI thinks there should be a <a href="./docs">link</a> here
+				AI thinks there should be a <a href="../../docs">link</a> here
 			</p>
 		</div>
 	</div>

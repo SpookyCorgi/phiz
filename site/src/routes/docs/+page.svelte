@@ -56,10 +56,11 @@
 					<div>
 						<h3>Unreal and Unity support</h3>
 						<p>
-							Phiz include custom plugins that fires up WebSocket servers within <a
+							Phiz includes custom plugins that fires up WebSocket servers within <a
 								href="./docs/unreal/basic-usage">Unreal engine</a
 							>
 							and <a href="./docs/unity/basic-usage">Unity</a> to receive live data from your browser.
+							The plugins also include convinient presets for popular avatars such as Metahuman and ReadyPlayerMe.
 						</p>
 					</div>
 				</li>
@@ -80,16 +81,16 @@
 				Important! The browser page needs to be active when recording. If you closed your phone,
 				refresh the page to generate a new code.
 			</p>
-			<p>
-				Navigate to the <a href="./capture">capture page</a> and allow the website to use your camera.
-				You can then select the smoothing of the frame and select different types of motion capture ML
-				model.
-			</p>
 			<img
 				src={smoothingAndModelImg}
 				alt="smoothing and model"
 				class="border-token border-secondary-500 border-opacity-20 w-full max-w-screen-sm mt-2"
 			/>
+			<p>
+				Navigate to the <a href="./capture">capture page</a> and allow the website to use your camera.
+				You can then select the smoothing of the frame and select different types of motion capture ML
+				model.
+			</p>
 			<p>There are two ways to send the captured data.</p>
 			<ul class="list">
 				<li class="!whitespace-normal">
