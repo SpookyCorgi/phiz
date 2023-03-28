@@ -56,6 +56,7 @@
 		"@tensorflow/tfjs-backend-cpu": "^4.2.0",
 		"@tensorflow/tfjs-core": "^4.2.0",
 		"@tensorflow/tfjs-tflite": "0.0.1-alpha.9",
+		"@vercel/analytics": "^0.1.11",
 		"nanoid": "^4.0.1",
 		"nanoid-dictionary": "4.3.0",
 		"osc-js": "^2.4.0",
