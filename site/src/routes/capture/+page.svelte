@@ -20,6 +20,7 @@
 	import { ProgressRadial, FileDropzone } from '@skeletonlabs/skeleton';
 
 	import UAParser from 'ua-parser-js';
+	//import exampleVideo from '$lib/assets/exampleVideo.mp4';
 
 	//public variables for svelte
 	let videoElement: HTMLVideoElement;
@@ -36,6 +37,7 @@
 	let packageCount: number = 0;
 	let dataOutputMode: string = 'webrtc';
 	let trackerLoading: boolean = true;
+	const videoMode: boolean = false;
 
 	let smoothBin: number = 0.05;
 
@@ -322,16 +324,7 @@
 		//get available device first in case all devices are occupied and return error later
 		//getDeviceInfos().then((d) => (deviceInfos = d));
 
-		//setup webcam with video source constraints
-		setupCamera(videoElement, videoSelect).then((infos) => {
-			if (infos.length == 0) {
-				console.log('No camera available');
-				return;
-			}
-			//get device list here because ios safari sucks and only show info after get user media
-			deviceInfos = infos;
-			trackerLoading = true;
-
+		if (videoMode) {
 			startTracking(videoElement, onBlendshapeResult, getFPS, trackerLoaded);
 			createPeer(
 				(id: string) => {
@@ -346,18 +339,46 @@
 					dataConnection = conn;
 				}
 			);
-		});
-
-		//change source when select changes
-		videoSelect.onchange = () => {
+		} else {
+			//setup webcam with video source constraints
 			setupCamera(videoElement, videoSelect).then((infos) => {
 				if (infos.length == 0) {
 					console.log('No camera available');
 					return;
 				}
+				//get device list here because ios safari sucks and only show info after get user media
+				deviceInfos = infos;
 				trackerLoading = true;
+
 				startTracking(videoElement, onBlendshapeResult, getFPS, trackerLoaded);
+				createPeer(
+					(id: string) => {
+						let url = new URL($page.url.origin);
+						url.port = '';
+						//for current version use simple id
+						//connectionLink = url.toString() + '?id=' + id;
+						connectionLink = id;
+					},
+					(conn: DataConnection) => {
+						packageCount = 0;
+						dataConnection = conn;
+					}
+				);
 			});
+		}
+
+		//change source when select changes
+		videoSelect.onchange = () => {
+			if (!videoMode) {
+				setupCamera(videoElement, videoSelect).then((infos) => {
+					if (infos.length == 0) {
+						console.log('No camera available');
+						return;
+					}
+					trackerLoading = true;
+					startTracking(videoElement, onBlendshapeResult, getFPS, trackerLoaded);
+				});
+			}
 		};
 	});
 </script>
@@ -378,15 +399,29 @@
 					bind:this={videoContainer}
 					class="relative rounded-container-token aspect-square w-full overflow-hidden flex items-center justify-center p-2"
 				>
-					<video
-						autoplay
-						playsinline
-						muted
-						bind:this={videoElement}
-						class="z-0 object-cover h-full w-full"
-					>
-						<!-- <track kind="captions" /> -->
-					</video>
+					{#if videoMode}
+						<!-- <video
+							autoplay
+							playsinline
+							muted
+							loop
+							bind:this={videoElement}
+							class="z-0 object-cover h-full w-full"
+							src={exampleVideo}
+						>
+						</video> -->
+					{:else}
+						<video
+							autoplay
+							playsinline
+							muted
+							bind:this={videoElement}
+							class="z-0 object-cover h-full w-full"
+						>
+							<!-- <track kind="captions" /> -->
+						</video>
+					{/if}
+
 					<div id="overlay" bind:this={overlay} class="absolute z-10 overflow-hidden">
 						<div
 							id="rectangle"

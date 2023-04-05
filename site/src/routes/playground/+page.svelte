@@ -24,9 +24,11 @@
 	let deviceInfos: MediaDeviceInfo[] = [];
 	let smoothBin: number = 0.05;
 	let smoothFrames: number = 0;
-	let blendshapesClamp: number[] = new Array(52).fill(1.0);
+	let blendshapesMulti: number[] = new Array(52).fill(1.0);
 	let activeAnimation: string = 'idle';
 	let bgColor: string = '#000000';
+	let ambientLightColor: string = '#ffffff';
+	let ambientLightIntensity: number = 0.5;
 	let drawerState: string = 'hidden';
 	let trackerLoading: boolean = true;
 	let files: FileList;
@@ -39,6 +41,7 @@
 	let cameraPosition = new THREE.Vector3(0, 1, 5);
 	let control: OrbitControls;
 	let model: THREE.Object3D;
+	let ambientLight: THREE.AmbientLight;
 	//data
 	let storedData: ShapeFrame[] = [];
 	let blendshapes: Map<string, number> = new Map();
@@ -80,7 +83,7 @@
 		//add lights
 		const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
 		directionalLight.position.set(1, 1, 1);
-		const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+		ambientLight = new THREE.AmbientLight(ambientLightColor, ambientLightIntensity);
 		scene.add(directionalLight, ambientLight);
 
 		//add controls
@@ -243,13 +246,13 @@
 					rightEye.morphTargetDictionary[name] != undefined
 				) {
 					head.morphTargetInfluences[head.morphTargetDictionary[name]] =
-						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+						value * blendshapesMulti[arkitBlendshapeName.indexOf(name)];
 					teeth.morphTargetInfluences[teeth.morphTargetDictionary[name]] =
-						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+						value * blendshapesMulti[arkitBlendshapeName.indexOf(name)];
 					leftEye.morphTargetInfluences[leftEye.morphTargetDictionary[name]] =
-						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+						value * blendshapesMulti[arkitBlendshapeName.indexOf(name)];
 					rightEye.morphTargetInfluences[rightEye.morphTargetDictionary[name]] =
-						value * blendshapesClamp[arkitBlendshapeName.indexOf(name)];
+						value * blendshapesMulti[arkitBlendshapeName.indexOf(name)];
 				}
 			}
 			// headBone.setRotationFromQuaternion(
@@ -322,6 +325,14 @@
 
 	function updateBgColor() {
 		renderer.setClearColor(bgColor, 1);
+	}
+
+	function updateAmbientColor() {
+		ambientLight.color = new THREE.Color(ambientLightColor);
+	}
+
+	function updateAmbientIntensity() {
+		ambientLight.intensity = ambientLightIntensity;
 	}
 
 	function drawerOpen() {
@@ -430,7 +441,7 @@
 			</div>
 		</div>
 
-		<div class="card p-2 ">
+		<div class="card p-2">
 			<p class="font-semibold">Animations</p>
 			<div class="gap-2 flex flex-col">
 				<FileDropzone name="files" accept=".fbx" on:change={animationUpload} bind:files>
@@ -459,6 +470,32 @@
 					on:change={updateBgColor}
 				/>
 				<input class="input" type="text" readonly tabindex="-1" placeholder={bgColor} />
+			</div>
+		</div>
+		<div class="card p-2">
+			<p class="font-semibold">Ambient light</p>
+			<div class="grid grid-cols-[auto_1fr] gap-2">
+				<input
+					type="color"
+					bind:value={ambientLightColor}
+					placeholder="Color picker"
+					class="input w-10 h-10"
+					on:change={updateAmbientColor}
+				/>
+				<input class="input" type="text" readonly tabindex="-1" placeholder={ambientLightColor} />
+				<div class="flex gap-2 justify-end">
+					<p>Intensity:</p>
+					<RangeSlider
+						name="range-slider"
+						bind:value={ambientLightIntensity}
+						min={0.1}
+						max={3.0}
+						step={0.1}
+						class=""
+						on:change={updateAmbientIntensity}
+					/>
+					<p class="w-8 text-secondary-500">{ambientLightIntensity.toFixed(2)}</p>
+				</div>
 			</div>
 		</div>
 		<div class="w-full card p-2">
@@ -500,15 +537,17 @@
 				{#each [...blendshapes] as [key, value], i}
 					<div class="flex gap-2 justify-end">
 						<p>{key}:</p>
-						<p class="w-8">{value.toFixed(2)}</p>
 						<RangeSlider
 							name="range-slider"
-							bind:value={blendshapesClamp[arkitBlendshapeName.indexOf(key)]}
+							bind:value={blendshapesMulti[arkitBlendshapeName.indexOf(key)]}
 							min={0.5}
 							max={2.0}
 							step={0.05}
 							class="w-16 sm:w-36"
 						/>
+						<p class="w-8 text-secondary-500">
+							{(value * blendshapesMulti[arkitBlendshapeName.indexOf(key)]).toFixed(2)}
+						</p>
 					</div>
 				{/each}
 			</div>
@@ -517,7 +556,7 @@
 
 	{#if trackerLoading}
 		<div
-			class="w-full h-full z-50  bg-surface-900/50 absolute flex flex-col items-center justify-center"
+			class="w-full h-full z-50 bg-surface-900/50 absolute flex flex-col items-center justify-center"
 		>
 			<ProgressRadial
 				stroke={48}
