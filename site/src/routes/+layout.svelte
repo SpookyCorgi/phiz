@@ -56,8 +56,8 @@
 				<a href="/docs" class="text-sm lg:text-base">Docs</a>
 				<a href="/downloads" class="text-sm lg:text-base hidden lg:block">Downloads</a>
 				<!-- <a href="/blendshape"> Facemesh</a> -->
-				<span class="divider-vertical h-6" />
-				<LightSwitch />
+				<span class="divider-vertical h-6 hidden lg:block" />
+				<LightSwitch class="hidden lg:block" />
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
