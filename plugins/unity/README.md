@@ -32,7 +32,6 @@ Helper array are available for blendshape orders
 int jawOpenIndex = Array.IndexOf(PhizServer.blendshapeNames, "jawOpen");
 ```
 
-These libraries are included in this plugin for websocket communication and OSC decoding.
-- https://github.com/frankiezafe/VVVVUnityOSC
+Websocket-sharp is included in this plugin for websocket communication.
 - https://github.com/sta/websocket-sharp
 

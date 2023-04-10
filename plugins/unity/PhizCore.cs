@@ -1,9 +1,6 @@
 using UnityEngine;
-using UnityEditor;
-using VVVV_OSC;
 using WebSocketSharp;
 using WebSocketSharp.Server;
-using System;
 
 namespace Phiz
 {
@@ -123,21 +120,20 @@ namespace Phiz
             {
                 if (e.IsBinary)
                 {
-                    OSCPacket msg = OSCPacket.Unpack(e.RawData);
+                    OSCMessage msg = OSCParser.ParseOSCBytesToMessage(e.RawData);
                     switch (msg.Address)
                     {
                         case "/phiz/blendshapes":
-
-                            msg.Values.ToArray(typeof(float)).CopyTo(_phizServer._blendshapes, 0);
+                            msg.Values.CopyTo(_phizServer._blendshapes, 0);
                             break;
                         case "/phiz/headRotation":
-                            msg.Values.ToArray(typeof(float)).CopyTo(_phizServer._headRotation, 0);
+                            msg.Values.CopyTo(_phizServer._headRotation, 0);
                             break;
                         case "/phiz/leftEyeRotation":
-                            msg.Values.ToArray(typeof(float)).CopyTo(_phizServer._leftEyeRotation, 0);
+                            msg.Values.CopyTo(_phizServer._leftEyeRotation, 0);
                             break;
                         case "/phiz/rightEyeRotation":
-                            msg.Values.ToArray(typeof(float)).CopyTo(_phizServer._rightEyeRotation, 0);
+                            msg.Values.CopyTo(_phizServer._rightEyeRotation, 0);
                             break;
                     }
                 }
