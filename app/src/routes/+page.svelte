@@ -10,7 +10,7 @@
 
 	type Data = {
 		connection: boolean;
-		version: string;
+		version: { [key: string]: number };
 		blendshapes: { [key: string]: number };
 		leftEyeRotation: { [key: string]: number };
 		rightEyeRotation: { [key: string]: number };
@@ -176,7 +176,12 @@
 				let decodedData = data as Data;
 
 				if (!checkVersion) {
-					if (decodedData.version !== metadata.version) {
+					let version = metadata.version.split('.').map((x) => parseInt(x));
+					if (
+						decodedData.version[0] !== version[0] ||
+						decodedData.version[1] !== version[1] ||
+						decodedData.version[2] !== version[2]
+					) {
 						setStatus({
 							id: 'check-version',
 							text: [{ text: 'Checking version', color: '' }],
@@ -186,9 +191,12 @@
 							text: [
 								{ text: 'Your version ', color: '' },
 								{ text: metadata.version, color: 'primary' },
-								{ text: ' is outdated. Please go to ', color: '' },
 								{
-									text: 'https://github.com/SpookyCorgi/phiz',
+									text: ' is different than the website version. Please go to ',
+									color: '',
+								},
+								{
+									text: 'https://www.phizmocap.dev/downloads',
 									color: 'primary',
 								},
 								{ text: ' to download the latest version.', color: '' },

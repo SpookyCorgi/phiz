@@ -244,10 +244,14 @@
 		let date = new Date();
 		let dataTime = new Uint16Array([date.getSeconds(), date.getMilliseconds()]);
 
+		//parse metadata version to float array
+		let version = metadata.version.split('.').map((x) => parseInt(x));
+		let dataVersion = new Uint8Array(version);
+
 		//create sendable data
 		let data = {
 			connection: true,
-			version: metadata.version,
+			version: dataVersion,
 			blendshapes: dataBlendshapes,
 			leftEyeRotation: dataLeftEye,
 			rightEyeRotation: dataRightEye,
@@ -263,7 +267,7 @@
 		}
 
 		if (websocketOpen) {
-			websocket.sendWebsocketMessage('/phiz/version', metadata.version);
+			websocket.sendWebsocketMessage('/phiz/version', ...dataVersion);
 			websocket.sendWebsocketMessage('/phiz/blendshapes', ...dataBlendshapes);
 			websocket.sendWebsocketMessage('/phiz/headRotation', ...dataHead);
 			websocket.sendWebsocketMessage('/phiz/leftEyeRotation', ...dataLeftEye);

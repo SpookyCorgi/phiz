@@ -14,8 +14,8 @@ namespace Phiz
         private float[] _headRotation = new float[4];
         private float[] _leftEyeRotation = new float[4];
         private float[] _rightEyeRotation = new float[4];
-        private string _webVersion = "";
-        private string _pluginVersion = "0.3.1";
+        private float[] _webVersion = new float[3];
+        private float[] _pluginVersion = new float[3] { 0, 3, 1 };
         public static readonly string[] blendshapeNames ={
             "browInnerUp",
             "browDownLeft",
@@ -109,12 +109,12 @@ namespace Phiz
             get { return _rightEyeRotation; }
         }
 
-        public string webVersion
+        public float[] webVersion
         {
             get { return _webVersion; }
         }
 
-        public string pluginVersion
+        public float[] pluginVersion
         {
             get { return _pluginVersion; }
         }
@@ -150,10 +150,12 @@ namespace Phiz
                             ValuesToFloatArray(msg.Values).CopyTo(_phizServer._rightEyeRotation, 0);
                             break;
                         case "/phiz/version":
-                            _phizServer._webVersion = ValuesToString(msg.Values);
-                            if (_phizServer._webVersion != _phizServer._pluginVersion && !_versionWarning)
+                            ValuesToFloatArray(msg.Values).CopyTo(_phizServer._webVersion, 0);
+                            if (!_versionWarning && (_phizServer._webVersion[0] != _phizServer._pluginVersion[0]
+                            || _phizServer._webVersion[1] != _phizServer._pluginVersion[1]
+                            || _phizServer._webVersion[2] != _phizServer._pluginVersion[2]))
                             {
-                                Debug.LogWarning("Phiz plugin version (" + _phizServer._pluginVersion + ") does not match web version (" + _phizServer._webVersion + ")");
+                                Debug.LogWarning("Phiz plugin version (" + _phizServer._pluginVersion[0] + "." + _phizServer._pluginVersion[1] + "." + _phizServer._pluginVersion[2] + ") does not match web version (" + _phizServer._webVersion[0] + "." + _phizServer._webVersion[1] + "." + _phizServer._webVersion[2] + ")");
                                 _versionWarning = true;
                             }
                             break;
