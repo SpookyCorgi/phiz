@@ -107,14 +107,14 @@ These are extra eye rotation roughly estimated from the eyeLookAt blendshapes. I
 
     A float array [x,y,z,w] ranging from -1.0 ~ 1.0.
 
-- **/phiz/version**
-
-    A string of the current version of Phiz website.
-
 All rotations are **quaternions in right-handed, Y-Up, Z-Forward** coordinate system.
 
 ![Coordinate axis](./assets/coordinate-axes-light.png#gh-light-mode-only)
 ![Coordinate axis](./assets/coordinate-axes-dark.png#gh-dark-mode-only)
+
+- **/phiz/version**
+
+    A string of the current version of Phiz website.
 
 ## Using Phiz?
 Let us know if you are using Phiz! We would love to see what you are making with Phiz and would be delighted to showcase your work.
