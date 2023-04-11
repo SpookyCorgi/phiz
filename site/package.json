@@ -1,6 +1,6 @@
 {
 	"name": "phiz-site",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"type": "module",
 	"description": "Phiz is a tool that allows you to perform facial motion capture from any device and location.",
 	"author": "SpookyCorgi",

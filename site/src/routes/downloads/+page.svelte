@@ -25,7 +25,7 @@
 				<li>
 					<a
 						class=""
-						href="https://github.com/SpookyCorgi/phiz/releases/download/v0.3.0/phiz-unreal5.0-win64-v0.3.0.zip"
+						href="https://github.com/SpookyCorgi/phiz/releases/latest/download/phiz-unreal5.0-win64.zip"
 					>
 						Unreal Engine 5.0 Windows
 					</a>
@@ -33,7 +33,7 @@
 				<li>
 					<a
 						class=""
-						href="https://github.com/SpookyCorgi/phiz/releases/download/v0.3.0/phiz-unreal5.1-win64-v0.3.0.zip"
+						href="https://github.com/SpookyCorgi/phiz/releases/latest/download/phiz-unreal5.1-win64.zip"
 					>
 						Unreal Engine 5.1 Windows
 					</a>
@@ -41,7 +41,7 @@
 				<li>
 					<a
 						class=""
-						href="https://github.com/SpookyCorgi/phiz/releases/download/v0.3.0/phiz-unreal5.0-mac-v0.3.0.zip"
+						href="https://github.com/SpookyCorgi/phiz/releases/latest/download/phiz-unreal5.0-mac.zip"
 					>
 						Unreal Engine 5.0 MacOS
 					</a>
@@ -49,7 +49,7 @@
 				<li>
 					<a
 						class=""
-						href="https://github.com/SpookyCorgi/phiz/releases/download/v0.3.0/phiz-unreal5.1-mac-v0.3.0.zip"
+						href="https://github.com/SpookyCorgi/phiz/releases/latest/download/phiz-unreal5.1-mac.zip"
 					>
 						Unreal Engine 5.1 MacOS
 					</a>
@@ -57,7 +57,7 @@
 				<li>
 					<a
 						class=""
-						href="https://github.com/SpookyCorgi/phiz/releases/download/v0.3.0/phiz-unity-v0.3.0.zip"
+						href="https://github.com/SpookyCorgi/phiz/releases/latest/download/phiz-unity.zip"
 					>
 						Unity universal platform</a
 					>
@@ -76,7 +76,7 @@
 				<li>
 					<a
 						class=""
-						href="https://github.com/SpookyCorgi/phiz/releases/download/v0.3.0/phiz-app-windows-v0.3.0.exe"
+						href="https://github.com/SpookyCorgi/phiz/releases/latest/download/phiz-app-windows.exe"
 					>
 						Windows
 					</a>
@@ -84,7 +84,7 @@
 				<li>
 					<a
 						class=""
-						href="https://github.com/SpookyCorgi/phiz/releases/download/v0.3.0/phiz-app-mac-v0.3.0.dmg"
+						href="https://github.com/SpookyCorgi/phiz/releases/latest/download/phiz-app-mac.dmg"
 					>
 						MacOS
 					</a>
@@ -92,7 +92,7 @@
 				<li>
 					<a
 						class=""
-						href="https://github.com/SpookyCorgi/phiz/releases/download/v0.3.0/phiz-app-linux-v0.3.0.AppImage"
+						href="https://github.com/SpookyCorgi/phiz/releases/latest/download/phiz-app-linux.AppImage"
 					>
 						Linux
 					</a>
