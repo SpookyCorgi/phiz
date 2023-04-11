@@ -247,6 +247,7 @@
 		//create sendable data
 		let data = {
 			connection: true,
+			version: metadata.version,
 			blendshapes: dataBlendshapes,
 			leftEyeRotation: dataLeftEye,
 			rightEyeRotation: dataRightEye,

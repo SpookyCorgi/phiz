@@ -10,6 +10,7 @@
 
 	type Data = {
 		connection: boolean;
+		version: string;
 		blendshapes: { [key: string]: number };
 		leftEyeRotation: { [key: string]: number };
 		rightEyeRotation: { [key: string]: number };
@@ -161,45 +162,46 @@
 				text: [{ text: 'Checking version', color: '' }],
 				loading: { state: 'loading' },
 			});
+			checkVersion = false;
 
 			if (window.electron) {
 				window.electron.send('open-osc-server');
 			}
 		});
 
-		conn.on('close', function () {
-			if (!checkVersion) {
-				setStatus({
-					id: 'check-version',
-					text: [{ text: 'Checking version', color: '' }],
-					loading: { state: 'failed' },
-				});
-				setStatus({
-					text: [
-						{ text: 'Your version ', color: '' },
-						{ text: metadata.version, color: 'primary' },
-						{ text: ' is outdated. Please go to ', color: '' },
-						{ text: 'https://github.com/SpookyCorgi/phiz', color: 'primary' },
-						{ text: ' to download the latest version.', color: '' },
-					],
-				});
-			}
-			checkVersion = false;
-		});
+		conn.on('close', function () {});
 
 		conn.on('data', function (data: unknown) {
 			if (data) {
 				let decodedData = data as Data;
 
-				if (decodedData.connection) {
-					if (!checkVersion) {
+				if (!checkVersion) {
+					if (decodedData.version !== metadata.version) {
+						setStatus({
+							id: 'check-version',
+							text: [{ text: 'Checking version', color: '' }],
+							loading: { state: 'error' },
+						});
+						setStatus({
+							text: [
+								{ text: 'Your version ', color: '' },
+								{ text: metadata.version, color: 'primary' },
+								{ text: ' is outdated. Please go to ', color: '' },
+								{
+									text: 'https://github.com/SpookyCorgi/phiz',
+									color: 'primary',
+								},
+								{ text: ' to download the latest version.', color: '' },
+							],
+						});
+					} else {
 						setStatus({
 							id: 'check-version',
 							text: [{ text: 'Checking version', color: '' }],
 							loading: { state: 'success' },
 						});
-						checkVersion = true;
 					}
+					checkVersion = true;
 				}
 
 				let blendshapes = Object.values(decodedData.blendshapes);

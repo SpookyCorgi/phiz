@@ -13,6 +13,7 @@
 
 	type Data = {
 		connection: boolean;
+		version: string;
 		blendshapes: { [key: string]: number };
 		leftEyeRotation: { [key: string]: number };
 		rightEyeRotation: { [key: string]: number };
@@ -127,24 +128,6 @@
 				loading: { state: 'loading' }
 			});
 			status.message = status.message;
-		});
-
-		conn.on('close', function () {
-			if (!checkVersion) {
-				setStatus(status, {
-					id: 'check-version',
-					text: [{ text: 'Checking version', color: '' }],
-					loading: { state: 'failed' }
-				});
-				setStatus(status, {
-					text: [
-						{ text: 'Your version ', color: '' },
-						{ text: metadata.version, color: 'primary' },
-						{ text: ' is outdated. Please refresh your page.', color: '' }
-					]
-				});
-				status.message = status.message;
-			}
 			checkVersion = false;
 		});
 
@@ -152,16 +135,29 @@
 			if (data) {
 				let decodedData = data as Data;
 
-				if (decodedData.connection) {
-					if (!checkVersion) {
+				if (!checkVersion) {
+					if (decodedData.version !== metadata.version) {
+						setStatus(status, {
+							id: 'check-version',
+							text: [{ text: 'Checking version', color: '' }],
+							loading: { state: 'error' }
+						});
+						setStatus(status, {
+							text: [
+								{ text: 'Your version ', color: '' },
+								{ text: metadata.version, color: 'primary' },
+								{ text: ' is outdated. Please refresh your page.', color: '' }
+							]
+						});
+					} else {
 						setStatus(status, {
 							id: 'check-version',
 							text: [{ text: 'Checking version', color: '' }],
 							loading: { state: 'success' }
 						});
-						status.message = status.message;
-						checkVersion = true;
 					}
+					status.message = status.message;
+					checkVersion = true;
 				}
 
 				let blendshapes = Object.values(decodedData.blendshapes);
