@@ -1,5 +1,8 @@
-Phiz Unity Plugin
-Version: 0.3.0
+Phiz Unity Plugin 
+
+Version: 0.3.1
+
+**Make sure you are running the latest version to prevent error.**
 
 How to use
 1. Copy and paste everything into the Unity project.

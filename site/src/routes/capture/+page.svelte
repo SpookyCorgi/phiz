@@ -20,6 +20,7 @@
 	import { ProgressRadial, FileDropzone } from '@skeletonlabs/skeleton';
 
 	import UAParser from 'ua-parser-js';
+	import { metadata } from '../../../../lib/metadata';
 	//import exampleVideo from '$lib/assets/exampleVideo.mp4';
 
 	//public variables for svelte
@@ -261,6 +262,7 @@
 		}
 
 		if (websocketOpen) {
+			websocket.sendWebsocketMessage('/phiz/version', metadata.version);
 			websocket.sendWebsocketMessage('/phiz/blendshapes', ...dataBlendshapes);
 			websocket.sendWebsocketMessage('/phiz/headRotation', ...dataHead);
 			websocket.sendWebsocketMessage('/phiz/leftEyeRotation', ...dataLeftEye);

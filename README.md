@@ -9,6 +9,7 @@
 ## What is Phiz?
 Phiz is an open-source tool that gives you the power to do facial motion capture right in your browser, using the webcam on any mobile device or computer. You can then send the blendshape data, either locally or remotely, to another browser or popular game engines; you even have the option to broadcast the blendshape data through OSC protocol using Phiz's cross-platform app.
 
+**Phiz is under development with frequent updates. If you encounter issues, ensure you're using the latest version.**
 
 ## How does it work?
 - **Facial Motion Capture... in Your Browser**
@@ -105,6 +106,10 @@ These are extra eye rotation roughly estimated from the eyeLookAt blendshapes. I
 - **/phiz/rightEyeRotation**
 
     A float array [x,y,z,w] ranging from -1.0 ~ 1.0.
+
+- **/phiz/version**
+
+    A string of the current version of Phiz website.
 
 All rotations are **quaternions in right-handed, Y-Up, Z-Forward** coordinate system.
 

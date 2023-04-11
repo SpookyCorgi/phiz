@@ -4,12 +4,40 @@ using System.Text;
 
 namespace Phiz
 {
+    public class OSCValue
+    {
+        public enum ValueType { Float, Integer, String }
+
+        public ValueType Type { get; }
+        public float FloatValue { get; }
+        public int IntValue { get; }
+        public string StringValue { get; }
+
+        public OSCValue(float value)
+        {
+            Type = ValueType.Float;
+            FloatValue = value;
+        }
+
+        public OSCValue(int value)
+        {
+            Type = ValueType.Integer;
+            IntValue = value;
+        }
+
+        public OSCValue(string value)
+        {
+            Type = ValueType.String;
+            StringValue = value;
+        }
+    }
+
     public class OSCMessage
     {
         public string Address { get; set; }
-        public List<float> Values { get; set; }
+        public List<OSCValue> Values { get; set; }
 
-        public OSCMessage(string address, List<float> values)
+        public OSCMessage(string address, List<OSCValue> values)
         {
             Address = address;
             Values = values;
@@ -20,7 +48,7 @@ namespace Phiz
     {
         public static OSCMessage ParseOSCBytesToMessage(byte[] data)
         {
-            List<float> floatValues = new List<float>();
+            List<OSCValue> values = new List<OSCValue>();
             int index = 0;
 
             // Read address pattern
@@ -58,7 +86,7 @@ namespace Phiz
                     }
                     float floatValue = BitConverter.ToSingle(data, index);
                     //Debug.Log("Parsed float value: " + floatValue);
-                    floatValues.Add(floatValue);
+                    values.Add(new OSCValue(floatValue));
                     index += 4;
                 }
                 else if (typeTag == 'i')
@@ -69,17 +97,29 @@ namespace Phiz
                     }
                     int intValue = BitConverter.ToInt32(data, index);
                     //Debug.Log("Parsed integer value: " + intValue);
-                    floatValues.Add(intValue); // Store integer value as a float
+                    values.Add(new OSCValue(intValue));
                     index += 4;
+                }
+                else if (typeTag == 's')
+                {
+                    StringBuilder stringValue = new StringBuilder();
+                    while (data[index] != 0)
+                    {
+                        stringValue.Append((char)data[index]);
+                        index++;
+                    }
+                    //Debug.Log("Parsed string value: " + stringValue);
+                    values.Add(new OSCValue(stringValue.ToString()));
+                    // Align to the next 4-byte boundary
+                    index = (index + 4) & ~3;
                 }
                 else
                 {
-                    //Debug.Log("Unsupported OSC type tag: " + typeTag);
+                    //throw new InvalidOperationException("Unsupported OSC type tag: " + typeTag);
                 }
             }
 
-            return new OSCMessage(addressPattern.ToString(), floatValues);
+            return new OSCMessage(addressPattern.ToString(), values);
         }
     }
-
 }

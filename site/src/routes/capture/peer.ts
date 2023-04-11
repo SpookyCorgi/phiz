@@ -18,19 +18,24 @@ export function createPeer (openCallback: Function, connectCallback: Function) {
         openCallback(id);
     });
     peer.on('connection', function (conn) {
-        let recieveMetadata = conn.metadata as { name: string, version: string }
+        // let webMajorVersion = parseInt(metadata.version.split(".")[0])
+        // let webMinorVersion = parseInt(metadata.version.split(".")[1])
 
-        if (recieveMetadata.name !== metadata.name) {
-            //conn.send({ connection: false, message: "Who are you? Why are you connecting to PHIZ?" });
-            connectCallback(null)
-            setTimeout(() => { conn.close() }, 3000);
-            return;
-        } else if (recieveMetadata.version !== metadata.version) {
-            //conn.send({ connection: false, message: `The website is running on version ${metadata.version}, but you are running version ${recieveMetadata.version}. Please update your software at https://github.com/SpookyCorgi/phiz` });
-            connectCallback(null)
-            setTimeout(() => { conn.close() }, 3000);
-            return;
-        }
+        //let recieveMetadata = conn.metadata as { name: string, version: string }
+        // let recieveMajorVersion = parseInt(recieveMetadata.version.split(".")[0])
+        // let recieveMinorVersion = parseInt(recieveMetadata.version.split(".")[1])
+
+        // if (recieveMetadata.name !== metadata.name) {
+        //     //conn.send({ connection: false, message: "Who are you? Why are you connecting to PHIZ?" });
+        //     connectCallback(null)
+        //     setTimeout(() => { conn.close() }, 3000);
+        //     return;
+        // } else if (webMajorVersion !== recieveMajorVersion || webMinorVersion !== recieveMinorVersion) {
+        //     //conn.send({ connection: false, message: `The website is running on version ${metadata.version}, but you are running version ${recieveMetadata.version}. Please update your software at https://github.com/SpookyCorgi/phiz` });
+        //     connectCallback(null)
+        //     setTimeout(() => { conn.close() }, 3000);
+        //     return;
+        // }
         connectCallback(conn)
     });
 }
