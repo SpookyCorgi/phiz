@@ -272,9 +272,16 @@
 			loader.load(url, function (object) {
 				let animation = object.animations[0];
 
+				//get animation track prefix
+				let prefix = '';
 				animation.tracks.forEach((track) => {
-					track.name = track.name.replace('mixamorig', '');
-					track.name = track.name.replace('Calar_', '');
+					if (track.name.includes('Hips')) {
+						prefix = track.name.split('Hips')[0];
+					}
+				});
+
+				animation.tracks.forEach((track) => {
+					track.name = track.name.replace(prefix, '');
 
 					if (track.name.includes('position')) {
 						track.values = track.values.map((value) => value * 0.01);
