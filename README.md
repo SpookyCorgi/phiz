@@ -92,7 +92,7 @@ Checkout the [PureData example](https://www.phizmocap.dev/docs/osc-app/puredata-
 There are currently 4 channels of data.**
 - **/phiz/blendshapes**
   
-  A float array [52 blendshape values] ranging from 0.0~1.0. **Check [here](https://github.com/SpookyCorgi/phiz/wiki/Blendshapes-Format) for the order of blendshapes**. 
+  A float array [52 blendshape values] ranging from 0.0~1.0. **Check [here](https://www.phizmocap.dev/docs/data-format) for the order of blendshapes**. 
   
 - **/phiz/headRotation**
     

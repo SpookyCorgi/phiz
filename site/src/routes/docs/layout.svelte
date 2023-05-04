@@ -9,6 +9,8 @@
 		>
 			<slot class="" />
 		</div>
+		<div class="dark:hidden" id="tailwind-trigger-dark-hidden" />
+		<div class="dark:block" id="tailwind-trigger-dark-block" />
 	</div>
 	<hr class="w-full mt-12" />
 	<div class="w-full px-4 lg:px-8">

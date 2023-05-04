@@ -20,7 +20,7 @@ Phiz is an open-source tool that gives you the power to do facial motion capture
 
 - **ARKit Support**
 
-    Phiz uses the same blendshapes as ARKit. Check out the [Blendshapes page](https://www.phizmocap.dev/docs/specs/blendshapes) for more information about the blendshape names and orders.
+    Phiz uses the same blendshapes as ARKit. Check out the [data format page](https://www.phizmocap.dev/docs/data-format) for more information about the blendshape names and orders.
 
 
 ## How do I use it?

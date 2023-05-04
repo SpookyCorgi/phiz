@@ -35,6 +35,6 @@
 	<a href="/docs/web-playground/how-to-use" on:click={drawerClose}><span>How to use</span></a>
 
 	<hr class="m-4" />
-	<span class="px-4 font-bold text-primary-500">Specs</span>
-	<a href="/docs/specs/blendshapes" on:click={drawerClose}><span>Blendshapes</span></a>
+	<span class="px-4 font-bold text-primary-500">Data Format</span>
+	<a href="/docs/data-format" on:click={drawerClose}><span>Data Format</span></a>
 </nav>
