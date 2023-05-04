@@ -20,7 +20,7 @@
 		"build:electron": "electron-builder -mwl --config build.config.json"
 	},
 	"devDependencies": {
-		"@skeletonlabs/skeleton": "^1.0.0",
+		"@skeletonlabs/skeleton": "^1.2.5",
 		"@sveltejs/adapter-static": "2.0.1",
 		"@sveltejs/kit": "1.13.0",
 		"@tailwindcss/forms": "^0.5.3",
