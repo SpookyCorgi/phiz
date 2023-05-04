@@ -142,6 +142,8 @@
 			model = gltf.scene.children[0];
 			//make mesh global for mocap
 			model.traverse(function (obj: any) {
+				//prevent obj disappear at zoom
+				obj.frustumCulled = false;
 				switch (obj.name) {
 					case 'Wolf3D_Head':
 						head = obj;

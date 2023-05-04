@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../theme.postcss';
+	//import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
 	import '@skeletonlabs/skeleton/styles/all.css';
 	import '../app.postcss';
 	import { AppShell, AppBar, Toast, Drawer, drawerStore } from '@skeletonlabs/skeleton';
